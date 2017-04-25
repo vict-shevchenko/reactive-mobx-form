@@ -1,0 +1,25 @@
+{
+  "name": "mobx-reactive-form",
+  "version": "0.0.1",
+  "description": "Reactive forms for React running on MobX",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vict-shevchenko/mobx-reactive-form.git"
+  },
+  "keywords": [
+    "react",
+    "mobx",
+    "forms",
+    "typescript"
+  ],
+  "author": "Viktor Shevchenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vict-shevchenko/mobx-reactive-form/issues"
+  },
+  "homepage": "https://github.com/vict-shevchenko/mobx-reactive-form#readme"
+}
