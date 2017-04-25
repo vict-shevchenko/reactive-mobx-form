@@ -1,25 +1,34 @@
 {
-  "name": "mobx-reactive-form",
-  "version": "0.0.1",
-  "description": "Reactive forms for React running on MobX",
-  "main": "index.js",
+  "name": "minimal-react-starter",
+  "version": "0.0.5",
+  "description": "Minimal react starter project",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vict-shevchenko/mobx-reactive-form.git"
+    "compile": "webpack",
+    "start": "node server.js"
   },
   "keywords": [
     "react",
-    "mobx",
-    "forms",
-    "typescript"
+    "webpack",
+    "babel",
+    "minimal",
+    "starter"
   ],
-  "author": "Viktor Shevchenko",
+  "author": "Andrew H Farmer",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/vict-shevchenko/mobx-reactive-form/issues"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ahfarmer/minimal-react-starter.git"
   },
-  "homepage": "https://github.com/vict-shevchenko/mobx-reactive-form#readme"
+  "dependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-react": "^6.24.1",
+    "express": "^4.15.2",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "webpack": "^2.4.1",
+    "webpack-dev-middleware": "^1.10.1"
+  }
 }

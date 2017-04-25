@@ -1,2 +1,4 @@
-.idea/
+.idea
+node_modules
 .DS_Store
+www/bundle.js
