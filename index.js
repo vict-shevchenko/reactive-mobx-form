@@ -1,0 +1,1 @@
+export {registerForm} from './lib/registerForm';
