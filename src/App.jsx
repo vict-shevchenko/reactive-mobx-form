@@ -1,23 +1,33 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import DevTools from 'mobx-react-devtools';
 
+import ContactForm from './ContactForm';
+
+@inject('appState', 'formState')
 @observer
 class App extends Component {
-  render() {
-    return (
-      <div>
-        <button onClick={this.onReset}>
-          Seconds passed: {this.props.appState.timer}
-        </button>
-        <DevTools />
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div>
+				<button onClick={this.onReset}>
+					Seconds passed: {this.props.appState.timer}
+				</button>
 
-  onReset = () => {
-    this.props.appState.resetTimer();
-  }
-};
+				<ContactForm handleSubmit={() => {
+					console.log('form submit')
+				}} />
+
+				<pre>{JSON.stringify(this.props.formState)}</pre>
+				<DevTools />
+			</div>
+		);
+	}
+
+	onReset = () => {
+		this.props.appState.resetTimer();
+	}
+}
+;
 
 export default App;
