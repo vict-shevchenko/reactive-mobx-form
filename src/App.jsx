@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import DevTools from 'mobx-react-devtools';
+import beautify from 'json-beautify';
 
 import ContactForm from './ContactForm';
 
@@ -18,7 +19,7 @@ class App extends Component {
 					console.log('form submit')
 				}} />
 
-				<pre>{JSON.stringify(this.props.formStore)}</pre>
+				<pre>{beautify(this.props.formStore, null, 2, 100)}</pre>
 				<DevTools />
 			</div>
 		);
@@ -28,6 +29,5 @@ class App extends Component {
 		this.props.appState.resetTimer();
 	}
 }
-;
 
 export default App;
