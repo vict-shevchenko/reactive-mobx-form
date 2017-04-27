@@ -39,9 +39,9 @@ export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
 
 
 
-class MobxReactiveForm {
+export class MobxReactiveForm {
 	fieldsSchema: fiedsSchema;
-	@observable fields: Array<Field> = [];
+	@observable fields: Array<MobxReactiveFormField> = [];
 	@observable submitting: boolean = false;
 	@observable validating: boolean = false;
 
@@ -64,12 +64,12 @@ class MobxReactiveForm {
 		this.fieldsSchema = fieldsSchema;
 
 		Object.keys(fieldsSchema).map((fieldName:string) => {
-			this.fields.push(new Field(fieldName, fieldsSchema[fieldName]))
+			this.fields.push(new MobxReactiveFormField(fieldName, fieldsSchema[fieldName]))
 		})
 	}
 }
 
-class Field {
+export class MobxReactiveFormField {
 	readonly name: string;
 	readonly initialValue: string | number | boolean = '';
 	readonly rules: string;
