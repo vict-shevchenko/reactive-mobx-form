@@ -9,7 +9,7 @@ class ContactForm extends Component {
 			<form onSubmit={handleSubmit}>
 				<div>
 					<label htmlFor="firstName">First Name</label>
-					<Field name="firstName"/>
+					<Field name="firstName" component="input" />
 				</div>
 				<div>
 					<label htmlFor="lastName">Last Name</label>
