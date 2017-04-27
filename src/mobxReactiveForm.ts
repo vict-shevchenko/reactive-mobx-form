@@ -6,7 +6,7 @@ export function mobxReactiveForm(formName: string, fields:any) {
 
 	return wrappedForm => {
 		@inject('formState')
-		class MobxReactiveForm extends Component {
+		class MobxReactiveForm extends Component<{formState: any}, any> {
 			static childContextTypes = {
 				_mobxReactiveForm: PropTypes.object.isRequired
 			}
