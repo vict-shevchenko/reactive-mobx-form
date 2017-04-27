@@ -8,11 +8,11 @@ import App from './App';
 import { FormStore } from 'mobx-reactive-form';
 
 const appState = new AppState();
-const formState = new FormStore();
+const formStore = new FormStore();
 
 render(
   <AppContainer>
-      <Provider appState={appState} formState={formState}>
+      <Provider appState={appState} formStore={formStore}>
           <App />
       </Provider>
   </AppContainer>,
@@ -25,7 +25,7 @@ if (module.hot) {
 
     render(
       <AppContainer>
-          <Provider appState={appState} formState={formState}>
+          <Provider appState={appState} formStore={formStore}>
               <App />
           </Provider>
       </AppContainer>,

@@ -4,7 +4,7 @@ import DevTools from 'mobx-react-devtools';
 
 import ContactForm from './ContactForm';
 
-@inject('appState', 'formState')
+@inject('appState', 'formStore')
 @observer
 class App extends Component {
 	render() {
@@ -18,7 +18,7 @@ class App extends Component {
 					console.log('form submit')
 				}} />
 
-				<pre>{JSON.stringify(this.props.formState)}</pre>
+				<pre>{JSON.stringify(this.props.formStore)}</pre>
 				<DevTools />
 			</div>
 		);
