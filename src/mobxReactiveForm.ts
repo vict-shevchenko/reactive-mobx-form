@@ -1,12 +1,21 @@
 import React, { Component, createElement, PropTypes } from 'react';
+import { observable, action, computed } from 'mobx';
 import { inject } from 'mobx-react';
 
-export function mobxReactiveForm(formName: string, fields:any) {
-	var form = {fields: fields}
+
+type fiedValue = string | number | boolean;
+type fieldDefinition = (string | number | boolean) | [string | number | boolean] | [(string | number | boolean), string];
+
+interface fiedsSchema {
+	[propType: string]: fieldDefinition
+}
+
+export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
+	var form = new MobxReactiveForm(fields);
 
 	return wrappedForm => {
-		@inject('formState')
-		class MobxReactiveForm extends Component<{formState: any}, any> {
+		@inject('formStore')
+		class MobxReactiveForm extends Component<{formStore: any}, any> {
 			static childContextTypes = {
 				_mobxReactiveForm: PropTypes.object.isRequired
 			}
@@ -16,7 +25,7 @@ export function mobxReactiveForm(formName: string, fields:any) {
 			}
 
 			componentWillMount() {
-				this.props.formState.registerForm(formName, form)
+				this.props.formStore.registerForm(formName, form)
 			}
 
 			render() {
@@ -29,33 +38,75 @@ export function mobxReactiveForm(formName: string, fields:any) {
 }
 
 
-/*
-*
-* import React from 'react';
- import {MobxReactiveForm} from "./Form";
 
- interface registerFormParameters {
- form: string
- }
+class MobxReactiveForm {
+	fieldsSchema: fiedsSchema;
+	@observable fields: Array<Field> = [];
+	@observable submitting: boolean = false;
+	@observable validating: boolean = false;
 
- interface registerFormFieldsDefinition {
- [propName: string]: [string, string];
- }
+	// computed
+	/*
+	hasErrors
+	isValid
+	isDirty
+	isPristine
+	isDefault
+	isEmpty
+	isFocused
+	isToucehd
+	isChanged
+	error
+	*/
+	 
 
- export function registerForm(parameters:registerFormParameters, fields:registerFormFieldsDefinition) {
- //todo: verify 'contextStore'
+	constructor(fieldsSchema) {
+		this.fieldsSchema = fieldsSchema;
 
- if (!contextStore.forms) {
- contextStore.forms = {};
- }
+		Object.keys(fieldsSchema).map((fieldName:string) => {
+			this.fields.push(new Field(fieldName, fieldsSchema[fieldName]))
+		})
+	}
+}
 
- contextStore.forms[parameters.form] = new MobxReactiveForm(fields)
+class Field {
+	readonly name: string;
+	readonly initialValue: string | number | boolean = '';
+	readonly rules: string;
+	@observable value: string | number | boolean = '';
+	@observable isFocused: boolean = false;
+	@observable isTouched: boolean = false;
+	
+	constructor(name:string, fieldDefinition: fieldDefinition ) {
+		const definitionIsArray: boolean = Array.isArray(fieldDefinition);
+		const initialValue = definitionIsArray ? fieldDefinition[0] : '' 
 
- return function (userForm) {
- return (
- <div className="meForm">{userForm}</div>
- )
- }
- }
+		this.name = name;
+		this.initialValue = initialValue;
+		this.value = initialValue;
+		this.rules = (definitionIsArray && fieldDefinition[1]) ? fieldDefinition[1] : '';
+	}
 
- * */
+	@action onFocus() {
+		this.isFocused = true;
+		if(!this.isTouched) {
+			this.isTouched = true;
+		}
+	}
+
+	@action onBlur() {
+		this.isFocused = false;
+	}
+
+	@action onChange(value) {
+		this.value = value;
+	}
+
+	@computed get isDirty() {
+		return this.value !== this.initialValue;
+	}
+
+	@computed get isValid() {
+		return true;
+	}
+}
