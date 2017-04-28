@@ -3,8 +3,8 @@ import { observable, action, computed } from 'mobx';
 import { inject } from 'mobx-react';
 
 
-type fiedValue = string | number | boolean;
-type fieldDefinition = (string | number | boolean) | [string | number | boolean] | [(string | number | boolean), string];
+type fieldValue = string | number | boolean;
+type fieldDefinition = (fieldValue) | [fieldValue] | [(fieldValue), string];
 
 interface fiedsSchema {
 	[propType: string]: fieldDefinition
@@ -25,11 +25,11 @@ export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
 			}
 
 			componentWillMount() {
-				this.props.formStore.registerForm(formName, form)
+				this.props.formStore.registerForm(formName, form);
 			}
 
 			render() {
-				return createElement(wrappedForm, {})
+				return createElement(wrappedForm, {});
 			}
 		}
 
@@ -67,13 +67,20 @@ export class MobxReactiveForm {
 			this.fields.push(new MobxReactiveFormField(fieldName, fieldsSchema[fieldName]))
 		})
 	}
+
+	@computed get isDirty() {
+		return this.fields.some(field => field.isDirty);
+	}
 }
 
 export class MobxReactiveFormField {
 	readonly name: string;
-	readonly initialValue: string | number | boolean = '';
+	readonly initialValue: fieldValue= '';
 	readonly rules: string;
-	@observable value: string | number | boolean = '';
+
+	type: string;
+
+	@observable value: fieldValue = '';
 	@observable isFocused: boolean = false;
 	@observable isTouched: boolean = false;
 	
@@ -98,7 +105,7 @@ export class MobxReactiveFormField {
 		this.isFocused = false;
 	}
 
-	@action onChange(value) {
+	@action onChange(value:fieldValue) {
 		this.value = value;
 	}
 
