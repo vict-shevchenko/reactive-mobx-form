@@ -17,9 +17,8 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ],
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
+	resolve: { extensions: ['', '.js', '.jsx'], fallback: path.join(__dirname, "node_modules") },
+	resolveLoader: { fallback: path.join(__dirname, "node_modules") },
   module: {
     loaders: [{
       test: /\.jsx?$/,
