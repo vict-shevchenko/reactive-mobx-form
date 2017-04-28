@@ -5,15 +5,18 @@ import beautify from 'json-beautify';
 
 import ContactForm from './ContactForm';
 
-@inject('appState', 'formStore')
+const Button = inject('appState')(observer(({appState}) => <button>{appState.timer}</button>));
+
+@inject('formStore')
 @observer
 class App extends Component {
 	render() {
 		return (
 			<div>
-				<button onClick={this.onReset}>
+				<Button/>
+				{/*<button onClick={this.onReset}>
 					Seconds passed: {this.props.appState.timer}
-				</button>
+				</button>*/}
 
 				<ContactForm handleSubmit={() => {
 					console.log('form submit')

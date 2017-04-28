@@ -9,11 +9,31 @@ class ContactForm extends Component {
 			<form onSubmit={handleSubmit}>
 				<div>
 					<label htmlFor="firstName">First Name</label>
-					<Field name="firstName" component="input" />
+					<Field name="firstName" component="input" type="text" />
 				</div>
 				<div>
 					<label htmlFor="lastName">Last Name</label>
-					<input name="lastName" type="text"/>
+					<Field name="lastName" component="input" type="text"/>
+				</div>
+				<div>
+					<label htmlFor="acceptTerms">Accept terms</label>
+					<Field name="acceptTerms" component="input" type="checkbox"/>
+				</div>
+				<div>
+					<label htmlFor="Faivorite film">Favourite film</label>
+					<Field name="favoriteFilm" component="select">
+						<option/>
+						<option value="terminator">Terminator</option>
+						<option value="dieHard">Die Hard</option>
+						<option value="Robocop">Robocop</option>
+					</Field>
+				</div>
+				<div>
+					<label>Sex</label>
+					<div>
+						<label><Field name="sex" component="input" type="radio" value="male"/> Male</label>
+						<label><Field name="sex" component="input" type="radio" value="female"/> Female</label>
+					</div>
 				</div>
 				<div>
 					<label htmlFor="email">Email</label>
@@ -25,6 +45,13 @@ class ContactForm extends Component {
 	}
 }
 
-const ContactFormReactive = mobxReactiveForm('contacts', {'firstName': ['viktor', ''], 'lastName': ['shevchenko', '']})(ContactForm);
+const ContactFormReactive = mobxReactiveForm('contacts',
+	{
+		'firstName': ['viktor', ''],
+		'lastName': ['shevchenko', ''],
+		'acceptTerms': [true],
+		'favoriteFilm': ['dieHardwerwe'],
+		'sex':['']
+	})(ContactForm);
 
 export default ContactFormReactive;
