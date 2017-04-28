@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 import { MobxReactiveForm, MobxReactiveFormField } from './mobxReactiveForm'
 
 /*const isClassComponent = Component => Boolean(
@@ -31,18 +32,20 @@ interface fieldProps {
 	onChange?(event:Event):void;
 }
 
+@observer
 export class Field extends React.Component<fieldProps, any> {
-	form:MobxReactiveForm;
+	form: MobxReactiveForm;
 	field: MobxReactiveFormField;
 
 	static contextTypes = {
 		_mobxReactiveForm: React.PropTypes.object.isRequired
 	}
 
-	constructor(props) {
-		super();
+	constructor(props, context) {
+		super(props, context);
 
-		
+		this.form = this.context._mobxReactiveForm;
+		this.field = this.form.fields.find(field => field.name === this.props.name);
 
 		this.onChange = this.onChange.bind(this);
 	}
@@ -56,16 +59,12 @@ export class Field extends React.Component<fieldProps, any> {
 	}
 
 	render() {
-		this.form = this.context._mobxReactiveForm;
-		this.field = this.form.fields.find(field => field.name === this.props.name);
-
-		const Component = this.props.component;
 
 		/*if (isClassComponent(Component)) {
 			return React.createElement(Component, Object.assign({}, this.props, {field: field}))
 		}
 		else {*/
-		return React.createElement(Component, {
+		return React.createElement(this.props.component, {
 			type: this.props.type || 'text',
 			placeholder: this.props.placeholder,
 			value: this.field.value,
