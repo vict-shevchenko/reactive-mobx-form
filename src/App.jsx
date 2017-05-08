@@ -7,8 +7,9 @@ import ContactForm from './ContactForm';
 
 const Button = inject('appState')(observer(({appState}) => <button>{appState.timer}</button>));
 
-@inject('formStore')
-@observer
+const FormView = inject('formStore')(observer(({formStore}) => <pre>{beautify(formStore, null, 2, 100)}</pre>));
+
+
 class App extends Component {
 	render() {
 		return (
@@ -22,7 +23,8 @@ class App extends Component {
 					console.log('form submit')
 				}} />
 
-				<pre>{beautify(this.props.formStore, null, 2, 100)}</pre>
+				{/*<pre>{beautify(this.props.formStore.forms, null, 2, 100)}</pre>*/}
+				<FormView />
 				<DevTools />
 			</div>
 		);
