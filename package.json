@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/vict-shevchenko/mobx-reactive-form/issues"
   },
-  "homepage": "https://github.com/vict-shevchenko/mobx-reactive-form#readme"
+  "homepage": "https://github.com/vict-shevchenko/mobx-reactive-form#readme",
+  "dependencies": {
+    "validatorjs": "^3.12.0"
+  },
+  "devDependencies": {
+    "@types/validatorjs": "^3.7.0"
+  }
 }
