@@ -126,7 +126,7 @@ export class Field extends React.Component<fieldProps, any> {
 
 
 		if (typeof this.props.component === 'function') {
-			return React.createElement(this.props.component, Object.assign({}, { input }, { meta }, this.props))
+			return React.createElement(this.props.component, Object.assign({}, { input }, { meta }, this.props)) //todo: omit component property
 		}
 		
 		if (this.props.component === 'select') {
