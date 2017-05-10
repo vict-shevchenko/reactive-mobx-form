@@ -1,6 +1,6 @@
 import React, { Component, createElement, PropTypes } from 'react';
 import { observable, action, computed } from 'mobx';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
 
@@ -18,7 +18,8 @@ export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
 		form.component = wrappedForm;
 
 		@inject('formStore')
-		class MobxReactiveForm extends Component<{formStore: any}, any> {
+		@observer
+		class MobxReactiveForm extends Component<{formStore: any, handleSubmit: any}, any> {
 			static childContextTypes = {
 				_mobxReactiveForm: PropTypes.object.isRequired
 			}
@@ -31,8 +32,32 @@ export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
 				this.props.formStore.registerForm(formName, form);
 			}
 
+			submitForm(event:Event) {
+				event.preventDefault();
+				
+				form.submitting = true;
+				console.log('handling submit from form and calling parent');
+				Promise.all([this.props.handleSubmit(form.values)])
+					.catch(error => {
+						form.submissionError = error;
+					})
+					.then(result => {
+						form.submitting = false;
+					})
+			}
+
+			resetForm() {
+				form.reset();
+			}
+
 			render() {
-				return createElement(wrappedForm, {});
+				return createElement(wrappedForm, {
+					submit: this.submitForm.bind(this),
+					reset: this.resetForm.bind(this),
+					submitting: form.submitting, // todo: when submit change - full form render method is executed. Thing on more performat approach. May be Submitting component
+					/*validation: form.validation, */
+					isValid: form.isValid
+				});
 			}
 		}
 
@@ -50,6 +75,7 @@ export class MobxReactiveForm {
 	@observable fields: Array<MobxReactiveFormField> = [];
 	@observable submitting: boolean = false;
 	@observable validating: boolean = false;
+	@observable submissionError: string = '';
 
 	// computed
 	/*
@@ -78,6 +104,41 @@ export class MobxReactiveForm {
 		return this.fields.some(field => field.isDirty);
 	}
 
+	@computed get validation() {
+		return new Validator(this.values, this.rules);
+	}
+
+	@computed get isValid() {
+		return this.validation.passes();
+	}
+
+	@computed get values() {
+		const dict = {};
+
+		this.fields.forEach(field => {
+			dict[field.name] = field.value;
+		})
+
+		return dict;
+	}
+
+	@computed get rules() {
+		const dict = {};
+
+		this.fields.forEach(field => {
+			if(field.rules) {
+				dict[field.name] = field.rules;
+			}
+		})
+
+		return dict;
+	}
+
+	@action addField(fieldName:string, fieldDefinition: fieldDefinition) {
+		this.fieldsSchema[fieldName] = fieldDefinition;
+		return this.registerField(fieldName, fieldDefinition);
+	}
+
 	@action registerField(fieldName:string, fieldDefinition: fieldDefinition){
 		this.fields.push(new MobxReactiveFormField(fieldName, fieldDefinition));
 
@@ -88,6 +149,12 @@ export class MobxReactiveForm {
 		const fieldIdx = this.fields.findIndex(field => field.name === fieldName);
 
 		this.fields.splice(fieldIdx, 1);
+	}
+
+	@action reset() {
+		this.fields.forEach(field => {
+			field.value = field.initialValue;
+		})
 	}
 }
 

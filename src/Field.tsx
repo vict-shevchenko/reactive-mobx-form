@@ -35,6 +35,11 @@ function warnOnIncorrectInitialValues(field:MobxReactiveFormField, props) {
 	const initialValueType = typeof field.initialValue;
 	const isChechbox = props.type === 'checkbox';
 	const isNumber = props.type === 'number';
+	const isSelect = props.component = 'select';
+
+	if (isSelect) {
+		// todo: verify options to match select value
+	}
 
 	if (
 		(isChechbox && initialValueType !== 'boolean') ||
@@ -96,7 +101,7 @@ export class Field extends React.Component<fieldProps, any> {
 		}
 		else { // field was not registered in form definition
 			const initialValue: boolean | string = this.props.type === 'checkbox' ? false : '';
-			this.field = this.form.registerField(this.props.name, initialValue); //todo: add definition of field like initial value and validation rules
+			this.field = this.form.addField(this.props.name, initialValue); //todo: add definition of field like initial value and validation rules
 		}
 	}
 
