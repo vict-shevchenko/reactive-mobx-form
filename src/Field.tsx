@@ -2,13 +2,16 @@ import * as React from 'react';
 import { observer, Observer } from 'mobx-react';
 import { MobxReactiveForm, MobxReactiveFormField } from './mobxReactiveForm'
 
+const propNamesToOmitWhenByPass: Array<string> = ['component'];
+const requiredProps: Array<string> = ['component', 'name']
+
 const isClassComponent = Component => Boolean(
   Component &&
   Component.prototype &&
   typeof Component.prototype.isReactComponent === 'object'
 )
 
-/* function omit(obj:any, omitKeys:Array<string>) {
+function omit(obj:any, omitKeys:Array<string>) {
 	const result = {};
 
 	Object.keys(obj).forEach(key => {
@@ -19,19 +22,46 @@ const isClassComponent = Component => Boolean(
 
 	return result;
 }
-*/
+
+function verifyRequiredProps(componentProps, form) {
+	requiredProps.forEach(reqiredPropName => {
+		if(!componentProps[reqiredPropName]) {
+			throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${form.component.name}' component`)
+		}
+	});
+}
+
+function warnOnIncorrectInitialValues(field:MobxReactiveFormField, props) {
+	const initialValueType = typeof field.initialValue;
+	const isChechbox = props.type === 'checkbox';
+	const isNumber = props.type === 'number';
+
+	if (
+		(isChechbox && initialValueType !== 'boolean') ||
+		(isNumber && initialValueType !== 'number') ||
+		(!isChechbox && !isNumber  && initialValueType !== 'string')
+	) {
+		console.warn(`Incorrect initial value profided to field '${field.name}'. Expected 'boolean' got '${initialValueType}'`)
+	}
+}
 
 
 //todo: add value property to make field a controled component
 
 interface fieldProps {
 	name: string;
-	component: any;
+	component: React.Component<any, any> | React.SFC<any> | string;
 	type: string;
+
+	children?: any;
+
+	
 	value?: string // should be fieldValue
+	/*
 	placeholder?: string;
 	label?: string;
-	children?: any;
+	*/
+
 	onFocus?(event:Event):void;
 	onBlur?(event:Event):void;
 	onChange?(event:Event):void;
@@ -49,7 +79,9 @@ export class Field extends React.Component<fieldProps, any> {
 	constructor(props, context) {
 		super(props, context);
 
-		this.form = this.context._mobxReactiveForm;
+		verifyRequiredProps(props, context._mobxReactiveForm);
+
+		this.form = context._mobxReactiveForm;
 		this.field = this.form.fields.find(field => field.name === this.props.name);
 
 		this.onChange = this.onChange.bind(this);
@@ -58,11 +90,14 @@ export class Field extends React.Component<fieldProps, any> {
 	}
 
 	componentWillMount() {
-		if (!this.field) { // field was not registered in form definition
-			this.field = this.form.registerField(this.props.name, '');
+		if (this.field) {
+			// todo: remove warning in production build
+			warnOnIncorrectInitialValues(this.field, this.props);
 		}
-
-		this.field.type = this.props.type;
+		else { // field was not registered in form definition
+			const initialValue: boolean | string = this.props.type === 'checkbox' ? false : '';
+			this.field = this.form.registerField(this.props.name, initialValue); //todo: add definition of field like initial value and validation rules
+		}
 	}
 
 	componentWillUnmount() {
@@ -94,14 +129,14 @@ export class Field extends React.Component<fieldProps, any> {
 	}
 
 	render() {
+		// todo: implement withRef
 		const handlers = {
 				onChange: this.onChange,
 				onFocus : this.onFocus,
 				onBlur  : this.onBlur
 			};
 
-		const inputProps = {
-			name : this.field.name,
+		const inputValue = {
 			value: this.field.isRadio ? this.props.value : (this.field.value as string)
 		}
 
@@ -115,7 +150,7 @@ export class Field extends React.Component<fieldProps, any> {
 		}
 
 
-		const input = Object.assign({}, inputProps, handlers, (this.field.isCheckable ? checked : {}));
+		const input = Object.assign({}, inputValue, handlers, (this.field.isCheckable ? checked : {}));
 
 		const meta = {
 			focused: this.field.isFocused,
@@ -124,27 +159,18 @@ export class Field extends React.Component<fieldProps, any> {
 			valid  : this.field.isValid
 		}
 
+		const propsToPass = omit(this.props, propNamesToOmitWhenByPass);
+
 
 		if (typeof this.props.component === 'function') {
-			return React.createElement(this.props.component, Object.assign({}, { input }, { meta }, this.props)) //todo: omit component property
+			return React.createElement(this.props.component, Object.assign({}, { input }, { meta }, propsToPass));
 		}
 		
 		if (this.props.component === 'select') {
-			return <select {...input}>{this.props.children}</select>
+			return <select {...input} {...propsToPass}>{this.props.children}</select>
 		}
-
-		/*if (this.field.type === 'checkbox') {
-			return <input type="checkbox" {...input}/>
-		}
-
-		if (this.field.type === 'radio') {
-			return <input type="radio" {...input}/>
-		}*/
 
 		// input with text, checkbox, radio, email, number, password type or textarea
-		return React.createElement(this.props.component, Object.assign({}, input, {
-			type: this.props.type,
-			placeholder: this.props.placeholder,
-		}));
+		return React.createElement(this.props.component as string, Object.assign({}, input, propsToPass));
 	}
 }

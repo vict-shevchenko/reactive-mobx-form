@@ -12,9 +12,11 @@ interface fiedsSchema {
 }
 
 export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
-	var form = new MobxReactiveForm(fields);
+	var form = new MobxReactiveForm(fields); // for debugging/error handling purposes
 
 	return wrappedForm => {
+		form.component = wrappedForm;
+
 		@inject('formStore')
 		class MobxReactiveForm extends Component<{formStore: any}, any> {
 			static childContextTypes = {
@@ -41,7 +43,10 @@ export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
 
 
 export class MobxReactiveForm {
-	fieldsSchema: fiedsSchema;
+	readonly fieldsSchema: fiedsSchema;
+
+	component: any;
+
 	@observable fields: Array<MobxReactiveFormField> = [];
 	@observable submitting: boolean = false;
 	@observable validating: boolean = false;
@@ -123,15 +128,14 @@ export class MobxReactiveFormField {
 		return this.value !== this.initialValue;
 	}
 
-	// optimize this, not to run for fields that have no validation
+	// todo: optimize this, not to run for fields that have no validation
+	@computed get validation() {
+		return new Validator({[this.name]:this.value}, this.rules ? {[this.name]:this.rules} : {});
+	}
+
+	//todo: optimize this, not to run for fields that have no validation
 	@computed get isValid() {
-		if(!this.rules) {
-			return true;
-		}
-
-		const validation = new Validator({[this.name]:this.value}, {[this.name]:this.rules});
-
-		return validation.passes();
+		return this.validation.passes(); 
 	}
 
 	@action onFocus() {
