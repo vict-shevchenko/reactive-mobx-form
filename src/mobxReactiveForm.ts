@@ -55,7 +55,7 @@ export function mobxReactiveForm(formName: string, fields:fiedsSchema) {
 					submit: this.submitForm.bind(this),
 					reset: this.resetForm.bind(this),
 					submitting: form.submitting, // todo: when submit change - full form render method is executed. Thing on more performat approach. May be Submitting component
-					/*validation: form.validation, */
+					/*validation: form.validation, */ //todo - this case render been called when any field change
 					isValid: form.isValid
 				});
 			}
