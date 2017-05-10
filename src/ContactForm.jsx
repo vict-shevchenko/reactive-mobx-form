@@ -3,7 +3,7 @@ import {mobxReactiveForm} from 'mobx-reactive-form';
 import {Field} from 'mobx-reactive-form';
 
 const RenderField = ({input, meta: {dirty, valid}, label, placeholder, type}) => (
-	<div style={{backgroundColor:'lightgreen'}}>
+	<div style={{backgroundColor: (valid ? 'lightgreen' : 'pink')}}>
 		<label>{label}</label>
 		<div>
 			<input {...input} placeholder={placeholder} type={type}/>
@@ -14,9 +14,9 @@ const RenderField = ({input, meta: {dirty, valid}, label, placeholder, type}) =>
 
 class ContactForm extends Component {
 	render() {
-		const { handleSubmit } = this.props;
+		const { submit, reset, submitting, isValid } = this.props;
 		return (
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={submit}>
 				<div>
 					<label htmlFor="firstName">First Name</label>
 					<Field name="firstName" component="input" type="text" />
@@ -57,8 +57,11 @@ class ContactForm extends Component {
 						<label><Field name="sex" component="input" type="radio" value="female"/> Female</label>
 					</div>
 				</div>
+				<hr />
 
-				<button type="submit">Submit</button>
+				Form Valid - - {`${isValid}`} <br/>
+				<button type="submit">Submit</button>  is Submitting - {`${submitting}`} <br/>
+				<button onClick={reset}>Reset</button>
 			</form>
 		);
 	}

@@ -11,6 +11,15 @@ const FormView = inject('formStore')(observer(({formStore}) => <pre>{beautify(fo
 
 
 class App extends Component {
+	handleSubmit(form) {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				console.log(JSON.stringify(form));
+				resolve('done');
+			}, 1500)
+		})
+	}
+
 	render() {
 		return (
 			<div>
@@ -19,9 +28,7 @@ class App extends Component {
 					Seconds passed: {this.props.appState.timer}
 				</button>*/}
 
-				<ContactForm handleSubmit={() => {
-					console.log('form submit')
-				}} />
+				<ContactForm handleSubmit={this.handleSubmit.bind(this)} />
 
 				{/*<pre>{beautify(this.props.formStore.forms, null, 2, 100)}</pre>*/}
 				<FormView />
