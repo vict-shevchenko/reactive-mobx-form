@@ -30,6 +30,10 @@ class ContactForm extends Component {
 					<Field name="nickName" component="input" type="text"/>
 				</div>
 				<div>
+					<label htmlFor="age">Age</label>
+					<Field name="age" component={RenderField} type="number"/>
+				</div>
+				<div>
 					<label htmlFor="email">Email</label>
 					<Field name="email" component={RenderField} type="email" label="Email"/>
 				</div>
@@ -65,6 +69,7 @@ const ContactFormReactive = mobxReactiveForm('contacts',
 		'firstName': 'viktor',
 		'lastName': ['shevchenko', ''],
 		'email': ['', 'required|email'],
+		'age': [25, 'numeric'],
 		'acceptTerms': [true],
 		'favoriteFilm': ['dieHardwerwe'],
 		'sex':[''],
