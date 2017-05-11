@@ -11,6 +11,11 @@ Library is on its initial development stage, is unstable and may contain bugs. M
  1. Minimal configuration
  2. Easy to learn and start with
  3. Preferable over own solutions(I hope it to be)
+
+ ## Capabilities
+ 1. Its now possible to reder simple one level forms
+ 2. Fiels can be validated
+ 3. Form can be submitted
  
  ## Dependancy
  reactive-mobx-forms depends directly on [validatorjs](https://github.com/skaterdav85/validatorjs) library. It is small, effective and scalable. 
