@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {mobxReactiveForm} from 'mobx-reactive-form';
-import {Field} from 'mobx-reactive-form';
+import {reactiveMobxForm, Field} from 'reactive-mobx-form';
 
 const RenderField = ({input, meta: {dirty, valid}, label, placeholder, type}) => (
 	<div style={{backgroundColor: (valid ? 'lightgreen' : 'pink')}}>
@@ -67,7 +66,7 @@ class ContactForm extends Component {
 	}
 }
 
-const ContactFormReactive = mobxReactiveForm('contacts',
+const ContactFormReactive = reactiveMobxForm('contacts',
 	{
 		'firstName': 'viktor',
 		'lastName': ['shevchenko', ''],

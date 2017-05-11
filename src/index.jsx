@@ -5,7 +5,7 @@ import { AppContainer } from 'react-hot-loader';
 import AppState from './AppState';
 import App from './App';
 
-import { FormStore } from 'mobx-reactive-form';
+import { FormStore } from 'reactive-mobx-form';
 
 const appState = new AppState();
 const formStore = new FormStore();
