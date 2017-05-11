@@ -1,6 +1,6 @@
 'use strict';
 module.exports.default = module.exports;
 
-exports.mobxReactiveForm = require('./lib/mobxReactiveForm').mobxReactiveForm;
-exports.FormStore        = require('./lib/FormStore').FormStore;
-exports.Field            = require('./lib/Field').Field;
+exports.reactiveMobxForm = require('./lib/createForm').reactiveMobxForm;
+exports.FormStore        = require('./lib/Store').FormStore;
+exports.Field            = require('./lib/ui/Field').Field;

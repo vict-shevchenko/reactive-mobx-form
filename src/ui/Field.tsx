@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { observer, Observer } from 'mobx-react';
-import { MobxReactiveForm, MobxReactiveFormField } from './mobxReactiveForm'
+import { ReactiveMobxForm } from '../Form';
+import { ReactiveMobxFormField } from '../Field'
+
 
 const propNamesToOmitWhenByPass: Array<string> = ['component'];
 const requiredProps: Array<string> = ['component', 'name']
@@ -31,11 +33,11 @@ function verifyRequiredProps(componentProps, form) {
 	});
 }
 
-function warnOnIncorrectInitialValues(field:MobxReactiveFormField, props) {
+function warnOnIncorrectInitialValues(field:ReactiveMobxFormField, props) {
 	const initialValueType = typeof field.initialValue;
 	const isChechbox = props.type === 'checkbox';
 	const isNumber = props.type === 'number';
-	const isSelect = props.component = 'select';
+	const isSelect = props.component === 'select';
 
 	if (isSelect) {
 		// todo: verify options to match select value
@@ -74,19 +76,19 @@ interface fieldProps {
 
 @observer
 export class Field extends React.Component<fieldProps, any> {
-	form: MobxReactiveForm;
-	field: MobxReactiveFormField;
+	form: ReactiveMobxForm;
+	field: ReactiveMobxFormField;
 
 	static contextTypes = {
-		_mobxReactiveForm: React.PropTypes.object.isRequired
+		_ReactiveMobxForm: React.PropTypes.object.isRequired
 	}
 
 	constructor(props, context) {
 		super(props, context);
 
-		verifyRequiredProps(props, context._mobxReactiveForm);
+		verifyRequiredProps(props, context._ReactiveMobxForm);
 
-		this.form = context._mobxReactiveForm;
+		this.form = context._ReactiveMobxForm;
 		this.field = this.form.fields.find(field => field.name === this.props.name);
 
 		this.onChange = this.onChange.bind(this);
