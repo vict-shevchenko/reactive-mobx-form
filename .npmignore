@@ -1,0 +1,6 @@
+src/**/*.*
+lib/**/*.js.map
+lib/interface.js
+.gitignore
+.npmignore
+tsconfig.json
