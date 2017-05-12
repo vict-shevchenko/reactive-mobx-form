@@ -28,7 +28,7 @@ class App extends Component {
 					Seconds passed: {this.props.appState.timer}
 				</button>*/}
 
-				<ContactForm handleSubmit={this.handleSubmit.bind(this)} />
+				<ContactForm handleSubmit={this.handleSubmit.bind(this)} schema={{firstName: ['viktor']}}/>
 
 				{/*<pre>{beautify(this.props.formStore.forms, null, 2, 100)}</pre>*/}
 				<FormView />

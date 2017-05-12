@@ -18,7 +18,7 @@ class ContactForm extends Component {
 			<form onSubmit={submit}>
 				<div>
 					<label htmlFor="firstName">First Name</label>
-					<Field name="firstName" component="input" type="text" />
+					<Field name="firstName" component="input" type="text" alt="some text" />
 				</div>
 				<div>
 					<label htmlFor="lastName">Last Name</label>
@@ -68,7 +68,6 @@ class ContactForm extends Component {
 
 const ContactFormReactive = reactiveMobxForm('contacts',
 	{
-		'firstName': 'viktor',
 		'lastName': ['shevchenko', ''],
 		'email': ['', 'required|email'],
 		'age': [25, 'numeric'],
