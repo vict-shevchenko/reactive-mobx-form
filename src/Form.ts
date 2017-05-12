@@ -2,12 +2,12 @@ import React, { Component, createElement } from 'react';
 import { observable, action, computed } from 'mobx';
 import * as Validator from 'validatorjs';
 
-import { fieldDefinition, fiedsSchema } from './interface';
+import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedFormSchema } from './interface';
 
 import { ReactiveMobxFormField } from './Field';
 
 export class ReactiveMobxForm {
-	readonly fieldsSchema: fiedsSchema;
+	readonly formSchema: normalizedFormSchema;
 
 	component: any;
 
@@ -29,14 +29,26 @@ export class ReactiveMobxForm {
 	isChanged
 	error
 	*/
+
+	static normalizeSchema(formSchema:formSchema):normalizedFormSchema {
+		const normalized = {};
+
+		Object.keys(formSchema).map(fieldName => {
+			normalized[fieldName] = ReactiveMobxFormField.normalizeFieldDefinition(formSchema[fieldName])
+		});
+
+		return normalized;
+	}
 	 
 
-	constructor(fieldsSchema) {
-		this.fieldsSchema = fieldsSchema;
-
-		Object.keys(fieldsSchema).map((fieldName:string) => {
-			this.registerField(fieldName, fieldsSchema[fieldName]);
-		})
+	constructor(formSchema) {
+		if(!formSchema) {
+			this.formSchema = {};
+		}
+		else {
+			this.formSchema = ReactiveMobxForm.normalizeSchema(formSchema);
+			this.registerFields(this.formSchema);
+		}
 	}
 
 	@computed get isDirty() {
@@ -73,21 +85,24 @@ export class ReactiveMobxForm {
 		return dict;
 	}
 
-	@action addField(fieldName:string, fieldDefinition: fieldDefinition) {
-		this.fieldsSchema[fieldName] = fieldDefinition;
-		return this.registerField(fieldName, fieldDefinition);
-	}
-
-	@action registerField(fieldName:string, fieldDefinition: fieldDefinition){
-		this.fields.push(new ReactiveMobxFormField(fieldName, fieldDefinition));
-
-		return this.fields[this.fields.length - 1];
+	@action registerFields(schema:normalizedFormSchema) {
+		Object.keys(schema).map((fieldName:string) => {
+			this.fields.push(new ReactiveMobxFormField(fieldName, schema[fieldName]));
+		})
 	}
 
 	@action removeField(fieldName:string) {
 		const fieldIdx = this.fields.findIndex(field => field.name === fieldName);
 
 		this.fields.splice(fieldIdx, 1);
+	}
+
+	@action extend(schemaExtension:formSchema) {
+		// todo: Probably ist good to have some safe extension
+		const normalizeSchemaExtension = ReactiveMobxForm.normalizeSchema(schemaExtension);
+		
+		Object.assign(this.formSchema, normalizeSchemaExtension);
+		this.registerFields(normalizeSchemaExtension);
 	}
 
 	@action reset() {

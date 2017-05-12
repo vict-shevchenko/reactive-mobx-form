@@ -2,7 +2,7 @@ import React, { Component, createElement } from 'react';
 import { observable, action, computed } from 'mobx';
 import * as Validator from 'validatorjs';
 
-import { fieldValue, fieldDefinition } from './interface';
+import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from './interface';
 
 export class ReactiveMobxFormField {
 	readonly name: string;
@@ -14,15 +14,20 @@ export class ReactiveMobxFormField {
 	@observable value: fieldValue = '';
 	@observable isFocused: boolean = false;
 	@observable isTouched: boolean = false;
-	
-	constructor(name:string, fieldDefinition: fieldDefinition ) {
-		const definitionIsArray: boolean = Array.isArray(fieldDefinition);
-		const initialValue = definitionIsArray ? fieldDefinition[0] : fieldDefinition;
 
+	static normalizeFieldDefinition(fieldDefinition: fieldDefinition): normalizesdFieldDefinition {
+		if (Array.isArray(fieldDefinition)) {
+				return (fieldDefinition.length == 2) ? (fieldDefinition as [fieldValue, string])  : [fieldDefinition[0], ''];
+		}
+	
+		return [fieldDefinition, ''];
+	}
+	
+	constructor(name:string, fieldDefinition: normalizesdFieldDefinition ) {
 		this.name = name;
-		this.initialValue = initialValue;
-		this.value = initialValue;
-		this.rules = (definitionIsArray && fieldDefinition[1]) ? fieldDefinition[1] : '';
+		this.initialValue = fieldDefinition[0];
+		this.value = this.initialValue;
+		this.rules = fieldDefinition[1];
 	}
 
 	@computed get isCheckbox() {

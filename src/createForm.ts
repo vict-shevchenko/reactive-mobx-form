@@ -3,18 +3,18 @@ import { observable, action, computed } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { ReactiveMobxForm } from './Form';
 
-import { fiedsSchema } from './interface';
+import { formSchema } from './interface';
 
 
-export function reactiveMobxForm(formName: string, fields:fiedsSchema) {
-	var form = new ReactiveMobxForm(fields); // for debugging/error handling purposes
+export function reactiveMobxForm(formName: string, schema?:formSchema ) {
+	var form = new ReactiveMobxForm(schema); 
 
 	return wrappedForm => {
-		form.component = wrappedForm;
+		form.component = wrappedForm; // for debugging/error handling purposes
 
 		@inject('formStore')
 		@observer
-		class ReactiveMobxForm extends Component<{formStore: any, handleSubmit: any}, any> {
+		class ReactiveMobxForm extends Component<{formStore: any, handleSubmit?: any, schema?:formSchema }, any> {
 			static childContextTypes = {
 				_ReactiveMobxForm: PropTypes.object.isRequired
 			}
@@ -24,6 +24,12 @@ export function reactiveMobxForm(formName: string, fields:fiedsSchema) {
 			}
 
 			componentWillMount() {
+				const schemaExtenstion = this.props.schema;
+				
+				if(schemaExtenstion && typeof schemaExtenstion === 'object' && !Array.isArray(schemaExtenstion)) {
+					form.extend(schemaExtenstion);
+				}
+
 				this.props.formStore.registerForm(formName, form);
 			}
 
@@ -59,5 +65,3 @@ export function reactiveMobxForm(formName: string, fields:fiedsSchema) {
 		return ReactiveMobxForm;
 	}
 }
-
-

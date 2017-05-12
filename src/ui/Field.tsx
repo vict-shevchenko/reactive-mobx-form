@@ -3,15 +3,15 @@ import { observer, Observer } from 'mobx-react';
 import { ReactiveMobxForm } from '../Form';
 import { ReactiveMobxFormField } from '../Field'
 
+import { fieldDefinition, normalizesdFieldDefinition } from '../interface'
 
-const propNamesToOmitWhenByPass: Array<string> = ['component'];
-const requiredProps: Array<string> = ['component', 'name']
 
-const isClassComponent = Component => Boolean(
+// todo: probabbly may be used when implementing withRef
+/*const isClassComponent = Component => Boolean( 
   Component &&
   Component.prototype &&
   typeof Component.prototype.isReactComponent === 'object'
-)
+)*/
 
 function omit(obj:any, omitKeys:Array<string>) {
 	const result = {};
@@ -25,39 +25,14 @@ function omit(obj:any, omitKeys:Array<string>) {
 	return result;
 }
 
-function verifyRequiredProps(componentProps, form) {
-	requiredProps.forEach(reqiredPropName => {
-		if(!componentProps[reqiredPropName]) {
-			throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${form.component.name}' component`)
-		}
-	});
-}
-
-function warnOnIncorrectInitialValues(field:ReactiveMobxFormField, props) {
-	const initialValueType = typeof field.initialValue;
-	const isChechbox = props.type === 'checkbox';
-	const isNumber = props.type === 'number';
-	const isSelect = props.component === 'select';
-
-	if (isSelect) {
-		// todo: verify options to match select value
-	}
-
-	if (
-		(isChechbox && initialValueType !== 'boolean') ||
-		(isNumber && initialValueType !== 'number') ||
-		(!isChechbox && !isNumber  && initialValueType !== 'string')
-	) {
-		console.warn(`Incorrect initial value profided to field '${field.name}'. Expected 'boolean' got '${initialValueType}'`)
-	}
-}
-
-
 //todo: add value property to make field a controled component
 
-interface fieldProps {
+interface FieldProps {
 	name: string;
+
 	component: React.Component<any, any> | React.SFC<any> | string;
+	rules: string;
+
 	type: string;
 
 	children?: any;
@@ -75,9 +50,16 @@ interface fieldProps {
 }
 
 @observer
-export class Field extends React.Component<fieldProps, any> {
+export class Field extends React.Component<FieldProps, any> {
 	form: ReactiveMobxForm;
 	field: ReactiveMobxFormField;
+
+	static requiredProps: Array<string> = ['component', 'name'];
+	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
+
+	static defaultProps = {
+		rules: ''
+	}
 
 	static contextTypes = {
 		_ReactiveMobxForm: React.PropTypes.object.isRequired
@@ -86,10 +68,9 @@ export class Field extends React.Component<fieldProps, any> {
 	constructor(props, context) {
 		super(props, context);
 
-		verifyRequiredProps(props, context._ReactiveMobxForm);
+		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
-		this.field = this.form.fields.find(field => field.name === this.props.name);
 
 		this.onChange = this.onChange.bind(this);
 		this.onFocus = this.onFocus.bind(this);
@@ -97,18 +78,51 @@ export class Field extends React.Component<fieldProps, any> {
 	}
 
 	componentWillMount() {
-		if (this.field) {
+		if (this.form.formSchema[this.props.name]) {
 			// todo: remove warning in production build
-			warnOnIncorrectInitialValues(this.field, this.props);
+			this.warnOnIncorrectInitialValues();
 		}
-		else { // field was not registered in form definition
-			const initialValue: boolean | string = this.props.type === 'checkbox' ? false : '';
-			this.field = this.form.addField(this.props.name, initialValue); //todo: add definition of field like initial value and validation rules
+		else { // field was not registered in form schema or exteded as <Form schema/> parameter
+			const initialValue   : boolean | string           = this.props.type === 'checkbox' ? false : '';
+			const rules          : string                     = this.props.rules;
+			const fieldDefinition: normalizesdFieldDefinition = [ initialValue, rules ];
+
+			this.form.extend({[this.props.name]: fieldDefinition})
 		}
+
+		this.field = this.form.fields.find(field => field.name === this.props.name);
 	}
 
 	componentWillUnmount() {
 		this.form.removeField(this.props.name);
+	}
+
+	verifyRequiredProps() {
+		Field.requiredProps.forEach(reqiredPropName => {
+			if(!this.props[reqiredPropName]) {
+				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
+			}
+		});
+	}
+
+	warnOnIncorrectInitialValues() {
+		const inititlaValue = this.form.formSchema[this.props.name][0];
+		const initialValueType = typeof inititlaValue; // initial value
+		const isChechbox = this.props.type === 'checkbox';
+		const isNumber   = this.props.type === 'number';
+		const isSelect   = this.props.component === 'select';
+
+		if (isSelect) {
+			// todo: verify options to match select value
+		}
+
+		if (
+			(isChechbox  && initialValueType !== 'boolean') ||
+			(isNumber    && initialValueType !== 'number')  ||
+			(!isChechbox && !isNumber  && initialValueType !== 'string')
+		) {
+			console.warn(`Incorrect initial value profided to field '${this.props.name}'. Expected 'boolean' got '${initialValueType}'`)
+		}
 	}
 
 	onChange(event) {
@@ -166,7 +180,7 @@ export class Field extends React.Component<fieldProps, any> {
 			valid  : this.field.isValid
 		}
 
-		const propsToPass = omit(this.props, propNamesToOmitWhenByPass);
+		const propsToPass = omit(this.props, Field.propNamesToOmitWhenByPass);
 
 
 		if (typeof this.props.component === 'function') {

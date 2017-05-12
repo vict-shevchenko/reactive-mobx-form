@@ -4,6 +4,11 @@ Forms library for React+MobX application. Under the hood it uses efficient MobX 
 ## Important notice
 Library is on its initial development stage, is unstable and may contain bugs. Most of all API will change.
 
+If considering a software development as next steps:
+1. Make it work <-- we are here
+2. Make it right
+3. Make it fast
+
 ## Motivation
  Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
  
@@ -72,7 +77,10 @@ class ContactForm extends Component {
     }
 }
 
-const ContactFormReactive = reactiveMobxForm('contacts',{/* initial data */})(ContactForm);
+const ContactFormReactive = reactiveMobxForm('contacts', formSchema)(ContactForm); // 2nd parameter (formSchema) is optional. 
+
+// Use 2nd parameter to specify predefined initial values and validation rules, see format below.
+// If you get initial values from server, better pass them as 'schema' paramter to Form in parent component
 
 export default ContactFormReactive;
 ```
@@ -90,8 +98,19 @@ export default Page extends Component {
     
     render() {
         <div>
-            <ContactForm handleSubmit={this.onSubmit.bind(this)} />
+            <ContactForm handleSubmit={this.onSubmit.bind(this)} /> // schema={{fieldName: [initialValue, rules]}} optional parameter
         </div>
     }
 }
 ```
+
+### formSchema
+`formSchema` is an object with a configuration for form fields, allowing to specify their initialValues and validation rules.
+
+Syntax is next:
+
+Wihtout validation:
+`{firstName: 'Vikor'}` is same as `{firstName: ['Viktor']}` and same as `{firstName: ['Viktor', '']}` 
+
+With validation:
+`{firstName: ['Viktor', 'required|string']}` uses **validatorjs** syntax.
