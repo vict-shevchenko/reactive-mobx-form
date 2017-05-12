@@ -39,7 +39,7 @@ If considering a software development as next steps:
 ### Step 1
 Create and expose to all your application a `formStore` via [Provider](https://github.com/mobxjs/mobx-react#provider-and-inject) from `mobx-react`
 
-```
+```javascript
 import { Provider } from 'mobx-react';
 import { FormStore } from 'reactive-mobx-form';
 
@@ -56,7 +56,7 @@ render(
 ### Step 2
 Create a form
 
-```
+```javascript
 import {reactivMobxForm, Field} from 'reactive-mobx-form';
 
 class ContactForm extends Component {
@@ -88,7 +88,7 @@ export default ContactFormReactive;
 ### Step 3
 Use your form and enjoy
 
-```
+```javascript
 import ContactForm from './ContactForm';
 
 export default Page extends Component {
