@@ -25,6 +25,10 @@ class ContactForm extends Component {
 					<Field name="lastName" component="input" type="text"/>
 				</div>
 				<div>
+					<label htmlFor="photo">Last Name</label>
+					<Field name="photo" component="input" type="file"/>
+				</div>
+				<div>
 					<label htmlFor="nickName">Nick Name</label>
 					<Field name="nickName" component="input" type="text"/>
 				</div>
