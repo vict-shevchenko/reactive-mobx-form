@@ -51,6 +51,12 @@ interface FieldProps {
 
 @observer
 export class Field extends React.Component<FieldProps, any> {
+	isNumber: boolean;
+	isSelect: boolean;
+	isCheckable: boolean;
+	isFile: boolean;
+	isRadio: boolean;
+	isCheckbox: boolean;
 	form: ReactiveMobxForm;
 	field: ReactiveMobxFormField;
 
@@ -72,6 +78,13 @@ export class Field extends React.Component<FieldProps, any> {
 
 		this.form = context._ReactiveMobxForm;
 
+		this.isCheckbox  = props.type === 'checkbox';
+		this.isRadio     = props.type === 'radio';
+		this.isFile      = props.type === 'file';
+		this.isSelect    = props.component === 'select';
+		this.isNumber    = props.type === 'number';
+		this.isCheckable = this.isCheckbox || this.isRadio;
+
 		this.onChange = this.onChange.bind(this);
 		this.onFocus = this.onFocus.bind(this);
 		this.onBlur = this.onBlur.bind(this);
@@ -83,7 +96,7 @@ export class Field extends React.Component<FieldProps, any> {
 			this.warnOnIncorrectInitialValues();
 		}
 		else { // field was not registered in form schema or exteded as <Form schema/> parameter
-			const initialValue   : boolean | string           = this.props.type === 'checkbox' ? false : '';
+			const initialValue   : boolean | string           = this.isCheckbox ? false : '';
 			const rules          : string                     = this.props.rules;
 			const fieldDefinition: normalizesdFieldDefinition = [ initialValue, rules ];
 
@@ -108,25 +121,32 @@ export class Field extends React.Component<FieldProps, any> {
 	warnOnIncorrectInitialValues() {
 		const inititlaValue = this.form.formSchema[this.props.name][0];
 		const initialValueType = typeof inititlaValue; // initial value
-		const isChechbox = this.props.type === 'checkbox';
-		const isNumber   = this.props.type === 'number';
-		const isSelect   = this.props.component === 'select';
 
-		if (isSelect) {
+		if (this.isSelect) {
 			// todo: verify options to match select value
 		}
 
 		if (
-			(isChechbox  && initialValueType !== 'boolean') ||
-			(isNumber    && initialValueType !== 'number')  ||
-			(!isChechbox && !isNumber  && initialValueType !== 'string')
+			(this.isCheckbox  && initialValueType !== 'boolean') ||
+			(this.isNumber    && initialValueType !== 'number')  ||
+			(!this.isCheckbox && !this.isNumber  && initialValueType !== 'string')
 		) {
-			console.warn(`Incorrect initial value profided to field '${this.props.name}'. Expected 'boolean' got '${initialValueType}'`)
+			console.warn(`Incorrect initial value profided to field '${this.props.name}'. Got '${initialValueType}'`)
 		}
 	}
 
 	onChange(event) {
-		this.field.onChange(this.field.isCheckbox ? event.target.checked : event.target.value)
+		let value;
+
+		if (this.isCheckbox) {
+			value = event.target.checked
+		} else if (this.isFile) {
+			value = event.target.files;
+		} else {
+			value = event.target.value;
+		}
+
+		this.field.onChange(value);
 
 		if (this.props.onChange) {
 			this.props.onChange(event);
@@ -150,7 +170,7 @@ export class Field extends React.Component<FieldProps, any> {
 	}
 
 	render() {
-		// todo: implement withRef
+		// todo: implement withRef today
 		const handlers = {
 				onChange: this.onChange,
 				onFocus : this.onFocus,
@@ -158,20 +178,19 @@ export class Field extends React.Component<FieldProps, any> {
 			};
 
 		const inputValue = {
-			value: this.field.isRadio ? this.props.value : (this.field.value as string)
+			value: this.isRadio ? this.props.value : (this.field.value as string)
 		}
 
 		let checked = {};
 
-		if (this.field.isCheckbox) {
+		if (this.isCheckbox) {
 			checked = {checked: (this.field.value as boolean)}
 		}
-		else if (this.field.isRadio) {
+		else if (this.isRadio) {
 			checked = {checked: (this.field.value === this.props.value)}
 		}
 
-
-		const input = Object.assign({}, inputValue, handlers, (this.field.isCheckable ? checked : {}));
+		const input = Object.assign({}, (this.isFile ? {} : inputValue), handlers, (this.isCheckable ? checked : {}));
 
 		const meta = {
 			focused: this.field.isFocused,

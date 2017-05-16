@@ -30,18 +30,6 @@ export class ReactiveMobxFormField {
 		this.rules = fieldDefinition[1];
 	}
 
-	@computed get isCheckbox() {
-		return this.type === 'checkbox';
-	}
-
-	@computed get isRadio() {
-		return this.type === 'radio';
-	}
-
-	@computed get isCheckable() {
-		return (this.isCheckbox || this.isRadio);
-	}
-
 	@computed get isDirty() {
 		return this.value !== this.initialValue;
 	}

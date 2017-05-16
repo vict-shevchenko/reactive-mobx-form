@@ -19,7 +19,7 @@ If considering a software development as next steps:
 
  ## Capabilities
  Its now possible: 
- 1. Reder simple one level forms
+ 1. Render simple one level forms
  2. Validate fields, see **validatorjs** docs
  3. Submit a form
  
@@ -46,10 +46,10 @@ import { FormStore } from 'reactive-mobx-form';
 const formStore = new FormStore();
 
 render(
-    <Provider appStore={appStore} formStore={formStore}> //appStore - is any other store in your application
-        <App />
-    </Provider>,
-    document.getElementById('root')
+  <Provider appStore={appStore} formStore={formStore}> //appStore - is any other store in your application
+    <App />
+  </Provider>,
+  document.getElementById('root')
 );
 ```
 
@@ -60,21 +60,23 @@ Create a form
 import {reactivMobxForm, Field} from 'reactive-mobx-form';
 
 class ContactForm extends Component {
-    render() {
-        const { submit } = this.props;
-        
-        return (
-            <form onSubmit={submit}>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <Field name="name" component="input" type="text" />
-                </div>
-                <div>
-                    <label htmlFor="age">Age</label>
-                    <Field name="age" component="input" type="number"/>
-                </div>
-        );
-    }
+  render() {
+    const { submit } = this.props;
+    
+    return (
+      <form onSubmit={submit}>
+        <div>
+          <label htmlFor="name">Name</label>
+          <Field name="name" component="input" type="text" />
+        </div>
+        <div>
+          <label htmlFor="age">Age</label>
+          <Field name="age" component="input" type="number"/>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    );
+  }
 }
 
 const ContactFormReactive = reactiveMobxForm('contacts', formSchema)(ContactForm); // 2nd parameter (formSchema) is optional. 
@@ -92,15 +94,15 @@ Use your form and enjoy
 import ContactForm from './ContactForm';
 
 export default Page extends Component {
-    onSubmit(form) {
-        console.log(form)
-    }
-    
-    render() {
-        <div>
-            <ContactForm handleSubmit={this.onSubmit.bind(this)} /> // schema={{fieldName: [initialValue, rules]}} optional parameter
-        </div>
-    }
+  onSubmit(form) {
+    console.log(form)
+  }
+
+  render() {
+    <div>
+      <ContactForm handleSubmit={this.onSubmit.bind(this)} /> // schema={{fieldName: [initialValue, rules]}} optional parameter
+    </div>
+  }
 }
 ```
 
