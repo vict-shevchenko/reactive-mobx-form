@@ -1,11 +1,15 @@
 {
 	"compilerOptions": {
-		"outDir": "./dist/",
+		"allowSyntheticDefaultImports": true,
+		"outDir": "dist",
 		"sourceMap": true,
-		"noImplicitAny": true,
+		"noImplicitAny": false,
 		"module": "commonjs",
 		"target": "es5",
+		"lib": ["es2017", "dom"],
 		"jsx": "react",
-		"allowJs": true
+		"allowJs": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true
 	}
 }
