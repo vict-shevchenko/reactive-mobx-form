@@ -1,4 +1,4 @@
-# reactive-mobx-forms
+# reactive-mobx-form
 Forms library for React+MobX application. Under the hood it uses efficient MobX observable mechanizm, that allows tracking changes in form fields and rerender only things that have changed. This makes developer a feeling of working with 2-way databinding and reduces much boilerplate code needed to handle input events in 1-way data flow environment. 
 
 ## Important notice
@@ -57,7 +57,7 @@ render(
 Create a form
 
 ```javascript
-import {reactivMobxForm, Field} from 'reactive-mobx-form';
+import {reactivMobxForm, Control} from 'reactive-mobx-form';
 
 class ContactForm extends Component {
   render() {
@@ -67,11 +67,11 @@ class ContactForm extends Component {
       <form onSubmit={submit}>
         <div>
           <label htmlFor="name">Name</label>
-          <Field name="name" component="input" type="text" />
+          <Control name="name" component="input" type="text" />
         </div>
         <div>
           <label htmlFor="age">Age</label>
-          <Field name="age" component="input" type="number"/>
+          <Control name="age" component="input" type="number"/>
         </div>
         <button type="submit">Submit</button>
       </form>
@@ -79,7 +79,7 @@ class ContactForm extends Component {
   }
 }
 
-const ContactFormReactive = reactiveMobxForm('contacts', formSchema)(ContactForm); // 2nd parameter (formSchema) is optional. 
+const ContactFormReactive = reactiveMobxForm('contacts', schema)(ContactForm); // 2nd parameter (schema) is optional. 
 
 // Use 2nd parameter to specify predefined initial values and validation rules, see format below.
 // If you get initial values from server, better pass them as 'schema' paramter to Form in parent component
@@ -94,13 +94,13 @@ Use your form and enjoy
 import ContactForm from './ContactForm';
 
 export default Page extends Component {
-  onSubmit(form) {
+  handleSubmit(form) {
     console.log(form)
   }
 
   render() {
     <div>
-      <ContactForm handleSubmit={this.onSubmit.bind(this)} /> // schema={{fieldName: [initialValue, rules]}} optional parameter
+      <ContactForm onSubmit={this.handleSubmit.bind(this)} /> // schema={{fieldName: [initialValue, rules]}} optional parameter
     </div>
   }
 }

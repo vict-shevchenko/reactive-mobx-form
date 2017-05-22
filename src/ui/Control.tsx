@@ -27,7 +27,7 @@ function omit(obj:any, omitKeys:Array<string>) {
 
 //todo: add value property to make field a controled component
 
-interface FieldProps {
+interface ControlProps {
 	name: string;
 
 	component: React.Component<any, any> | React.SFC<any> | string;
@@ -50,7 +50,7 @@ interface FieldProps {
 }
 
 @observer
-export class Field extends React.Component<FieldProps, any> {
+export class Control extends React.Component<ControlProps, any> {
 	isNumber: boolean;
 	isSelect: boolean;
 	isCheckable: boolean;
@@ -111,7 +111,7 @@ export class Field extends React.Component<FieldProps, any> {
 	}
 
 	verifyRequiredProps() {
-		Field.requiredProps.forEach(reqiredPropName => {
+		Control.requiredProps.forEach(reqiredPropName => {
 			if(!this.props[reqiredPropName]) {
 				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
 			}
@@ -199,7 +199,7 @@ export class Field extends React.Component<FieldProps, any> {
 			valid  : this.field.isValid
 		}
 
-		const propsToPass = omit(this.props, Field.propNamesToOmitWhenByPass);
+		const propsToPass = omit(this.props, Control.propNamesToOmitWhenByPass);
 
 
 		if (typeof this.props.component === 'function') {

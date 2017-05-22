@@ -14,7 +14,7 @@ export function reactiveMobxForm(formName: string, schema?:formSchema ) {
 
 		@inject('formStore')
 		@observer
-		class ReactiveMobxForm extends Component<{formStore: any, handleSubmit?: any, schema?:formSchema }, any> {
+		class ReactiveMobxForm extends Component<{formStore: any, onSubmit?: any, schema?:formSchema }, any> {
 			static childContextTypes = {
 				_ReactiveMobxForm: PropTypes.object.isRequired
 			}
@@ -38,7 +38,7 @@ export function reactiveMobxForm(formName: string, schema?:formSchema ) {
 				
 				form.submitting = true;
 				console.log('handling submit from form and calling parent');
-				Promise.all([this.props.handleSubmit(form.values)])
+				Promise.all([this.props.onSubmit(form.values)])
 					.catch(error => {
 						form.submissionError = error;
 					})
