@@ -33,6 +33,10 @@ export function reactiveMobxForm(formName: string, schema?:formSchema ) {
 				this.props.formStore.registerForm(formName, form);
 			}
 
+			componentWillUnmount() {
+				this.props.formStore.unRegisterForm(formName);
+			}
+
 			submitForm(event:Event) {
 				event.preventDefault();
 				
