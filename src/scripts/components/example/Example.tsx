@@ -25,7 +25,7 @@ const ExampleOverview = inject('formStore')(observer(({ formStore, name }:{formS
 		<div>
 			<div>Form</div>
 			<div>
-				{name === 'simpleForm' ? <SimpleForm handleSubmit={handleSubmit}/> : ''}
+				{name === 'simpleForm' ? <SimpleForm onSubmit={handleSubmit}/> : ''}
 			</div>
 			<div>Values</div>
 			<div>
