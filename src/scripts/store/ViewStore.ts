@@ -18,7 +18,7 @@ export class ViewStore {
 	@computed get currentPath() {
 		switch(this.currentView.name) {
 			case "landing": return '/';
-			case "readme": return "/README.md/";
+			case "readme": return "/readme";
 			case "simpleForm": return `/examples/simpleForm`;
 		}
 	}

@@ -54,9 +54,12 @@ function renderNavigation() {
 );*/
 
 const NavigationItem:any = inject('viewStore')(observer((({displayName, name, path, level, viewStore}:{displayName: string ,name: string, path: string, level:number ,viewStore:ViewStore}) => (
-	<div onClick={() => viewStore.showPage(name, path)}>
+	<a onClick={(event) => {
+		event.preventDefault();
+		viewStore.showPage(name, path);
+	}} href="#" className="nav-item">
 		{level} - {displayName}
-	</div>
+	</a>
 ))));
 
 @inject('viewStore')

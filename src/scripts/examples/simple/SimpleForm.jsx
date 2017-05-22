@@ -5,50 +5,62 @@ import {reactiveMobxForm, Control} from 'reactive-mobx-form';
 class ContactForm extends React.Component {
 	render() {
 		const { submit, reset, submitting, isValid } = this.props;
+
 		return (
 			<form onSubmit={submit}>
+				<h3>Simple Delivery Form</h3>
 				<div>
-					<label htmlFor="firstName">First Name</label>
-					<Control name="firstName" component="input" type="text" alt="some text" />
-				</div>
-				<div>
-					<label htmlFor="lastName">Last Name</label>
-					<Control name="lastName" component="input" type="text"/>
-				</div>
-				<div>
-					<label htmlFor="photo">Last Name</label>
-					<Control name="photo" component="input" type="file"/>
-				</div>
-				<div>
-					<label htmlFor="nickName">Nick Name</label>
-					<Control name="nickName" component="input" type="text"/>
-				</div>
-
-				<div>
-					<label htmlFor="acceptTerms">Accept terms</label>
-					<Control name="acceptTerms" component="input" type="checkbox"/>
-				</div>
-				<div>
-					<label htmlFor="Faivorite film">Favourite film</label>
-					<Control name="favoriteFilm" component="select">
-						<option/>
-						<option value="terminator">Terminator</option>
-						<option value="dieHard">Die Hard</option>
-						<option value="Robocop">Robocop</option>
-					</Control>
-				</div>
-				<div>
-					<label>Sex</label>
+					<label>First Name</label>
 					<div>
-						<label><Control name="sex" component="input" type="radio" value="male"/> Male</label>
-						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
+						<Control name="firstName" component="input" type="text" placeholder="First Name" />
 					</div>
 				</div>
-				<hr />
+				<div>
+					<label>Last Name</label>
+					<div>
+						<Control name="lastName" component="input" type="text"  placeholder="Last Name" />
+					</div>
+				</div>
+				<div>
+					<label>E-mail</label>
+					<div>
+						<Control name="email" component="input" type="email" placeholder="Email"/>
+					</div>
+				</div>
+				<div>
+					<label>Delivery time</label>
+					<div>
+						<label><Control name="time" component="input" type="radio" value="fast"/>Fast</label>
+						<label><Control name="time" component="input" type="radio" value="standard"/>Standard</label>
+					</div>
+				</div>
+				<div>
+					<label>Delivery address</label>
+					<div>
+						<Control name="address" component="select">
+							<option/>
+							<option value="home">Home</option>
+							<option value="office">Office</option>
+						</Control>
+					</div>
+				</div>
+				<div>
+					<label htmlFor="acceptTerms">Accept terms</label>
+					<div>
+						<Control name="acceptTerms" component="input" type="checkbox"/>
+					</div>
+				</div>
+				<div>
+					<label>Notes</label>
+					<div>
+						<Control name="notes" component="textarea" rows="4"/>
+					</div>
+				</div>
 
-				Form Valid - - {`${isValid}`} <br/>
-				<button type="submit">Submit</button>  is Submitting - {`${submitting}`} <br/>
-				<button onClick={reset}>Reset</button>
+				<section>
+					<button type="submit">Submit</button>
+					<button type="button" onClick={reset}>Reset</button>
+				</section>
 			</form>
 		);
 	}

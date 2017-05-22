@@ -1,6 +1,8 @@
 @import "~bourbon/app/assets/stylesheets/_bourbon";
 @import "normalize";
 @import "prism.css";
+@import "form";
+@import "navigation";
 
 
 html, body, #root, .site {
@@ -8,6 +10,7 @@ html, body, #root, .site {
 }
 
 $grey: #ccc;
+$green: forestgreen;
 
 .site {
 	display: grid;

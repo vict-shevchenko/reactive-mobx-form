@@ -1,0 +1,73 @@
+.form-example {
+	width: 600px;
+	margin: 0 auto;
+
+	h3 {
+		text-align: center;
+	}
+}
+
+.form-example form > div {
+	width: 100%;
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+
+
+	&>label {
+		flex: 1 1 auto;
+		text-align: right;
+		padding-right: 15px;
+	}
+
+	&>div {
+		flex: 0 0 450px;
+
+		input[type="text"], input[type="email"], select, textarea  {
+			width: 100%;
+			border-radius: 4px;
+			border: 1px solid #ccc;
+			height: 30px;
+			padding-left: 5px;
+		}
+
+		textarea {
+			resize: vertical;
+			height: 80px;
+		}
+
+		input[type="radio"] {
+			margin-right: 10px;
+		}
+
+		label {
+			margin-right: 40px;
+		}
+	}
+}
+
+.form-example form > div:last-of-type {
+	label {
+		align-self: flex-start;
+	}
+}
+
+section {
+	text-align: center;
+	margin-top: 30px;
+
+	button {
+		margin: 0 15px;
+		height: 40px;
+		padding: 5px 20px;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		cursor: pointer;
+		border-radius: 4px;
+	}
+
+	button[type="submit"] {
+		background-color: forestgreen;
+		color: #fff;
+	}
+}
