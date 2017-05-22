@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {reactiveMobxForm, Field} from 'reactive-mobx-form';
+import {reactiveMobxForm, Control} from 'reactive-mobx-form';
 
 const RenderField = ({input, meta: {dirty, valid}, label, placeholder, type}) => (
 	<div style={{backgroundColor: (valid ? 'lightgreen' : 'pink')}}>
@@ -18,46 +18,46 @@ class ContactForm extends Component {
 			<form onSubmit={submit}>
 				<div>
 					<label htmlFor="firstName">First Name</label>
-					<Field name="firstName" component="input" type="text" alt="some text" />
+					<Control name="firstName" component="input" type="text" alt="some text" />
 				</div>
 				<div>
 					<label htmlFor="lastName">Last Name</label>
-					<Field name="lastName" component="input" type="text"/>
+					<Control name="lastName" component="input" type="text"/>
 				</div>
 				<div>
 					<label htmlFor="photo">Last Name</label>
-					<Field name="photo" component="input" type="file"/>
+					<Control name="photo" component="input" type="file"/>
 				</div>
 				<div>
 					<label htmlFor="nickName">Nick Name</label>
-					<Field name="nickName" component="input" type="text"/>
+					<Control name="nickName" component="input" type="text"/>
 				</div>
 				<div>
 					<label htmlFor="age">Age</label>
-					<Field name="age" component={RenderField} type="number"/>
+					<Control name="age" component={RenderField} type="number"/>
 				</div>
 				<div>
 					<label htmlFor="email">Email</label>
-					<Field name="email" component={RenderField} type="email" label="Email"/>
+					<Control name="email" component={RenderField} type="email" label="Email"/>
 				</div>
 				<div>
 					<label htmlFor="acceptTerms">Accept terms</label>
-					<Field name="acceptTerms" component="input" type="checkbox"/>
+					<Control name="acceptTerms" component="input" type="checkbox"/>
 				</div>
 				<div>
 					<label htmlFor="Faivorite film">Favourite film</label>
-					<Field name="favoriteFilm" component="select">
+					<Control name="favoriteFilm" component="select">
 						<option/>
 						<option value="terminator">Terminator</option>
 						<option value="dieHard">Die Hard</option>
 						<option value="Robocop">Robocop</option>
-					</Field>
+					</Control>
 				</div>
 				<div>
 					<label>Sex</label>
 					<div>
-						<label><Field name="sex" component="input" type="radio" value="male"/> Male</label>
-						<label><Field name="sex" component="input" type="radio" value="female"/> Female</label>
+						<label><Control name="sex" component="input" type="radio" value="male"/> Male</label>
+						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
 					</div>
 				</div>
 				<hr />
