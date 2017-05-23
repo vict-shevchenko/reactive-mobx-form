@@ -15,7 +15,7 @@ module.exports = {
 			]
 		}
 	},
-	devtool: 'eval',
+	devtool: 'source-map',
 	resolve: {
 		modules: ["node_modules", path.resolve(__dirname, "app")],
 		extensions: [".js", ".ts", ".json", ".jsx", ".tsx", ".css", ".scss"],
