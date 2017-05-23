@@ -35,7 +35,6 @@ export default class App extends React.Component<any, undefined> {
 				<div className="site__header">header</div>
 				<div className="site__navigation">
 					<Navigation />
-					{this.props.viewStore.currentView.name}
 				</div>
 				<div className="site__content">
 					{renderCurrentView(this.props.viewStore)}
