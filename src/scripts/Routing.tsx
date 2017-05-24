@@ -8,15 +8,15 @@ export default function startRouting(viewStore:ViewStore) {
 
 	// update state on url change
 	const router = new Router({
-		[`${prefix}/readme`]: () => viewStore.showPage('readme', '/'),
-		[`${prefix}}/examples/simpleForm`]: () => viewStore.showPage('simpleForm', 'examples/simpleForm')
+		[`${prefix}/readme`]: () => viewStore.showDocPage('readme', '/'),
+		[`${prefix}/examples/simple/SimpleForm`]: () => viewStore.showExamplePage('SimpleForm', 'examples/simple')
 	}).configure({
 		html5history: true
 	}).init();
 
 	autorun(() => {
 		const path = viewStore.currentPath;
-		debugger;
+		// debugger;
 
 		if (path !== window.location.pathname)
 			window.history.pushState(null, null, `${prefix}${path}`)

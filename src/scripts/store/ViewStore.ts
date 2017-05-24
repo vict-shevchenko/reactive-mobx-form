@@ -19,28 +19,26 @@ export class ViewStore {
 		switch(this.currentView.name) {
 			case "landing": return '/';
 			case "readme": return "/readme";
-			case "simpleForm": return `/examples/simpleForm`;
+			case "SimpleForm": return `/examples/simple/SimpleForm`;
 		}
 	}
 
-	@action showPage(name, path) {
+	@action showDocPage(name, path) {
 		this.currentView = {
 			name: name,
-			document: fromPromise(doFetchCall(`https://raw.githubusercontent.com/vict-shevchenko/reactive-mobx-form/master/${path !== '/' ? `docs/${path}/${name}` : 'README' }.md`))
+			document: fromPromise(doFetchCall(`https://raw.githubusercontent.com/vict-shevchenko/reactive-mobx-form/master/${path !== '' ? `docs/${path}/${name}` : 'README' }.md`))
 		}
 	}
 
-	@action showBooks() {
+	@action showExamplePage(name, path) {
 		this.currentView = {
-			name: "books",
-			document: 'books page'
-		}
-	}
-
-	@action showAuthor() {
-		this.currentView = {
-			name: "author",
-			document: 'authors page'
+			name: name,
+			document: fromPromise(
+				Promise.all([
+					doFetchCall(`https://raw.githubusercontent.com/vict-shevchenko/reactive-mobx-form/master/docs/${path}/${name}.md`),
+					doFetchCall(`https://raw.githubusercontent.com/vict-shevchenko/reactive-mobx-form/site/src/scripts/${path}/${name}.jsx`)
+				])
+			)
 		}
 	}
 }
