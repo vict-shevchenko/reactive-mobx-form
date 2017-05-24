@@ -1,6 +1,7 @@
 src/**/*.*
 lib/**/*.js.map
 lib/interface.js
+docs/**/*.*
 .gitignore
 .npmignore
 tsconfig.json
