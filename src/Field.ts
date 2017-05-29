@@ -44,6 +44,11 @@ export class ReactiveMobxFormField {
 		return this.validation.passes(); 
 	}
 
+	//todo: optimize this, not to run for fields that have no validation
+	@computed get errors() {
+		return this.validation.getRule(this.name);
+	}
+
 	@action onFocus() {
 		this.isFocused = true;
 		if(!this.isTouched) {
