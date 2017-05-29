@@ -29,6 +29,7 @@
 			border: 1px solid #ccc;
 			height: 30px;
 			padding-left: 5px;
+			display: block;
 		}
 
 		textarea {
@@ -42,6 +43,10 @@
 
 		label {
 			margin-right: 40px;
+		}
+
+		.err {
+			color: firebrick;
 		}
 	}
 }
@@ -69,5 +74,9 @@ section {
 	button[type="submit"] {
 		background-color: forestgreen;
 		color: #fff;
+	}
+
+	button[disabled] {
+		opacity: 0.5;
 	}
 }

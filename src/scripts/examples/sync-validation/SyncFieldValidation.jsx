@@ -1,32 +1,31 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {reactiveMobxForm, Control} from 'reactive-mobx-form';
 
 
-class ContactForm extends React.Component {
+function ContactFormTextField({ input, meta, type, placeholder, label }) {
+	return (
+		<div>
+			<label>{label}</label>
+			<div>
+				<input {...input} type={type} placeholder={placeholder}/>
+				{meta.touched && !meta.focused && !meta.valid ? <div className="err">{meta.errors[0]}</div> : ''}
+			</div>
+		</div>
+	);
+}
+
+
+class ContactForm extends Component {
 	render() {
 		const { submit, reset, submitting, isValid } = this.props;
 
 		return (
 			<form onSubmit={submit}>
-				<h3>Simple Delivery Form</h3>
-				<div>
-					<label>First Name</label>
-					<div>
-						<Control name="firstName" component="input" type="text" placeholder="First Name" />
-					</div>
-				</div>
-				<div>
-					<label>Last Name</label>
-					<div>
-						<Control name="lastName" component="input" type="text"  placeholder="Last Name" />
-					</div>
-				</div>
-				<div>
-					<label>E-mail</label>
-					<div>
-						<Control name="email" component="input" type="email" placeholder="Email"/>
-					</div>
-				</div>
+				<h3>Simple Delivery Form with Sync Field Validation</h3>
+				<Control name="firstName" component={ContactFormTextField} type="text"  placeholder="Last Name" label="First Name" />
+				<Control name="lastName"  component={ContactFormTextField} type="text"  placeholder="Last Name" label="Last Name" />
+				<Control name="email"     component={ContactFormTextField} type="email" placeholder="Email"     label="Email" />
+
 				<div>
 					<label>Delivery time</label>
 					<div>
@@ -58,7 +57,7 @@ class ContactForm extends React.Component {
 				</div>
 
 				<section>
-					<button type="submit">Submit</button>
+					<button type="submit" disabled={!isValid}>Submit</button>
 					<button type="button" onClick={reset}>Reset</button>
 				</section>
 			</form>
@@ -66,6 +65,10 @@ class ContactForm extends React.Component {
 	}
 }
 
-const ContactFormReactive = reactiveMobxForm('contacts')(ContactForm);
+const ContactFormReactive = reactiveMobxForm('contacts', {
+	firstName: ['', 'required'],
+	lastName : ['', 'required'],
+	email    : ['', 'required|email'],
+})(ContactForm);
 
 export default ContactFormReactive;

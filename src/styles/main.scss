@@ -9,6 +9,10 @@ html, body, #root, .site {
 	@include size(100%);
 }
 
+input, textarea {
+	box-sizing: border-box;
+}
+
 $grey: #ccc;
 $green: forestgreen;
 
