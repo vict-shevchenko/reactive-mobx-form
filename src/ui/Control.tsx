@@ -196,7 +196,8 @@ export class Control extends React.Component<ControlProps, any> {
 			focused: this.field.isFocused,
 			touched: this.field.isTouched,
 			dirty  : this.field.isDirty,
-			valid  : this.field.isValid
+			valid  : this.field.isValid,
+			errors : this.field.errors
 		}
 
 		const propsToPass = omit(this.props, Control.propNamesToOmitWhenByPass);
