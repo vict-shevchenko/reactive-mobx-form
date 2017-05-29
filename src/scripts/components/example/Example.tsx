@@ -5,7 +5,8 @@ import * as marked from 'marked';
 import * as Prism  from '../../utils/prism'
 import * as beautify from 'json-beautify';
 
-import SimpleForm from '../../examples/simple/SimpleForm'
+import SimpleForm from '../../examples/simple/SimpleForm';
+import SyncValidationForm from '../../examples/sync-validation/SyncFieldValidation';
 
 
 const prettify = markdown =>
@@ -29,6 +30,7 @@ const ExampleOverview = observer(({name, document }:{name?:string, document?:any
 			</div>
 			<div className="form-example">
 				{name === 'SimpleForm' ? <SimpleForm onSubmit={handleSubmit}/> : ''}
+				{name === 'SyncFieldValidation' ? <SyncValidationForm onSubmit={handleSubmit}/> : ''}
 			</div>
 			<div>Values</div>
 			<div>

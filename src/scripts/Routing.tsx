@@ -9,8 +9,9 @@ export default function startRouting(viewStore:ViewStore) {
 	// update state on url change
 	const router = new Router({
 		[`${prefix}/readme`]: () => viewStore.showDocPage('readme', '/'),
-		[`${prefix}/examples/simple/SimpleForm`]: () => viewStore.showExamplePage('SimpleForm', 'examples/simple')
-	}).configure({
+		[`${prefix}/examples/simple/SimpleForm`]: () => viewStore.showExamplePage('SimpleForm', 'examples/simple'),
+		[`${prefix}/examples/sync-validation/SyncFieldValidation`]: () => viewStore.showExamplePage('SyncFieldValidation', 'examples/sync-validation')
+}).configure({
 		html5history: true
 	}).init();
 
