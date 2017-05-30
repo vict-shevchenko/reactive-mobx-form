@@ -3,7 +3,7 @@ import { observer, Observer } from 'mobx-react';
 import { ReactiveMobxForm } from '../Form';
 import { ReactiveMobxFormField } from '../Field'
 
-import { fieldDefinition, normalizesdFieldDefinition } from '../interface'
+import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
 
 
 // todo: probabbly may be used when implementing withRef
@@ -13,11 +13,11 @@ import { fieldDefinition, normalizesdFieldDefinition } from '../interface'
   typeof Component.prototype.isReactComponent === 'object'
 )*/
 
-function omit(obj:any, omitKeys:Array<string>) {
+function omit(obj: any, omitKeys: Array<string>) {
 	const result = {};
 
 	Object.keys(obj).forEach(key => {
-		if(omitKeys.indexOf(key) === -1 ) {
+		if (omitKeys.indexOf(key) === -1) {
 			result[key] = obj[key];
 		}
 	});
@@ -37,16 +37,16 @@ interface ControlProps {
 
 	children?: any;
 
-	
+
 	value?: string // should be fieldValue
 	/*
 	placeholder?: string;
 	label?: string;
 	*/
 
-	onFocus?(event:Event):void;
-	onBlur?(event:Event):void;
-	onChange?(event:Event):void;
+	onFocus?(event: Event): void;
+	onBlur?(event: Event): void;
+	onChange?(event: Event): void;
 }
 
 @observer
@@ -78,11 +78,11 @@ export class Control extends React.Component<ControlProps, any> {
 
 		this.form = context._ReactiveMobxForm;
 
-		this.isCheckbox  = props.type === 'checkbox';
-		this.isRadio     = props.type === 'radio';
-		this.isFile      = props.type === 'file';
-		this.isSelect    = props.component === 'select';
-		this.isNumber    = props.type === 'number';
+		this.isCheckbox = props.type === 'checkbox';
+		this.isRadio = props.type === 'radio';
+		this.isFile = props.type === 'file';
+		this.isSelect = props.component === 'select';
+		this.isNumber = props.type === 'number';
 		this.isCheckable = this.isCheckbox || this.isRadio;
 
 		this.onChange = this.onChange.bind(this);
@@ -91,19 +91,26 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	componentWillMount() {
+		// verify Control name duplications
+		if (this.form.fields.find(field => field.name === this.props.name) && !this.isRadio) {
+			throw(new Error(`Field with name ${this.props.name} already exist in Form`));
+		}
+
+		// todo: we need to handle exceptions with 2 fields with same name
 		if (this.form.formSchema[this.props.name]) {
 			// todo: remove warning in production build
 			this.warnOnIncorrectInitialValues();
 		}
 		else { // field was not registered in form schema or exteded as <Form schema/> parameter
-			const initialValue   : boolean | string           = this.isCheckbox ? false : '';
-			const rules          : string                     = this.props.rules;
-			const fieldDefinition: normalizesdFieldDefinition = [ initialValue, rules ];
+			const initialValue: boolean | string = this.isCheckbox ? false : '';
+			const rules: string = this.props.rules;
+			const fieldDefinition: normalizesdFieldDefinition = [initialValue, rules];
+			const schemaExtension: normalizedFormSchema = { [this.props.name]: fieldDefinition }
 
-			this.form.extend({[this.props.name]: fieldDefinition})
+			this.form.extendSchema(schemaExtension);
 		}
 
-		this.field = this.form.fields.find(field => field.name === this.props.name);
+		this.field = this.form.registerField(this.props.name);
 	}
 
 	componentWillUnmount() {
@@ -112,7 +119,7 @@ export class Control extends React.Component<ControlProps, any> {
 
 	verifyRequiredProps() {
 		Control.requiredProps.forEach(reqiredPropName => {
-			if(!this.props[reqiredPropName]) {
+			if (!this.props[reqiredPropName]) {
 				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
 			}
 		});
@@ -127,9 +134,9 @@ export class Control extends React.Component<ControlProps, any> {
 		}
 
 		if (
-			(this.isCheckbox  && initialValueType !== 'boolean') ||
-			(this.isNumber    && initialValueType !== 'number')  ||
-			(!this.isCheckbox && !this.isNumber  && initialValueType !== 'string')
+			(this.isCheckbox && initialValueType !== 'boolean') ||
+			(this.isNumber && initialValueType !== 'number') ||
+			(!this.isCheckbox && !this.isNumber && initialValueType !== 'string')
 		) {
 			console.warn(`Incorrect initial value profided to field '${this.props.name}'. Got '${initialValueType}'`)
 		}
@@ -172,10 +179,10 @@ export class Control extends React.Component<ControlProps, any> {
 	render() {
 		// todo: implement withRef today
 		const handlers = {
-				onChange: this.onChange,
-				onFocus : this.onFocus,
-				onBlur  : this.onBlur
-			};
+			onChange: this.onChange,
+			onFocus: this.onFocus,
+			onBlur: this.onBlur
+		};
 
 		const inputValue = {
 			value: this.isRadio ? this.props.value : (this.field.value as string)
@@ -184,10 +191,10 @@ export class Control extends React.Component<ControlProps, any> {
 		let checked = {};
 
 		if (this.isCheckbox) {
-			checked = {checked: (this.field.value as boolean)}
+			checked = { checked: (this.field.value as boolean) }
 		}
 		else if (this.isRadio) {
-			checked = {checked: (this.field.value === this.props.value)}
+			checked = { checked: (this.field.value === this.props.value) }
 		}
 
 		const input = Object.assign({}, (this.isFile ? {} : inputValue), handlers, (this.isCheckable ? checked : {}));
@@ -195,9 +202,9 @@ export class Control extends React.Component<ControlProps, any> {
 		const meta = {
 			focused: this.field.isFocused,
 			touched: this.field.isTouched,
-			dirty  : this.field.isDirty,
-			valid  : this.field.isValid,
-			errors : this.field.errors
+			dirty: this.field.isDirty,
+			valid: this.field.isValid,
+			errors: this.field.errors
 		}
 
 		const propsToPass = omit(this.props, Control.propNamesToOmitWhenByPass);
@@ -206,7 +213,7 @@ export class Control extends React.Component<ControlProps, any> {
 		if (typeof this.props.component === 'function') {
 			return React.createElement(this.props.component, Object.assign({}, { input }, { meta }, propsToPass));
 		}
-		
+
 		if (this.props.component === 'select') {
 			return <select {...input} {...propsToPass}>{this.props.children}</select>
 		}

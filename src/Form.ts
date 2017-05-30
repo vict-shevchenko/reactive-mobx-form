@@ -7,7 +7,7 @@ import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedForm
 import { ReactiveMobxFormField } from './Field';
 
 export class ReactiveMobxForm {
-	readonly formSchema: normalizedFormSchema;
+	formSchema: normalizedFormSchema;
 
 	component: any;
 
@@ -42,13 +42,7 @@ export class ReactiveMobxForm {
 	 
 
 	constructor(formSchema) {
-		if(!formSchema) {
-			this.formSchema = {};
-		}
-		else {
-			this.formSchema = ReactiveMobxForm.normalizeSchema(formSchema);
-			this.registerFields(this.formSchema);
-		}
+		this.formSchema = ReactiveMobxForm.normalizeSchema(formSchema);
 	}
 
 	@computed get isDirty() {
@@ -85,10 +79,15 @@ export class ReactiveMobxForm {
 		return dict;
 	}
 
-	@action registerFields(schema:normalizedFormSchema) {
-		Object.keys(schema).map((fieldName:string) => {
-			this.fields.push(new ReactiveMobxFormField(fieldName, schema[fieldName]));
-		})
+	@action registerField(fieldName:string) {
+		let field = this.fields.find(field => field.name === fieldName);
+
+		if (!field) {
+			this.fields.push(new ReactiveMobxFormField(fieldName, this.formSchema[fieldName]));
+			field = this.fields[this.fields.length - 1];
+		}
+
+		return field;
 	}
 
 	@action removeField(fieldName:string) {
@@ -97,12 +96,11 @@ export class ReactiveMobxForm {
 		this.fields.splice(fieldIdx, 1);
 	}
 
-	@action extend(schemaExtension:formSchema) {
+	@action extendSchema(schemaExtension:formSchema) {
 		// todo: Probably ist good to have some safe extension
 		const normalizeSchemaExtension = ReactiveMobxForm.normalizeSchema(schemaExtension);
 		
 		Object.assign(this.formSchema, normalizeSchemaExtension);
-		this.registerFields(normalizeSchemaExtension);
 	}
 
 	@action reset() {

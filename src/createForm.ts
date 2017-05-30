@@ -5,36 +5,39 @@ import { ReactiveMobxForm } from './Form';
 
 import { formSchema } from './interface';
 
+function isFormSchemaValid(schema: formSchema) {
+	return schema && typeof schema === 'object' && !Array.isArray(schema)
+}
 
-export function reactiveMobxForm(formName: string, initialSchema?:formSchema ) {
+
+export function reactiveMobxForm(formName: string, initialSchema: formSchema = {}) {
 
 	return wrappedForm => {
 		@inject('formStore')
 		@observer
-		class Form extends Component<{formStore: any, onSubmit?: any, schema?:formSchema }, any> {
+		class Form extends Component<{ formStore: any, onSubmit?: any, schema?: formSchema }, any> {
 			form: ReactiveMobxForm;
 
 			static childContextTypes = {
 				_ReactiveMobxForm: PropTypes.object.isRequired
 			}
 
+			static defaultProps = {
+				schema: {}
+			};
+
 			constructor(props, context) {
 				super(props, context);
+				
+				// todo: remove for production build
+				const mergedSchema = (isFormSchemaValid(initialSchema) && isFormSchemaValid(props.schema)) ? Object.assign(initialSchema, props.schema) : {} 
 
-				// merge schemas 
-				// think about performance where is better to create a form
-				this.form = new ReactiveMobxForm(initialSchema); 
-
-				if(props.schema && typeof props.schema === 'object' && !Array.isArray(props.schema)) {
-					this.form.extend(props.schema);
-				}
-
+				this.form = new ReactiveMobxForm(mergedSchema);
 				this.form.component = wrappedForm; // for debugging/error handling purposes
-
 			}
 
 			getChildContext() {
-				return {_ReactiveMobxForm: this.form};
+				return { _ReactiveMobxForm: this.form };
 			}
 
 			componentWillMount() {
@@ -45,9 +48,9 @@ export function reactiveMobxForm(formName: string, initialSchema?:formSchema ) {
 				this.props.formStore.unRegisterForm(formName);
 			}
 
-			submitForm(event:Event) {
+			submitForm(event: Event) {
 				event.preventDefault();
-				
+
 				this.form.submitting = true;
 				console.log('handling submit from form and calling parent');
 				Promise.all([this.props.onSubmit(this.form.values)])
@@ -69,7 +72,7 @@ export function reactiveMobxForm(formName: string, initialSchema?:formSchema ) {
 					reset: this.resetForm.bind(this),
 					submitting: this.form.submitting, // todo: when submit change - full form render method is executed. Thing on more performat approach. May be Submitting component
 					/*validation: form.validation, */ //todo - this case render been called when any field change
-					isValid: this.form.isValid
+					valid: this.form.isValid
 				});
 			}
 		}
