@@ -13,7 +13,7 @@ const RenderField = ({input, meta: {dirty, valid}, label, placeholder, type}) =>
 
 class ContactForm extends Component {
 	render() {
-		const { submit, reset, submitting, isValid } = this.props;
+		const { submit, reset, submitting, valid } = this.props;
 		return (
 			<form onSubmit={submit}>
 				<div>
@@ -62,7 +62,7 @@ class ContactForm extends Component {
 				</div>
 				<hr />
 
-				Form Valid - - {`${isValid}`} <br/>
+				Form Valid - - {`${valid}`} <br/>
 				<button type="submit">Submit</button>  is Submitting - {`${submitting}`} <br/>
 				<button onClick={reset}>Reset</button>
 			</form>
@@ -78,6 +78,7 @@ const ContactFormReactive = reactiveMobxForm('contacts',
 		'acceptTerms': [true],
 		'favoriteFilm': ['dieHardwerwe'],
 		'sex':[''],
+		'job': ['']
 	})(ContactForm);
 
 export default ContactFormReactive;
