@@ -111,6 +111,7 @@ export class Control extends React.Component<ControlProps, any> {
 		}
 
 		this.field = this.form.registerField(this.props.name);
+		this.field.subscribeToFormValidation(this.form);
 	}
 
 	componentWillUnmount() {
@@ -202,9 +203,9 @@ export class Control extends React.Component<ControlProps, any> {
 		const meta = {
 			focused: this.field.isFocused,
 			touched: this.field.isTouched,
-			dirty: this.field.isDirty,
-			valid: this.field.isValid,
-			errors: this.field.errors
+			dirty  : this.field.isDirty,
+			valid  : this.field.isValid,
+			errors : this.field.errors
 		}
 
 		const propsToPass = omit(this.props, Control.propNamesToOmitWhenByPass);

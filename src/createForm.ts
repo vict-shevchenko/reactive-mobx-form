@@ -1,8 +1,8 @@
 import React, { Component, createElement, PropTypes } from 'react';
 import { observable, action, computed } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { ReactiveMobxForm } from './Form';
 
+import { ReactiveMobxForm } from './Form';
 import { formSchema } from './interface';
 
 function isFormSchemaValid(schema: formSchema) {
@@ -42,6 +42,7 @@ export function reactiveMobxForm(formName: string, initialSchema: formSchema = {
 
 			componentWillMount() {
 				this.props.formStore.registerForm(formName, this.form);
+				this.form.registerValidation();
 			}
 
 			componentWillUnmount() {
@@ -71,8 +72,9 @@ export function reactiveMobxForm(formName: string, initialSchema: formSchema = {
 					submit: this.submitForm.bind(this),
 					reset: this.resetForm.bind(this),
 					submitting: this.form.submitting, // todo: when submit change - full form render method is executed. Thing on more performat approach. May be Submitting component
-					/*validation: form.validation, */ //todo - this case render been called when any field change
-					valid: this.form.isValid
+					/* validation: form.validation, */ //todo - this case render been called when any field change
+					valid: this.form.isValid,
+					/* errors: this.form.errors */ //todo - this case render been called when any field change
 				});
 			}
 		}

@@ -1,10 +1,27 @@
 import React, { Component, createElement } from 'react';
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, autorun } from 'mobx';
 import * as Validator from 'validatorjs';
 
 import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from './interface';
+import { ReactiveMobxForm } from "./Form";
+
+function hasErrorArraysChanged(oldErrors:Array<string>, newErrors:Array<string>):boolean {
+	if (oldErrors.length !== newErrors.length) {
+		return true
+	}
+	else if (oldErrors.length === newErrors.length && newErrors.length > 0) {
+		for(let i = 0; i < newErrors.length; i++) {
+			if (oldErrors[i] !== newErrors[i]) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
 
 export class ReactiveMobxFormField {
+
 	readonly name: string;
 	readonly initialValue: fieldValue = '';
 	readonly rules: string = '';
@@ -12,6 +29,7 @@ export class ReactiveMobxFormField {
 	type: string;
 
 	@observable value: fieldValue = '';
+	@observable errors: Array<string> = [];
 	@observable isFocused: boolean = false;
 	@observable isTouched: boolean = false;
 
@@ -23,7 +41,7 @@ export class ReactiveMobxFormField {
 		return [fieldDefinition, ''];
 	}
 	
-	constructor(name:string, fieldDefinition: normalizesdFieldDefinition ) {
+	constructor(name:string, fieldDefinition: normalizesdFieldDefinition) {
 		this.name = name;
 		this.initialValue = fieldDefinition[0];
 		this.value = this.initialValue;
@@ -34,19 +52,8 @@ export class ReactiveMobxFormField {
 		return this.value !== this.initialValue;
 	}
 
-	// todo: optimize this, not to run for fields that have no validation
-	@computed get validation() {
-		return new Validator({[this.name]:this.value}, this.rules ? {[this.name]:this.rules} : {});
-	}
-
-	//todo: optimize this, not to run for fields that have no validation
 	@computed get isValid() {
-		return this.validation.passes(); 
-	}
-
-	//todo: optimize this, not to run for fields that have no validation
-	@computed get errors() {
-		return this.validation.errors.get(this.name);
+		return this.errors.length === 0;
 	}
 
 	@action onFocus() {
@@ -62,5 +69,16 @@ export class ReactiveMobxFormField {
 
 	@action onChange(value:fieldValue) {
 		this.value = value;
+	}
+
+	subscribeToFormValidation(form: ReactiveMobxForm) {
+		autorun(() => {
+			const errors: Array<string> = form.errors.get(this.name);
+			
+			// todo: use .join here?
+			if (hasErrorArraysChanged(this.errors, errors)) {
+				this.errors = errors;
+			}
+		})
 	}
 }
