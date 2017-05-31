@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {reactiveMobxForm, Control} from 'reactive-mobx-form';
 
-const RenderField = ({input, meta: {dirty, valid}, label, placeholder, type}) => (
+const RenderField = ({input, meta: {dirty, valid, errors}, label, placeholder, type}) => (
 	<div style={{backgroundColor: (valid ? 'lightgreen' : 'pink')}}>
 		<label>{label}</label>
 		<div>
 			<input {...input} placeholder={placeholder} type={type}/>
 		</div>
-		{dirty ? (valid ? 'valid' : 'invalid') : ''}
+		{dirty ? (valid ? 'valid' : errors[0]) : ''}
 	</div>
 );
 
@@ -18,11 +18,11 @@ class ContactForm extends Component {
 			<form onSubmit={submit}>
 				<div>
 					<label htmlFor="firstName">First Name</label>
-					<Control name="firstName" component="input" type="text" alt="some text" />
+					<Control name="firstName" component={RenderField} type="text" alt="some text"  label="FN"/>
 				</div>
 				<div>
 					<label htmlFor="lastName">Last Name</label>
-					<Control name="lastName" component="input" type="text"/>
+					<Control name="lastName" component={RenderField} type="text" label="LN"/>
 				</div>
 				<div>
 					<label htmlFor="photo">Last Name</label>
@@ -72,13 +72,13 @@ class ContactForm extends Component {
 
 const ContactFormReactive = reactiveMobxForm('contacts',
 	{
-		'lastName': ['shevchenko', ''],
+		'lastName': ['shevchenko', 'same:firstName'],
 		'email': ['', 'required|email'],
-		'age': [25, 'numeric'],
+		'age': [25, 'numeric|between:10,30'],
 		'acceptTerms': [true],
 		'favoriteFilm': ['dieHardwerwe'],
 		'sex':[''],
-		'job': ['']
+		'job': [''] // todo: handle cases where field is absent but schema property exist
 	})(ContactForm);
 
 export default ContactFormReactive;
