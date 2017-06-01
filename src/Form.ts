@@ -9,7 +9,6 @@ import { ReactiveMobxFormField } from './Field';
 
 export class ReactiveMobxForm {
 	formSchema: normalizedFormSchema;
-	rules: {[propType: string]: string} = {};
 	
 	component: any;
 
@@ -60,13 +59,22 @@ export class ReactiveMobxForm {
 
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
-		const dict = {};
+		return this.fields.reduce((values:any, field) => {
+			values[field.name] = field.value;
+			return values;
+		}, {});
+	}
 
-		this.fields.forEach(field => {
-			dict[field.name] = field.value;
-		})
+	@computed get rules() {
+		const rules = {};
 
-		return dict;
+		Object.keys(this.formSchema).forEach((fieldName) => {
+			if (this.formSchema[fieldName][1]) {
+				rules[fieldName] = this.formSchema[fieldName][1];
+			}
+		});
+
+		return rules;
 	}
 
 	// todo: may be use transaction to make values recompute once
@@ -101,14 +109,7 @@ export class ReactiveMobxForm {
 		})
 	}
 
-	registerValidation() {
-		// todo: rules should be computed, to handle dynamic field add/remove
-		Object.keys(this.formSchema).forEach((fieldName) => {
-			if (this.formSchema[fieldName][1]) {
-				this.rules[fieldName] = this.formSchema[fieldName][1];
-			}
-		})
-
+	registerValidation() {		
 		reaction(
 			() => this.validation,
 			() => {
