@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {reactiveMobxForm, Control} from 'reactive-mobx-form';
+import {reactiveMobxForm, Control, ControlArray} from 'reactive-mobx-form';
 
 const RenderField = ({input, meta: {dirty, valid, errors}, label, placeholder, type}) => (
 	<div style={{backgroundColor: (valid ? 'lightgreen' : 'pink')}}>
@@ -11,9 +11,18 @@ const RenderField = ({input, meta: {dirty, valid, errors}, label, placeholder, t
 	</div>
 );
 
+const Hobbies = (props) => (
+	<div>
+		<label>Hobbies</label>
+		<div>
+			<Control name={`${props.name}[0]`} component="input" type="text"/>
+		</div>
+	</div>
+);
+
 class ContactForm extends Component {
 	render() {
-		const { submit, reset, submitting, valid } = this.props;
+		const { submit, reset, submitting, valid, dirty } = this.props;
 		return (
 			<form onSubmit={submit}>
 				<div>
@@ -60,8 +69,10 @@ class ContactForm extends Component {
 						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
 					</div>
 				</div>
+				<ControlArray name="hobbies" component={Hobbies} />
 				<hr />
 
+				Form Dirty --- {`${dirty}`}
 				Form Valid - - {`${valid}`} <br/>
 				<button type="submit">Submit</button>  is Submitting - {`${submitting}`} <br/>
 				<button onClick={reset}>Reset</button>
