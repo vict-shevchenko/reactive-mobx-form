@@ -59,22 +59,14 @@ export class ReactiveMobxForm {
 
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
-		return this.fields.reduce((values:any, field) => {
-			values[field.name] = field.value;
-			return values;
-		}, {});
+		return this.fields.reduce((values:any, field) => Object.assign(values, {[field.name]:field.value}), {});
 	}
 
 	@computed get rules() {
-		const rules = {};
-
-		Object.keys(this.formSchema).forEach((fieldName) => {
-			if (this.formSchema[fieldName][1]) {
-				rules[fieldName] = this.formSchema[fieldName][1];
-			}
-		});
-
-		return rules;
+		return Object.keys(this.formSchema).reduce((rules: any, fieldName) => {
+			const rule = this.formSchema[fieldName][1];
+			return Object.assign(rules, rule ? {[fieldName]: rule} : {});
+		}, {});
 	}
 
 	// todo: may be use transaction to make values recompute once
@@ -106,10 +98,10 @@ export class ReactiveMobxForm {
 	@action reset() {
 		this.fields.forEach(field => {
 			field.value = field.initialValue;
-		})
+		});
 	}
 
-	registerValidation() {		
+	registerValidation() {
 		reaction(
 			() => this.validation,
 			() => {
