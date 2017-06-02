@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { observer, Observer } from 'mobx-react';
-import { ReactiveMobxForm } from '../Form';
-import { ReactiveMobxFormField } from '../Field'
+import { Form } from '../Form';
+import { Field } from '../Field'
 
 import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
+import { omit } from "../utils";
 
 
 // todo: probabbly may be used when implementing withRef
@@ -12,18 +13,6 @@ import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } fro
   Component.prototype &&
   typeof Component.prototype.isReactComponent === 'object'
 )*/
-
-function omit(obj: any, omitKeys: Array<string>) {
-	const result = {};
-
-	Object.keys(obj).forEach(key => {
-		if (omitKeys.indexOf(key) === -1) {
-			result[key] = obj[key];
-		}
-	});
-
-	return result;
-}
 
 //todo: add value property to make field a controled component
 
@@ -57,8 +46,8 @@ export class Control extends React.Component<ControlProps, any> {
 	isFile: boolean;
 	isRadio: boolean;
 	isCheckbox: boolean;
-	form: ReactiveMobxForm;
-	field: ReactiveMobxFormField;
+	form: Form;
+	field: Field;
 
 	static requiredProps: Array<string> = ['component', 'name'];
 	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
@@ -92,11 +81,10 @@ export class Control extends React.Component<ControlProps, any> {
 
 	componentWillMount() {
 		// verify Control name duplications
-		if (this.form.fields.find(field => field.name === this.props.name) && !this.isRadio) {
+		if (this.form.fields[this.props.name] && !this.isRadio) {
 			throw(new Error(`Field with name ${this.props.name} already exist in Form`));
 		}
 
-		// todo: we need to handle exceptions with 2 fields with same name
 		if (this.form.formSchema[this.props.name]) {
 			// todo: remove warning in production build
 			this.warnOnIncorrectInitialValues();
@@ -110,7 +98,7 @@ export class Control extends React.Component<ControlProps, any> {
 			this.form.extendSchema(schemaExtension);
 		}
 
-		this.field = this.form.registerField(this.props.name);
+		this.field = this.form.registerField(this.props.name) as Field;
 		this.field.subscribeToFormValidation(this.form);
 	}
 

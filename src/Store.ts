@@ -1,11 +1,11 @@
 import { observable } from 'mobx';
-import { ReactiveMobxForm } from './Form';
+import { Form } from './Form';
 
 export class FormStore {
-	@observable forms: {[propType:string]:ReactiveMobxForm} = {};
+	@observable forms: {[propType:string]:Form} = {};
 
-	registerForm(name: string, ReactiveMobxForm:ReactiveMobxForm) {
-		this.forms[name] = ReactiveMobxForm;
+	registerForm(name: string, form:Form) {
+		this.forms[name] = form;
 	}
 
 	unRegisterForm(name:string){

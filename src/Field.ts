@@ -3,8 +3,9 @@ import { observable, action, computed, autorun } from 'mobx';
 import * as Validator from 'validatorjs';
 
 import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from './interface';
-import { ReactiveMobxForm } from "./Form";
+import { Form } from "./Form";
 
+// todo: may be removed
 function hasErrorArraysChanged(oldErrors:Array<string>, newErrors:Array<string>):boolean {
 	if (oldErrors.length !== newErrors.length) {
 		return true
@@ -20,7 +21,7 @@ function hasErrorArraysChanged(oldErrors:Array<string>, newErrors:Array<string>)
 	return false;
 }
 
-export class ReactiveMobxFormField {
+export class Field {
 
 	readonly name: string;
 	readonly initialValue: fieldValue = '';
@@ -71,12 +72,14 @@ export class ReactiveMobxFormField {
 		this.value = value;
 	}
 
-	subscribeToFormValidation(form: ReactiveMobxForm) {
+	subscribeToFormValidation(form: Form) {
 		autorun(() => {
 			const errors: Array<string> = form.errors.get(this.name);
 			
 			// todo: use .join here?
-			if (hasErrorArraysChanged(this.errors, errors)) {
+			// if (hasErrorArraysChanged(this.errors, errors)) {
+
+			if (this.errors.join() !== errors.join()) {
 				this.errors = errors;
 			}
 		})

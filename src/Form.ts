@@ -5,16 +5,17 @@ import * as Validator from 'validatorjs';
 
 import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedFormSchema } from './interface';
 
-import { ReactiveMobxFormField } from './Field';
+import { Field } from './Field';
+import { FieldArray } from "./FieldArray";
 
-export class ReactiveMobxForm {
+export class Form {
 	formSchema: normalizedFormSchema;
-	
+
 	component: any;
 
-	@observable fields: Array<ReactiveMobxFormField> = [];
-	@observable errors: Validator.Errors;
-	@observable isValid: boolean | void;
+	@observable fields: any = observable.map({}); // todo: does not look good
+	@observable errors: Validator.Errors; // todo: initial value
+	@observable isValid: boolean | void; // todo: initial value
 
 	@observable submitting: boolean = false;
 	@observable validating: boolean = false;
@@ -34,22 +35,22 @@ export class ReactiveMobxForm {
 	error
 	*/
 
-	static normalizeSchema(formSchema:formSchema):normalizedFormSchema {
+	static normalizeSchema(formSchema: formSchema): normalizedFormSchema {
 		const normalized = {};
 
 		Object.keys(formSchema).map(fieldName => {
-			normalized[fieldName] = ReactiveMobxFormField.normalizeFieldDefinition(formSchema[fieldName])
+			normalized[fieldName] = Field.normalizeFieldDefinition(formSchema[fieldName])
 		});
 
 		return normalized;
 	}
 
 	constructor(formSchema) {
-		this.formSchema = ReactiveMobxForm.normalizeSchema(formSchema);
+		this.formSchema = Form.normalizeSchema(formSchema);
 	}
 
-	@computed get isDirty() {
-		return this.fields.some(field => field.isDirty);
+	@computed get isDirty() { // todo: should be implementede for ControlArray
+		return this.fields.values().some(field => field.isDirty);
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
@@ -59,46 +60,45 @@ export class ReactiveMobxForm {
 
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
-		return this.fields.reduce((values:any, field) => Object.assign(values, {[field.name]:field.value}), {});
+		// return this.fields.entries().map(entry => ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
+		return this.fields.entries().reduce((values:any, entry) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
 	}
 
-	@computed get rules() {
+	@computed get rules() { // todo: check if rule is computed on new field add
 		return Object.keys(this.formSchema).reduce((rules: any, fieldName) => {
 			const rule = this.formSchema[fieldName][1];
-			return Object.assign(rules, rule ? {[fieldName]: rule} : {});
+			return Object.assign(rules, rule ? { [fieldName]: rule } : {});
 		}, {});
 	}
 
 	// todo: may be use transaction to make values recompute once
-	@action registerField(fieldName:string) {
-		let field = this.fields.find(field => field.name === fieldName);
-
-		if (!field) {
-			this.fields.push(new ReactiveMobxFormField(fieldName, this.formSchema[fieldName]));
-			field = this.fields[this.fields.length - 1];
+	@action registerField(fieldName: string, isArrayField?: boolean) {
+		if (!this.fields[fieldName]) {
+			this.fields.set(fieldName, isArrayField ? new FieldArray(fieldName) : new Field(fieldName, this.formSchema[fieldName]))
 		}
 
-		return field;
+		return this.fields.get(fieldName);
 	}
 
-	@action removeField(fieldName:string) {
-		const fieldIdx = this.fields.findIndex(field => field.name === fieldName);
+	@action removeField(fieldName: string) {
+		this.fields.delete(fieldName);
 
-		this.fields.splice(fieldIdx, 1);
 		// todo: delete field from schema also ????
 	}
 
-	@action extendSchema(schemaExtension:formSchema) {
+	@action extendSchema(schemaExtension: formSchema) {
 		// todo: Probably ist good to have some safe extension
-		const normalizeSchemaExtension = ReactiveMobxForm.normalizeSchema(schemaExtension);
-		
+		const normalizeSchemaExtension = Form.normalizeSchema(schemaExtension);
+
 		Object.assign(this.formSchema, normalizeSchemaExtension);
 	}
 
 	@action reset() {
-		this.fields.forEach(field => {
+		// todo: think about reset
+
+		/*this.fields.forEach(field => {
 			field.value = field.initialValue;
-		});
+		});*/
 	}
 
 	registerValidation() {
