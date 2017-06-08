@@ -59,7 +59,8 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	}
 
 	render() {
+		debugger
 		const propsToPass = omit(this.props, ControlArray.propNamesToOmitWhenByPass);
-		return React.createElement((this.props.component as any), Object.assign({}, { fields: this.field.subFields }, propsToPass));
+		return React.createElement((this.props.component as any), Object.assign({}, { fields: this.field.subFieldNames, push: this.field.push.bind(this.field) }, propsToPass));
 	}
 }

@@ -49,6 +49,7 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 				this.props.formStore.unRegisterForm(formName);
 			}
 
+			// todo: pass additional information to submimt
 			submitForm(event: Event) {
 				event.preventDefault();
 

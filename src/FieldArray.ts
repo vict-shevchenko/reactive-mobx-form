@@ -14,6 +14,7 @@ export class FieldArray {
 	readonly _isFieldArray: boolean = true;
 
 	@observable subFields: Array<Field | Array<Field>> = [];
+	@observable subFieldNames: Array<string> = [];
 	//@observable value: any = '';
 	@observable errors: Array<string> = [];
 
@@ -51,6 +52,11 @@ export class FieldArray {
 			return this.subFields[index][this.subFields[index].length - 1];
 
 		}
+	}
+
+	// TODO: debug behaviour of not reacting if using normal push
+	push() {
+		this.subFieldNames = [...this.subFieldNames,(`${this.name}[${this.subFields.length}]`)];
 	}
 
 	@computed get value() {
