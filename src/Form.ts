@@ -60,7 +60,7 @@ export class Form {
 
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
-		// return this.fields.entries().map(entry => ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
+		//return this.fields.entries().map(entry => ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
 		return this.fields.entries().reduce((values:any, entry) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
 	}
 
@@ -73,6 +73,22 @@ export class Form {
 
 	// todo: may be use transaction to make values recompute once
 	@action registerField(fieldName: string, isArrayField?: boolean) {
+		const [FieldArrayName, ...rest]: Array<string> = fieldName.replace(/\[([0-9]*)\]/g, '.$1.').split('.');
+
+		if (rest[rest.length - 1] === '') {
+			rest.pop();
+		}
+
+		const isNestedField: boolean = rest.length > 0;
+
+		if (isNestedField) {
+			const fieldArray: FieldArray = this.fields.get(FieldArrayName);
+
+			return fieldArray.registerField(rest.join('.'), this.formSchema[fieldName], isArrayField)
+		}
+
+
+
 		if (!this.fields[fieldName]) {
 			this.fields.set(fieldName, isArrayField ? new FieldArray(fieldName) : new Field(fieldName, this.formSchema[fieldName]))
 		}
