@@ -7,6 +7,7 @@ import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedForm
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
+import { FieldSection } from "./FieldSection";
 
 export class Form {
 	formSchema: normalizedFormSchema;
@@ -72,7 +73,7 @@ export class Form {
 	}
 
 	// todo: may be use transaction to make values recompute once
-	@action registerField(fieldName: string, isArrayField?: boolean) {
+	@action registerField(fieldName: string, isArrayField?: boolean, isSectionField?: boolean) { // todo: remove this shit coding
 		const [FieldArrayName, ...rest]: Array<string> = fieldName.replace(/\[([0-9]*)\]/g, '.$1.').split('.');
 
 		if (rest[rest.length - 1] === '') {
@@ -82,15 +83,16 @@ export class Form {
 		const isNestedField: boolean = rest.length > 0;
 
 		if (isNestedField) {
-			const fieldArray: FieldArray = this.fields.get(FieldArrayName);
+			// todo: verify field not found if name was iccorectly provided like [Object object]
+			const parentField: FieldArray | FieldSection = this.fields.get(FieldArrayName);
 
-			return fieldArray.registerField(rest.join('.'), this.formSchema[fieldName], isArrayField)
+			return parentField.registerField(rest.join('.'), this.formSchema[fieldName], isArrayField)
 		}
 
 
 
 		if (!this.fields.get(fieldName)) {
-			this.fields.set(fieldName, isArrayField ? new FieldArray(fieldName) : new Field(fieldName, this.formSchema[fieldName]))
+			this.fields.set(fieldName, isArrayField ? new FieldArray(fieldName) : isSectionField ? new FieldSection(fieldName) : new Field(fieldName, this.formSchema[fieldName]))
 		}
 
 		return this.fields.get(fieldName);
