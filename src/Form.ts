@@ -89,7 +89,7 @@ export class Form {
 
 
 
-		if (!this.fields[fieldName]) {
+		if (!this.fields.get(fieldName)) {
 			this.fields.set(fieldName, isArrayField ? new FieldArray(fieldName) : new Field(fieldName, this.formSchema[fieldName]))
 		}
 
