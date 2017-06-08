@@ -11,6 +11,22 @@ const RenderField = ({input, meta: {dirty, valid, errors}, label, placeholder, t
 	</div>
 );
 
+
+const Persons = (props) => (
+	<div>
+		<div>
+			<label htmlFor="firstName">First Name</label>
+			<Control name={`${props.name}[0]firstName`} component="input" type="text" alt="some text"  label="FN"/>
+		</div>
+		<div>
+			<label htmlFor="lastName">Last Name</label>
+			<Control name={`${props.name}[0]lastName`} component="input" type="text" alt="some text"  label="FN"/>
+		</div>
+		<ControlArray name={`${props.name}[0]hobbies`} component={Hobbies} />
+	</div>
+
+);
+
 const Hobbies = (props) => (
 	<div>
 		<label>Hobbies</label>
@@ -25,7 +41,7 @@ class ContactForm extends Component {
 		const { submit, reset, submitting, valid, dirty } = this.props;
 		return (
 			<form onSubmit={submit}>
-				<div>
+				{/*<div>
 					<label htmlFor="firstName">First Name</label>
 					<Control name="firstName" component={RenderField} type="text" alt="some text"  label="FN"/>
 				</div>
@@ -68,8 +84,8 @@ class ContactForm extends Component {
 						<label><Control name="sex" component="input" type="radio" value="male"/> Male</label>
 						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
 					</div>
-				</div>
-				<ControlArray name="hobbies" component={Hobbies} />
+				</div>*/}
+				<ControlArray name="persons" component={Persons} />
 				<hr />
 
 				Form Dirty --- {`${dirty}`}
