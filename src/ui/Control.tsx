@@ -81,7 +81,7 @@ export class Control extends React.Component<ControlProps, any> {
 
 	componentWillMount() {
 		// verify Control name duplications
-		if (this.form.fields[this.props.name] && !this.isRadio) {
+		if (this.form.fields.get(this.props.name) && !this.isRadio) {
 			throw(new Error(`Field with name ${this.props.name} already exist in Form`));
 		}
 
