@@ -61,6 +61,7 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 					})
 					.then(result => {
 						this.form.submitting = false;
+						this.resetForm();
 					})
 			}
 

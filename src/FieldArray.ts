@@ -14,7 +14,7 @@ export class FieldArray {
 	readonly _isFieldArray: boolean = true;
 
 	@observable subFields: Array<Field | Array<Field>> = [];
-	@observable subFieldNames: Array<string> = [];
+	@observable subFieldNames: Array<string> = []; // todo: strange as array is not obervable to its lenght change
 	//@observable value: any = '';
 	@observable errors: Array<string> = [];
 
@@ -54,9 +54,13 @@ export class FieldArray {
 		}
 	}
 
+	@action reset() {
+		this.subFieldNames = [];
+	}
+
 	// TODO: debug behaviour of not reacting if using normal push
 	push() {
-		this.subFieldNames = [...this.subFieldNames,(`${this.name}[${this.subFields.length}]`)];
+		this.subFieldNames = [...this.subFieldNames, (`${this.name}[${this.subFields.length}]`)];
 	}
 
 	@computed get value() {
@@ -70,6 +74,7 @@ export class FieldArray {
 		});
 	}
 
+	// todo: fix this
 	@computed get isDirty() {
 		return true;
 	}

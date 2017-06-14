@@ -1,9 +1,9 @@
 import React, { Component, createElement } from 'react';
-import { observable, action, computed, reaction } from 'mobx';
+import { observable, action, computed, reaction, ObservableMap } from 'mobx';
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedFormSchema } from './interface';
+import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedFormSchema, formField } from './interface';
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
@@ -14,7 +14,7 @@ export class Form {
 
 	component: any;
 
-	@observable fields: any = observable.map({}); // todo: does not look good
+	@observable fields: ObservableMap<{}> = observable.map();
 	@observable errors: Validator.Errors; // todo: initial value
 	@observable isValid: boolean | void; // todo: initial value
 
@@ -51,7 +51,7 @@ export class Form {
 	}
 
 	@computed get isDirty() { // todo: should be implementede for ControlArray
-		return this.fields.values().some(field => field.isDirty);
+		return this.fields.values().some((field:formField) => field.isDirty);
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
@@ -62,7 +62,7 @@ export class Form {
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
 		//return this.fields.entries().map(entry => ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
-		return this.fields.entries().reduce((values:any, entry) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
+		return this.fields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
 	}
 
 	@computed get rules() { // todo: check if rule is computed on new field add
@@ -84,7 +84,7 @@ export class Form {
 
 		if (isNestedField) {
 			// todo: verify field not found if name was iccorectly provided like [Object object]
-			const parentField: FieldArray | FieldSection = this.fields.get(FieldArrayName);
+			const parentField: FieldArray | FieldSection = this.fields.get(FieldArrayName) as FieldArray | FieldSection;
 
 			return parentField.registerField(rest.join('.'), this.formSchema[fieldName], isArrayField)
 		}
@@ -112,11 +112,9 @@ export class Form {
 	}
 
 	@action reset() {
-		// todo: think about reset
-
-		/*this.fields.forEach(field => {
-			field.value = field.initialValue;
-		});*/
+		this.fields.forEach((field: formField)=> {
+			field.reset();
+		});
 	}
 
 	registerValidation() {

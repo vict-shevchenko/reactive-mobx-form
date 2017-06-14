@@ -2,7 +2,7 @@ import React, { Component, createElement } from 'react';
 import { observable, action, computed, autorun, isObservableArray, ObservableMap } from 'mobx';
 import * as Validator from 'validatorjs';
 
-import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from './interface';
+import { fieldValue, fieldDefinition, normalizesdFieldDefinition, formField } from './interface';
 import { Form } from "./Form";
 import { Field } from "./Field";
 import { FieldArray } from './FieldArray';
@@ -14,7 +14,7 @@ export class FieldSection {
 	readonly name: string;
 	readonly _isFieldSection: boolean = true;
 
-	@observable subFields: any = observable.map({}); // todo: does not look good
+	@observable subFields: ObservableMap<{}> = observable.map(); // todo: does not look good
 	//@observable value: any = '';
 	@observable errors: Array<string> = [];
 
@@ -28,12 +28,17 @@ export class FieldSection {
 		return this.subFields.get(fieldName);
 	}
 
+	@action reset() {
+		this.subFields.values().forEach((field:formField) => field.reset());
+	}
+
 	@computed get value() {
 		return {
-			[this.name]: this.subFields.entries().reduce((values:any, entry) => Object.assign(values, { [entry[0]]: entry[1].value }), {})
+			[this.name]: this.subFields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {})
 		}
 	}
 
+	// todo: fix this
 	@computed get isDirty() {
 		return true;
 	}

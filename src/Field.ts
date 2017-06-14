@@ -72,6 +72,10 @@ export class Field {
 		this.value = value;
 	}
 
+	@action reset() {
+		this.value = this.initialValue;
+	}
+
 	subscribeToFormValidation(form: Form) {
 		autorun(() => {
 			const errors: Array<string> = form.errors.get(this.name);
