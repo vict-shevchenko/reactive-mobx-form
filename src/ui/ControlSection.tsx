@@ -22,7 +22,12 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
 
 	static contextTypes = {
-		_ReactiveMobxForm: React.PropTypes.object.isRequired
+		_ReactiveMobxForm: React.PropTypes.object.isRequired,
+		
+	}
+
+	static childContextTypes = {
+		_ReactiveMobxFormFieldSection: React.PropTypes.string.isRequired
 	}
 
 	constructor(props, context) {
@@ -32,6 +37,13 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 
 		this.form = context._ReactiveMobxForm;
 	}
+
+	getChildContext() {
+		return {
+			_ReactiveMobxFormFieldSection: this.props.name
+		};
+	}
+	
 
 	componentWillMount() {
 		// verify Control name duplications

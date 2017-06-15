@@ -40,6 +40,7 @@ interface ControlProps {
 
 @observer
 export class Control extends React.Component<ControlProps, any> {
+	name: string;
 	isNumber: boolean;
 	isSelect: boolean;
 	isCheckable: boolean;
@@ -57,7 +58,8 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	static contextTypes = {
-		_ReactiveMobxForm: React.PropTypes.object.isRequired
+		_ReactiveMobxForm: React.PropTypes.object.isRequired,
+		_ReactiveMobxFormFieldSection: React.PropTypes.string
 	}
 
 	constructor(props, context) {
@@ -66,6 +68,8 @@ export class Control extends React.Component<ControlProps, any> {
 		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
+
+		this.name = context._ReactiveMobxFormFieldSection ? `${context._ReactiveMobxFormFieldSection}.${props.name}` : props.name;
 
 		this.isCheckbox = props.type === 'checkbox';
 		this.isRadio = props.type === 'radio';
@@ -81,11 +85,12 @@ export class Control extends React.Component<ControlProps, any> {
 
 	componentWillMount() {
 		// verify Control name duplications
-		if (this.form.fields.get(this.props.name) && !this.isRadio) {
-			throw(new Error(`Field with name ${this.props.name} already exist in Form`));
+		// todo: looks like this verification is better to do inside of Form class
+		if (this.form.fields.get(this.name) && !this.isRadio) {
+			throw(new Error(`Field with name ${this.name} already exist in Form`));
 		}
 
-		if (this.form.formSchema[this.props.name]) {
+		if (this.form.formSchema[this.name]) {
 			// todo: remove warning in production build
 			this.warnOnIncorrectInitialValues();
 		}
@@ -93,17 +98,18 @@ export class Control extends React.Component<ControlProps, any> {
 			const initialValue: boolean | string = this.isCheckbox ? false : '';
 			const rules: string = this.props.rules;
 			const fieldDefinition: normalizesdFieldDefinition = [initialValue, rules];
-			const schemaExtension: normalizedFormSchema = { [this.props.name]: fieldDefinition }
+			const schemaExtension: normalizedFormSchema = { [this.name]: fieldDefinition }
 
 			this.form.extendSchema(schemaExtension);
 		}
 
-		this.field = this.form.registerField(this.props.name) as Field;
+		this.field = this.form.registerField(this.name) as Field;
 		this.field.subscribeToFormValidation(this.form);
 	}
 
 	componentWillUnmount() {
-		this.form.removeField(this.props.name);
+		// handle proper remove of fields
+		this.form.removeField(this.name);
 	}
 
 	verifyRequiredProps() {
@@ -115,7 +121,7 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	warnOnIncorrectInitialValues() {
-		const inititlaValue = this.form.formSchema[this.props.name][0];
+		const inititlaValue = this.form.formSchema[this.name][0];
 		const initialValueType = typeof inititlaValue; // initial value
 
 		if (this.isSelect) {
@@ -127,7 +133,7 @@ export class Control extends React.Component<ControlProps, any> {
 			(this.isNumber && initialValueType !== 'number') ||
 			(!this.isCheckbox && !this.isNumber && initialValueType !== 'string')
 		) {
-			console.warn(`Incorrect initial value profided to field '${this.props.name}'. Got '${initialValueType}'`)
+			console.warn(`Incorrect initial value profided to field '${this.name}'. Got '${initialValueType}'`)
 		}
 	}
 
