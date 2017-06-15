@@ -1,10 +1,11 @@
 import React, { Component, createElement } from 'react';
-import { observable, action, computed, autorun, isObservableArray, ObservableMap } from 'mobx';
+import { observable, action, computed, autorun, isObservableArray, ObservableMap, isObservableMap } from 'mobx';
 import * as Validator from 'validatorjs';
 
-import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from './interface';
+import { fieldValue, fieldDefinition, normalizesdFieldDefinition, formField } from './interface';
 import { Form } from "./Form";
 import { Field } from "./Field";
+import { objectPath, isNumeric } from "./utils";
 
 
 export class FieldArray {
@@ -13,63 +14,47 @@ export class FieldArray {
 	readonly name: string;
 	readonly _isFieldArray: boolean = true;
 
-	@observable subFields: Array<Field | Array<Field>> = [];
-	@observable subFieldNames: Array<string> = []; // todo: strange as array is not obervable to its lenght change
-	//@observable value: any = '';
+	@observable subFields: ObservableMap<{}> = observable.map();
 	@observable errors: Array<string> = [];
 
 	constructor(name: string) {
 		this.name = name;
 	}
 
-	@action registerField(fieldName: string, fieldDefinition: normalizesdFieldDefinition, isArrayField?: boolean) {
-		const match = fieldName.match(/^[0-9]*/); //we have 0, just index
+	@action registerField(field: formField) {
+		const fieldPath = objectPath(field.name);
+		const lastPathNode = fieldPath[fieldPath.length - 1];
 
-		if (match[0] === fieldName) {  // we have a deal with array of one field
-			const index = parseInt(fieldName, 10);
-			this.subFields[index] = new Field(`${this.name}[${fieldName}]`, fieldDefinition);
-			return this.subFields[index];
+		if (isNumeric(lastPathNode)) {
+			this.subFields.set(lastPathNode, field);
 		}
+		else {
+			const preLastPathNode = fieldPath[fieldPath.length - 2];
 
-		else { // we have a deal with array of group of fields
-			const [index, ...rest] = fieldName.split('.');
-
-			if (!this.subFields[index]) {
-				this.subFields[index] = [];
+			if (!this.subFields.get(preLastPathNode)) {
+				this.subFields.set(preLastPathNode, observable.map());
 			}
 
-			if (rest.length > 1) {
-				const parentFieldArray: FieldArray = this.subFields[index].find(field => field.name === rest[0]);
-
-				if (parentFieldArray._isFieldArray) { // todo: may be we don`t need this;
-					rest.shift();
-					return parentFieldArray.registerField(rest.join('.'), fieldDefinition, isArrayField)
-				}
-			}
-
-			this.subFields[index].push(isArrayField ? new FieldArray(rest.join('.')) : new Field(rest.join('.'), fieldDefinition))
-
-			return this.subFields[index][this.subFields[index].length - 1];
-
+			(this.subFields.get(preLastPathNode) as ObservableMap<{}>).set(lastPathNode, field);
 		}
 	}
 
 	@action reset() {
-		this.subFieldNames = [];
+		this.subFields.clear();
 	}
 
-	// TODO: debug behaviour of not reacting if using normal push
 	push() {
-		this.subFieldNames = [...this.subFieldNames, (`${this.name}[${this.subFields.length}]`)];
+		this.subFields.set((this.subFields.size).toString(), observable.map() )
 	}
 
 	@computed get value() {
-		return this.subFields.map((subField: Field | FieldArray | Array<Field | FieldArray>) => {
-			if (isObservableArray(subField)) {
-				return (subField as Array<Field | FieldArray>).reduce((val, field) => Object.assign(val, { [field.name]: field.value }), {});
+		return this.subFields.entries().map(([key, subField]: [string, formField | ObservableMap<formField>]) => {
+
+			if (isObservableMap(subField)) {
+				return (subField as ObservableMap<formField>).entries().reduce((val, [fieldName, field]: [string, formField]) => Object.assign(val, { [fieldName]: field.value }), {});
 			}
 			else {
-				return (subField as Field | FieldArray).value;
+				return (subField as formField).value;
 			}
 		});
 	}

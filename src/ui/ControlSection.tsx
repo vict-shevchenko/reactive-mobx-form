@@ -14,8 +14,9 @@ interface ControlSectionProps {
 
 @observer
 export class ControlSection extends React.Component<ControlSectionProps, any> {
+	name : string;
+	form : Form;
 	field: FieldSection;
-	form: Form;
 
 	// todo: should be possible to use with children
 	static requiredProps: Array<string> = ['component', 'name'];
@@ -23,11 +24,11 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 
 	static contextTypes = {
 		_ReactiveMobxForm: React.PropTypes.object.isRequired,
-		
+		_ReactiveMobxFormFieldSection: React.PropTypes.string
 	}
 
 	static childContextTypes = {
-		_ReactiveMobxFormFieldSection: React.PropTypes.string.isRequired
+		_ReactiveMobxFormFieldSection: React.PropTypes.string.isRequired,
 	}
 
 	constructor(props, context) {
@@ -36,31 +37,33 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
+		this.name = context._ReactiveMobxFormFieldSection ? `${context._ReactiveMobxFormFieldSection}.${props.name}` : props.name;
 	}
 
 	getChildContext() {
 		return {
-			_ReactiveMobxFormFieldSection: this.props.name
+			_ReactiveMobxFormFieldSection: this.name
 		};
 	}
-	
+
 
 	componentWillMount() {
 		// verify Control name duplications
-		if (this.form.fields.get(this.props.name)) {
-			throw(new Error(`Field with name ${this.props.name} already exist in Form`));
+		if (this.form.fields.get(this.name)) {
+			throw (new Error(`Field with name ${this.name} already exist in Form`));
 		}
 
 		// 
-		if (this.form.formSchema[this.props.name]) {
-			throw(new Error(`Control Section with name ${this.props.name} should not be in schema`));
+		if (this.form.formSchema[this.name]) {
+			throw (new Error(`Control Section with name ${this.name} should not be in schema`));
 		}
 
-		this.field = this.form.registerField(this.props.name, false, true) as FieldSection;
+		this.field = new FieldSection(this.name)
+		this.form.registerField(this.field);
 	}
 
 	componentWillUnmount() {
-		this.form.removeField(this.props.name);
+		this.form.removeField(this.name);
 	}
 
 	verifyRequiredProps() {

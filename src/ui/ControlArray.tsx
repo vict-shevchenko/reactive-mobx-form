@@ -14,6 +14,7 @@ interface ControlArrayProps {
 
 @observer
 export class ControlArray extends React.Component<ControlArrayProps, any> {
+	name: string;
 	field: FieldArray;
 	form: Form;
 
@@ -21,7 +22,8 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
 
 	static contextTypes = {
-		_ReactiveMobxForm: React.PropTypes.object.isRequired
+		_ReactiveMobxForm: React.PropTypes.object.isRequired,
+		_ReactiveMobxFormFieldSection: React.PropTypes.string
 	}
 
 	constructor(props, context) {
@@ -30,24 +32,26 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
+		this.name = context._ReactiveMobxFormFieldSection ? `${context._ReactiveMobxFormFieldSection}.${props.name}` : props.name;
 	}
 
 	componentWillMount() {
 		// verify Control name duplications, this code is duplicated in all controls
-		if (this.form.fields.get(this.props.name)) {
-			throw(new Error(`Field with name ${this.props.name} already exist in Form`));
+		if (this.form.fields.get(this.name)) {
+			throw(new Error(`Field with name ${this.name} already exist in Form`));
 		}
 
 		// todo: we need to handle exceptions with 2 fields with same name
-		if (this.form.formSchema[this.props.name]) {
-			throw(new Error(`Control Array with name ${this.props.name} should not be in schema`));
+		if (this.form.formSchema[this.name]) {
+			throw(new Error(`Control Array with name ${this.name} should not be in schema`));
 		}
 
-		this.field = this.form.registerField(this.props.name, true) as FieldArray;
+		this.field = new FieldArray(this.name)
+		this.form.registerField(this.field);
 	}
 
 	componentWillUnmount() {
-		this.form.removeField(this.props.name);
+		this.form.removeField(this.name);
 	}
 
 	verifyRequiredProps() {
@@ -60,6 +64,6 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 
 	render() {
 		const propsToPass = omit(this.props, ControlArray.propNamesToOmitWhenByPass);
-		return React.createElement((this.props.component as any), Object.assign({}, { fields: this.field.subFieldNames, push: this.field.push.bind(this.field) }, propsToPass));
+		return React.createElement((this.props.component as any), Object.assign({}, { fields: this.field.subFields.keys().map(key => `${this.field.name}[${key}].`), add: this.field.push.bind(this.field) }, propsToPass));
 	}
 }

@@ -6,7 +6,8 @@ import { fieldValue, fieldDefinition, normalizesdFieldDefinition, formField } fr
 import { Form } from "./Form";
 import { Field } from "./Field";
 import { FieldArray } from './FieldArray';
- 
+import { objectPath } from "./utils";
+
 
 export class FieldSection {
 	initialValue: {[propType:string]:fieldValue} = {};
@@ -15,17 +16,19 @@ export class FieldSection {
 	readonly _isFieldSection: boolean = true;
 
 	@observable subFields: ObservableMap<{}> = observable.map(); // todo: does not look good
-	//@observable value: any = '';
 	@observable errors: Array<string> = [];
 
 	constructor(name: string) {
 		this.name = name;
 	}
 
-	@action registerField(fieldName: string, fieldDefinition: normalizesdFieldDefinition, isArrayField?: boolean) {
-		this.subFields.set(fieldName, isArrayField ? new FieldArray(fieldName) : new Field(fieldName, fieldDefinition));
+	@action registerField(field: formField) {
 
-		return this.subFields.get(fieldName);
+		// todo: looks like this is not a good solution to copy this part of code 
+		const fieldPath = objectPath(field.name);
+		const lastPathNode = fieldPath[fieldPath.length - 1];
+		
+		this.subFields.set(lastPathNode, field);
 	}
 
 	@action reset() {
@@ -33,9 +36,7 @@ export class FieldSection {
 	}
 
 	@computed get value() {
-		return {
-			[this.name]: this.subFields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {})
-		}
+		return this.subFields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {})
 	}
 
 	// todo: fix this

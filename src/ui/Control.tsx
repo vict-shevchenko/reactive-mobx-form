@@ -3,7 +3,7 @@ import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field'
 
-import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
+import { normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
 import { omit } from "../utils";
 
 
@@ -90,20 +90,23 @@ export class Control extends React.Component<ControlProps, any> {
 			throw(new Error(`Field with name ${this.name} already exist in Form`));
 		}
 
-		if (this.form.formSchema[this.name]) {
+	//	if (this.form.formSchema[this.name]) {
 			// todo: remove warning in production build
-			this.warnOnIncorrectInitialValues();
-		}
-		else { // field was not registered in form schema or exteded as <Form schema/> parameter
+	//		this.warnOnIncorrectInitialValues();
+		//}
+		//else { // field was not registered in form schema or exteded as <Form schema/> parameter
 			const initialValue: boolean | string = this.isCheckbox ? false : '';
 			const rules: string = this.props.rules;
 			const fieldDefinition: normalizesdFieldDefinition = [initialValue, rules];
 			const schemaExtension: normalizedFormSchema = { [this.name]: fieldDefinition }
 
 			this.form.extendSchema(schemaExtension);
-		}
+	//	}
 
-		this.field = this.form.registerField(this.name) as Field;
+		//this.field = this.form.registerField(this.name) as Field;
+		this.field = new Field(this.name, fieldDefinition)
+		this.form.registerField(this.field);
+
 		this.field.subscribeToFormValidation(this.form);
 	}
 

@@ -1,5 +1,5 @@
 import React, { Component, createElement } from 'react';
-import { observable, action, computed, reaction, ObservableMap } from 'mobx';
+import { observable, action, computed, reaction, ObservableMap, isObservableMap } from 'mobx';
 import * as Validator from 'validatorjs';
 
 
@@ -8,6 +8,7 @@ import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedForm
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
 import { FieldSection } from "./FieldSection";
+import { objectPath, isNumeric } from "./utils";
 
 export class Form {
 	formSchema: normalizedFormSchema;
@@ -72,30 +73,26 @@ export class Form {
 		}, {});
 	}
 
-	// todo: may be use transaction to make values recompute once
-	@action registerField(fieldName: string, isArrayField?: boolean, isSectionField?: boolean) { // todo: remove this shit coding
-		const [FieldArrayName, ...rest]: Array<string> = fieldName.replace(/\[([0-9]*)\]/g, '.$1.').split('.');
+	@action registerField(field: formField): void {
+		const fieldPath = objectPath(field.name);
 
-		if (rest[rest.length - 1] === '') {
-			rest.pop();
+		// this is a root field in a form, just register field by addign it to map
+		if (fieldPath.length === 1) {
+			this.fields.set(field.name, field);
 		}
+		else {
+			// the field is inside of hierarchy, find its parent and call parents register function
 
-		const isNestedField: boolean = rest.length > 0;
+			let parentField: FieldArray | FieldSection;
 
-		if (isNestedField) {
-			// todo: verify field not found if name was iccorectly provided like [Object object]
-			const parentField: FieldArray | FieldSection = this.fields.get(FieldArrayName) as FieldArray | FieldSection;
-
-			return parentField.registerField(rest.join('.'), this.formSchema[fieldName], isArrayField)
+			try {
+				parentField = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
+				parentField.registerField(field);
+			}
+			catch (e) {
+				console.log(`Field ${field.name} can't be registred. Check name hierarchy.` , e)
+			}
 		}
-
-
-
-		if (!this.fields.get(fieldName)) {
-			this.fields.set(fieldName, isArrayField ? new FieldArray(fieldName) : isSectionField ? new FieldSection(fieldName) : new Field(fieldName, this.formSchema[fieldName]))
-		}
-
-		return this.fields.get(fieldName);
 	}
 
 	@action removeField(fieldName: string) {
@@ -112,9 +109,26 @@ export class Form {
 	}
 
 	@action reset() {
+		// todo: reset formSchema also
+
 		this.fields.forEach((field: formField)=> {
 			field.reset();
 		});
+	}
+
+	findFieldInHierarchy(path) {
+		return path.reduce((f, node, idx) => {
+			if (idx === path.length - 1 && isNumeric(path[idx])) { // last item is numeric like [... , '0']
+				return f;
+			}
+
+			if (idx === 0) {
+				return f.get(node);
+			}
+
+			return isObservableMap(f) ? f.get(node) : f.subFields.get(node);
+
+		}, this.fields);
 	}
 
 	registerValidation() {
