@@ -195,8 +195,6 @@ export class Control extends React.Component<ControlProps, any> {
 			checked = { checked: (this.field.value === this.props.value) }
 		}
 
-		const input = Object.assign({}, (this.isFile ? {} : inputValue), handlers, (this.isCheckable ? checked : {}));
-
 		const meta = {
 			focused: this.field.isFocused,
 			touched: this.field.isTouched,
@@ -204,6 +202,14 @@ export class Control extends React.Component<ControlProps, any> {
 			valid  : this.field.isValid,
 			errors : this.field.errors
 		}
+
+		const className = [
+			meta.touched ? 'mrf-touched' : 'mrf-untouched',
+			meta.dirty   ? 'mrf-dirty'   : 'mrf-pristine',
+			meta.valid   ? 'mrf-valid'   : 'mrf-invalid'
+		].join(' ');
+
+		const input = Object.assign({}, { className }, (this.isFile ? {} : inputValue), handlers, (this.isCheckable ? checked : {}));
 
 		const propsToPass = omit(this.props, Control.propNamesToOmitWhenByPass);
 
