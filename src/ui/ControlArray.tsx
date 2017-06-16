@@ -67,7 +67,7 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 		return React.createElement((this.props.component as any), 
 				Object.assign(
 						{}, 
-						{ fields: this.field.subFields.keys().map(key => `${this.field.name}[${key}].`),
+						{ fields: this.field.subFields.keys().map(key => `${this.field.name}[${key}]`),
 						push: this.field.push.bind(this.field) },
 						propsToPass
 					)
