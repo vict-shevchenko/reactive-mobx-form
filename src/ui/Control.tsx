@@ -204,9 +204,9 @@ export class Control extends React.Component<ControlProps, any> {
 		}
 
 		const className = [
-			meta.touched ? 'mrf-touched' : 'mrf-untouched',
-			meta.dirty   ? 'mrf-dirty'   : 'mrf-pristine',
-			meta.valid   ? 'mrf-valid'   : 'mrf-invalid'
+			meta.touched ? 'rmf-touched' : 'rmf-untouched',
+			meta.dirty   ? 'rmf-dirty'   : 'rmf-pristine',
+			meta.valid   ? 'rmf-valid'   : 'rmf-invalid'
 		].join(' ');
 
 		const input = Object.assign({}, { className }, (this.isFile ? {} : inputValue), handlers, (this.isCheckable ? checked : {}));
