@@ -10,6 +10,7 @@ import { omit } from "../utils";
 interface ControlArrayProps {
 	name: string;
 	component: React.Component<any, any> | React.SFC<any> | string;
+	rules?: string;
 }
 
 @observer
@@ -24,6 +25,10 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	static contextTypes = {
 		_ReactiveMobxForm: React.PropTypes.object.isRequired,
 		_ReactiveMobxFormFieldSection: React.PropTypes.string
+	}
+
+	static defaultProps = {
+		rules: 'array'
 	}
 
 	constructor(props, context) {
@@ -45,6 +50,11 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 		if (this.form.formSchema[this.name]) {
 			throw(new Error(`Control Array with name ${this.name} should not be in schema`));
 		}
+
+		const fieldDefinition: normalizesdFieldDefinition = ['', this.props.rules];
+		const schemaExtension: normalizedFormSchema = { [this.name]: fieldDefinition }
+
+		this.form.extendSchema(schemaExtension);
 
 		this.field = new FieldArray(this.name)
 		this.form.registerField(this.field);

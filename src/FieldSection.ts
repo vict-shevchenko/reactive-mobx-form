@@ -10,13 +10,11 @@ import { objectPath } from "./utils";
 
 
 export class FieldSection {
-	initialValue: {[propType:string]:fieldValue} = {};
-
 	readonly name: string;
-	readonly _isFieldSection: boolean = true;
+	// readonly _isFieldSection: boolean = true;
 
 	@observable subFields: ObservableMap<{}> = observable.map(); // todo: does not look good
-	@observable errors: Array<string> = [];
+	// @observable errors: Array<string> = [];
 
 	constructor(name: string) {
 		this.name = name;

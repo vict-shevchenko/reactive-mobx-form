@@ -9,10 +9,8 @@ import { objectPath, isNumeric } from "./utils";
 
 
 export class FieldArray {
-	initialValue: Array<fieldValue> = [];
-
 	readonly name: string;
-	readonly _isFieldArray: boolean = true;
+	// readonly _isFieldArray: boolean = true;
 
 	@observable subFields: ObservableMap<{}> = observable.map();
 	@observable errors: Array<string> = [];

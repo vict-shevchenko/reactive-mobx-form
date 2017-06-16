@@ -53,13 +53,13 @@ export class Control extends React.Component<ControlProps, any> {
 	static requiredProps: Array<string> = ['component', 'name'];
 	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
 
-	static defaultProps = {
-		rules: ''
-	}
-
 	static contextTypes = {
 		_ReactiveMobxForm: React.PropTypes.object.isRequired,
 		_ReactiveMobxFormFieldSection: React.PropTypes.string
+	}
+
+	static defaultProps = {
+		rules: ''
 	}
 
 	constructor(props, context) {
