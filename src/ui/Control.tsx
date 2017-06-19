@@ -104,7 +104,7 @@ export class Control extends React.Component<ControlProps, any> {
 				Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
 				[this.isCheckbox ? false : '', this.props.rules];
 
-		this.warnOnIncorrectInitialValues();
+		this.warnOnIncorrectInitialValues(fieldDefinition);
 
 		this.field = new Field(this.name, fieldDefinition)
 		this.form.registerField(this.field);
@@ -123,8 +123,8 @@ export class Control extends React.Component<ControlProps, any> {
 		});
 	}
 
-	warnOnIncorrectInitialValues() {
-		const inititlaValue = this.form.formSchema[this.name][0];
+	warnOnIncorrectInitialValues(fieldDefinition:normalizesdFieldDefinition) {
+		const inititlaValue = fieldDefinition[0];
 		const initialValueType = typeof inititlaValue; // initial value
 
 		if (this.isSelect) {
