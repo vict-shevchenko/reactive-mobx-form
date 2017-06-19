@@ -6,12 +6,12 @@ import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from './inter
 import { Form } from "./Form";
 
 // todo: may be removed
-function hasErrorArraysChanged(oldErrors:Array<string>, newErrors:Array<string>):boolean {
+function hasErrorArraysChanged(oldErrors: Array<string>, newErrors: Array<string>): boolean {
 	if (oldErrors.length !== newErrors.length) {
 		return true
 	}
 	else if (oldErrors.length === newErrors.length && newErrors.length > 0) {
-		for(let i = 0; i < newErrors.length; i++) {
+		for (let i = 0; i < newErrors.length; i++) {
 			if (oldErrors[i] !== newErrors[i]) {
 				return true;
 			}
@@ -25,7 +25,7 @@ export class Field {
 
 	readonly name: string;
 	readonly initialValue: fieldValue = '';
-	readonly rules: string = '';
+	readonly _rules: string = '';
 
 	type: string;
 
@@ -36,17 +36,17 @@ export class Field {
 
 	static normalizeFieldDefinition(fieldDefinition: fieldDefinition): normalizesdFieldDefinition {
 		if (Array.isArray(fieldDefinition)) {
-				return (fieldDefinition.length == 2) ? (fieldDefinition as [fieldValue, string])  : [fieldDefinition[0], ''];
+			return (fieldDefinition.length == 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
 		}
-	
+
 		return [fieldDefinition, ''];
 	}
-	
-	constructor(name:string, fieldDefinition: normalizesdFieldDefinition) {
+
+	constructor(name: string, fieldDefinition: normalizesdFieldDefinition) {
 		this.name = name;
 		this.initialValue = fieldDefinition[0];
 		this.value = this.initialValue;
-		this.rules = fieldDefinition[1];
+		this._rules = fieldDefinition[1];
 	}
 
 	@computed get isDirty() {
@@ -57,9 +57,13 @@ export class Field {
 		return this.errors.length === 0;
 	}
 
+	@computed get rules() {
+		return this._rules ? { [this.name]: this._rules } : {}
+	}
+
 	@action onFocus() {
 		this.isFocused = true;
-		if(!this.isTouched) {
+		if (!this.isTouched) {
 			this.isTouched = true;
 		}
 	}
@@ -68,7 +72,7 @@ export class Field {
 		this.isFocused = false;
 	}
 
-	@action onChange(value:fieldValue) {
+	@action onChange(value: fieldValue) {
 		this.value = value;
 	}
 
@@ -79,7 +83,7 @@ export class Field {
 	subscribeToFormValidation(form: Form) {
 		autorun(() => {
 			const errors: Array<string> = form.errors.get(this.name);
-			
+
 			// todo: use .join here?
 			// if (hasErrorArraysChanged(this.errors, errors)) {
 

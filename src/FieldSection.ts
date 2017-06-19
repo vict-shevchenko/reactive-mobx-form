@@ -37,6 +37,10 @@ export class FieldSection {
 		return this.subFields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {})
 	}
 
+	@computed get rules() {
+		return this.subFields.values().reduce((values:any, subField: formField) => Object.assign(values, subField.rules ), {})
+	}
+
 	// todo: fix this
 	@computed get isDirty() {
 		return true;

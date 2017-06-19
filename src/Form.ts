@@ -3,7 +3,7 @@ import { observable, action, computed, reaction, ObservableMap, isObservableMap 
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, normalizesdFieldDefinition, formSchema, normalizedFormSchema, formField } from './interface';
+import { fieldDefinition, normalizesdFieldDefinition, formSchema, formField } from './interface';
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
@@ -11,7 +11,7 @@ import { FieldSection } from "./FieldSection";
 import { objectPath, isNumeric } from "./utils";
 
 export class Form {
-	formSchema: normalizedFormSchema;
+	formSchema: formSchema;
 
 	component: any;
 
@@ -37,7 +37,7 @@ export class Form {
 	error
 	*/
 
-	static normalizeSchema(formSchema: formSchema): normalizedFormSchema {
+	/*static normalizeSchema(formSchema: formSchema): normalizedFormSchema {
 		const normalized = {};
 
 		Object.keys(formSchema).map(fieldName => {
@@ -45,10 +45,10 @@ export class Form {
 		});
 
 		return normalized;
-	}
+	}*/
 
 	constructor(formSchema) {
-		this.formSchema = Form.normalizeSchema(formSchema);
+		this.formSchema = formSchema;
 	}
 
 	@computed get isDirty() { // todo: should be implementede for ControlArray
@@ -67,9 +67,8 @@ export class Form {
 	}
 
 	@computed get rules() { // todo: check if rule is computed on new field add
-		return Object.keys(this.formSchema).reduce((rules: any, fieldName) => {
-			const rule = this.formSchema[fieldName][1];
-			return Object.assign(rules, rule ? { [fieldName]: rule } : {});
+		return this.fields.values().reduce((rules:any, field: formField) => {
+			return Object.assign(rules, field.rules)
 		}, {});
 	}
 
@@ -98,19 +97,10 @@ export class Form {
 	@action removeField(fieldName: string) {
 		this.fields.delete(fieldName);
 
-		// todo: delete field from schema also ????
-	}
-
-	@action extendSchema(schemaExtension: formSchema) {
-		// todo: Probably ist good to have some safe extension
-		const normalizeSchemaExtension = Form.normalizeSchema(schemaExtension);
-
-		Object.assign(this.formSchema, normalizeSchemaExtension);
+		// todo: handle delete also nested fields
 	}
 
 	@action reset() {
-		// todo: reset formSchema also
-
 		this.fields.forEach((field: formField)=> {
 			field.reset();
 		});

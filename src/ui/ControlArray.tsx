@@ -51,12 +51,17 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 			throw(new Error(`Control Array with name ${this.name} should not be in schema`));
 		}
 
-		const fieldDefinition: normalizesdFieldDefinition = ['', this.props.rules];
+		/*const fieldDefinition: normalizesdFieldDefinition = ['', this.props.rules];
 		const schemaExtension: normalizedFormSchema = { [this.name]: fieldDefinition }
 
-		this.form.extendSchema(schemaExtension);
+		this.form.extendSchema(schemaExtension);*/
 
-		this.field = new FieldArray(this.name)
+		// [initilaValue, rules]
+		const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[this.name] ? 
+				Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
+				[ '', this.props.rules]; // construct normalised field definition
+
+		this.field = new FieldArray(this.name, fieldDefinition);
 		this.form.registerField(this.field);
 	}
 

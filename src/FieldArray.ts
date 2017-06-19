@@ -10,13 +10,15 @@ import { objectPath, isNumeric } from "./utils";
 
 export class FieldArray {
 	readonly name: string;
+	readonly _rules: string;
 	// readonly _isFieldArray: boolean = true;
 
 	@observable subFields: ObservableMap<{}> = observable.map();
 	@observable errors: Array<string> = [];
 
-	constructor(name: string) {
+	constructor(name: string, fieldDefinition: normalizesdFieldDefinition) {
 		this.name = name;
+		this._rules = fieldDefinition[1];
 	}
 
 	@action registerField(field: formField) {
@@ -42,19 +44,33 @@ export class FieldArray {
 	}
 
 	push() {
-		this.subFields.set((this.subFields.size).toString(), observable.map() )
+		this.subFields.set((this.subFields.size).toString(), observable.map())
 	}
 
 	@computed get value() {
-		return this.subFields.entries().map(([key, subField]: [string, formField | ObservableMap<formField>]) => {
+		return this.subFields.values().map((subField: formField | ObservableMap<formField>) => {
 
 			if (isObservableMap(subField)) {
-				return (subField as ObservableMap<formField>).entries().reduce((val, [fieldName, field]: [string, formField]) => Object.assign(val, { [fieldName]: field.value }), {});
+				return (subField as ObservableMap<formField>).entries()
+					.reduce((val, [fieldName, field]: [string, formField]) => Object.assign(val, { [fieldName]: field.value }), {});
 			}
 			else {
 				return (subField as formField).value;
 			}
 		});
+	}
+
+	@computed get rules() {
+		return this.subFields.values().reduce((rules, subField: formField | ObservableMap<formField>) => {
+
+			if (isObservableMap(subField)) {
+				return (subField as ObservableMap<formField>).values()
+					.reduce((rul, field: formField) => Object.assign(rul, field.rules ), rules);
+			}
+			else {
+				return Object.assign(rules, subField.rules )
+			}
+		}, { [this.name]: this._rules })
 	}
 
 	// todo: fix this
