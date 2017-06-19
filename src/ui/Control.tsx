@@ -4,7 +4,7 @@ import { Form } from '../Form';
 import { Field } from '../Field'
 
 import { normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
-import { omit } from "../utils";
+import { omit, objectPath } from "../utils";
 
 
 // todo: probabbly may be used when implementing withRef
@@ -84,34 +84,30 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	componentWillMount() {
-		// verify Control name duplications
-		// todo: looks like this verification is better to do inside of Form class
-		if (this.form.fields.get(this.name) && !this.isRadio) {
-			throw(new Error(`Field with name ${this.name} already exist in Form`));
+		// Radio buttons have several controls which all should point to the same field in a form
+		if (this.isRadio) {
+			this.field = this.form.findFieldInHierarchy(objectPath(this.name));
+
+			if (!this.field) {
+				this.createField();
+			}
+		} else {
+			this.createField();
 		}
-
-	//	if (this.form.formSchema[this.name]) {
-			// todo: remove warning in production build
-	//		this.warnOnIncorrectInitialValues();
-		//}
-		//else { // field was not registered in form schema or exteded as <Form schema/> parameter
-			// const initialValue: boolean | string = this.isCheckbox ? false : '';
-
-			// [initilaValue, rules]
-			const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[this.name] ? 
-				  Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
-				  [this.isCheckbox ? false : '', this.props.rules]; // construct normalised field definition
-
-			// const schemaExtension: normalizedFormSchema = { [this.name]: fieldDefinition }
-
-			// this.form.extendSchema(schemaExtension);
-	//	}
-
-		//this.field = this.form.registerField(this.name) as Field;
-		this.field = new Field(this.name, fieldDefinition)
-		this.form.registerField(this.field);
+		
 
 		this.field.subscribeToFormValidation(this.form);
+	}
+
+	createField() {
+		const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[this.name] ?
+				Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
+				[this.isCheckbox ? false : '', this.props.rules];
+
+		this.warnOnIncorrectInitialValues();
+
+		this.field = new Field(this.name, fieldDefinition)
+		this.form.registerField(this.field);
 	}
 
 	componentWillUnmount() {

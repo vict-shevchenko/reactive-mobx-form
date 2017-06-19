@@ -48,12 +48,7 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 
 
 	componentWillMount() {
-		// verify Control name duplications
-		if (this.form.fields.get(this.name)) {
-			throw (new Error(`Field with name ${this.name} already exist in Form`));
-		}
-
-		// 
+		// As ControlSection is an aggregation unit it should not present in section
 		if (this.form.formSchema[this.name]) {
 			throw (new Error(`Control Section with name ${this.name} should not be in schema`));
 		}

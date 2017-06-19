@@ -52,7 +52,7 @@ export class Form {
 	}
 
 	@computed get isDirty() { // todo: should be implementede for ControlArray
-		return this.fields.values().some((field:formField) => field.isDirty);
+		return this.fields.values().some((field: formField) => field.isDirty);
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
@@ -63,11 +63,11 @@ export class Form {
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
 		//return this.fields.entries().map(entry => ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
-		return this.fields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
+		return this.fields.entries().reduce((values: any, entry: [string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
 	}
 
 	@computed get rules() { // todo: check if rule is computed on new field add
-		return this.fields.values().reduce((rules:any, field: formField) => {
+		return this.fields.values().reduce((rules: any, field: formField) => {
 			return Object.assign(rules, field.rules)
 		}, {});
 	}
@@ -75,23 +75,27 @@ export class Form {
 	@action registerField(field: formField): void {
 		const fieldPath = objectPath(field.name);
 
-		// this is a root field in a form, just register field by addign it to map
-		if (fieldPath.length === 1) {
-			this.fields.set(field.name, field);
-		}
-		else {
-			// the field is inside of hierarchy, find its parent and call parents register function
+		try {
+			const existField: formField = this.findFieldInHierarchy(fieldPath);
+			const parentField: FieldArray | FieldSection | ObservableMap<formField> = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
 
-			let parentField: FieldArray | FieldSection;
-
-			try {
-				parentField = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
-				parentField.registerField(field);
+			// we need to additinally check for not be observable, because in fieldArray push method just puts empty observable into map
+			if (existField && !isObservableMap(existField)) {
+				throw(new Error(`Field with name ${existField.name} already exist in Form. `));
 			}
-			catch (e) {
-				console.log(`Field ${field.name} can't be registred. Check name hierarchy.` , e)
+			else {
+				if (isObservableMap(parentField)) {
+					parentField.set(field.name, field)
+				} else {
+					parentField.registerField(field);
+				}
 			}
+			
 		}
+		catch (e) {
+			console.log(`Field ${field.name} can't be registred. Check name hierarchy.`, e)
+		}
+		
 	}
 
 	@action removeField(fieldName: string) {
@@ -101,7 +105,7 @@ export class Form {
 	}
 
 	@action reset() {
-		this.fields.forEach((field: formField)=> {
+		this.fields.forEach((field: formField) => {
 			field.reset();
 		});
 	}

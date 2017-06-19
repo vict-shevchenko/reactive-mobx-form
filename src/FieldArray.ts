@@ -43,6 +43,7 @@ export class FieldArray {
 		this.subFields.clear();
 	}
 
+	// we need some normal solution here, as pushing empty map to -> render Controls in View -> replace empty map with FieldSection
 	push() {
 		this.subFields.set((this.subFields.size).toString(), observable.map())
 	}

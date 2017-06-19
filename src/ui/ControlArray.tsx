@@ -51,21 +51,6 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	}
 
 	componentWillMount() {
-		// verify Control name duplications, this code is duplicated in all controls
-		if (this.form.fields.get(this.name)) {
-			throw(new Error(`Field with name ${this.name} already exist in Form`));
-		}
-
-		// todo: we need to handle exceptions with 2 fields with same name
-		if (this.form.formSchema[this.name]) {
-			throw(new Error(`Control Array with name ${this.name} should not be in schema`));
-		}
-
-		/*const fieldDefinition: normalizesdFieldDefinition = ['', this.props.rules];
-		const schemaExtension: normalizedFormSchema = { [this.name]: fieldDefinition }
-
-		this.form.extendSchema(schemaExtension);*/
-
 		// [initilaValue, rules]
 		const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[this.name] ? 
 				Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
