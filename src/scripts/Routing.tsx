@@ -10,7 +10,9 @@ export default function startRouting(viewStore:ViewStore) {
 	const router = new Router({
 		[`${prefix}/readme`]: () => viewStore.showDocPage('readme', '/'),
 		[`${prefix}/examples/simple/SimpleForm`]: () => viewStore.showExamplePage('SimpleForm', 'examples/simple'),
-		[`${prefix}/examples/sync-validation/SyncFieldValidation`]: () => viewStore.showExamplePage('SyncFieldValidation', 'examples/sync-validation')
+		[`${prefix}/examples/sync-validation/SyncFieldValidation`]: () => viewStore.showExamplePage('SyncFieldValidation', 'examples/sync-validation'),
+		[`${prefix}/examples/control-section/ControlSection`]: () => viewStore.showExamplePage('ControlSection', 'examples/control-section')
+
 }).configure({
 		html5history: true
 	}).init();

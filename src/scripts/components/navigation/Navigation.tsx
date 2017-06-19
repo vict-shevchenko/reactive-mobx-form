@@ -53,6 +53,7 @@ export default class Navigation extends React.Component<any, any> {
 				<NavItem onClick={() => this.showPage(false, 'readme', '')} >Read me</NavItem>
 				<NavItem onClick={() => this.showPage(true,  'SimpleForm', 'examples/simple')} indent={2} >Simple Form</NavItem>
 				<NavItem onClick={() => this.showPage(true,  'SyncFieldValidation', 'examples/sync-validation')} indent={2} >Sync Field Validation</NavItem>
+				<NavItem onClick={() => this.showPage(true,  'ControlSection', 'examples/control-section')} indent={2} >ControlSection</NavItem>
 			</div>
 		);
 	}
