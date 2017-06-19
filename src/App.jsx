@@ -5,7 +5,7 @@ import beautify from 'json-beautify';
 
 import ContactForm from './ContactForm';
 
-const Button = inject('appState')(observer(({appState}) => <button>{appState.timer}</button>));
+const Button = inject('appState')(observer(({appState}) => <button>{appState.timer} -- {appState.showStreet.toString()}</button>));
 
 const FormView = inject('formStore')(observer(({formStore}) => <pre>{beautify(formStore, null, 2, 100)}</pre>));
 
@@ -20,9 +20,25 @@ class App extends Component {
 		})
 	}
 
+	createMarkup() {
+		return {
+			__html: `.rmf-invalid {
+				border: 1px solid red;
+			}
+			
+			.rmf-valid {
+				border: 1px solid green
+			}`
+		};
+	}
+
+
 	render() {
 		return (
 			<div>
+				<style dangerouslySetInnerHTML={this.createMarkup()}>
+
+				</style>
 				<Button/>
 				{/*<button onClick={this.onReset}>
 					Seconds passed: {this.props.appState.timer}
