@@ -24,7 +24,11 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 
 	static contextTypes = {
 		_ReactiveMobxForm: React.PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldSection: React.PropTypes.string
+		_ReactiveMobxFormFieldNamePrefix: React.PropTypes.string
+	}
+
+	static childContextTypes = {
+		_ReactiveMobxFormFieldNamePrefix: React.PropTypes.string.isRequired,
 	}
 
 	static defaultProps = {
@@ -37,7 +41,13 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
-		this.name = context._ReactiveMobxFormFieldSection ? `${context._ReactiveMobxFormFieldSection}.${props.name}` : props.name;
+		this.name = context._ReactiveMobxFormFieldNamePrefix ? `${context._ReactiveMobxFormFieldNamePrefix}.${props.name}` : props.name.toString();
+	}
+
+	getChildContext() {
+		return {
+			_ReactiveMobxFormFieldNamePrefix: this.name
+		};
 	}
 
 	componentWillMount() {
@@ -72,7 +82,7 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	verifyRequiredProps() {
 		ControlArray.requiredProps.forEach(reqiredPropName => {
 			if (!this.props[reqiredPropName]) {
-				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._Form.component.name}' component`)
+				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
 			}
 		});
 	}
@@ -82,8 +92,10 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 		return React.createElement((this.props.component as any), 
 				Object.assign(
 						{}, 
-						{ fields: this.field.subFields.keys().map(key => `${this.field.name}[${key}]`),
-						push: this.field.push.bind(this.field) },
+						{
+							fields: this.field.subFields.keys(),
+							push  : this.field.push.bind(this.field) 
+						},
 						propsToPass
 					)
 			);

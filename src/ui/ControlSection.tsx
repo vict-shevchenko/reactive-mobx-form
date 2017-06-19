@@ -24,11 +24,11 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 
 	static contextTypes = {
 		_ReactiveMobxForm: React.PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldSection: React.PropTypes.string
+		_ReactiveMobxFormFieldNamePrefix: React.PropTypes.string
 	}
 
 	static childContextTypes = {
-		_ReactiveMobxFormFieldSection: React.PropTypes.string.isRequired,
+		_ReactiveMobxFormFieldNamePrefix: React.PropTypes.string.isRequired,
 	}
 
 	constructor(props, context) {
@@ -37,12 +37,12 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
-		this.name = context._ReactiveMobxFormFieldSection ? `${context._ReactiveMobxFormFieldSection}.${props.name}` : props.name;
+		this.name = context._ReactiveMobxFormFieldNamePrefix ? `${context._ReactiveMobxFormFieldNamePrefix}.${props.name}` : props.name.toString();
 	}
 
 	getChildContext() {
 		return {
-			_ReactiveMobxFormFieldSection: this.name
+			_ReactiveMobxFormFieldNamePrefix: this.name
 		};
 	}
 
@@ -68,8 +68,8 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 
 	verifyRequiredProps() {
 		ControlSection.requiredProps.forEach(reqiredPropName => {
-			if (!this.props[reqiredPropName]) {
-				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._Form.component.name}' component`)
+			if (this.props[reqiredPropName] === undefined) {
+				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
 			}
 		});
 	}

@@ -55,7 +55,7 @@ export class Control extends React.Component<ControlProps, any> {
 
 	static contextTypes = {
 		_ReactiveMobxForm: React.PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldSection: React.PropTypes.string
+		_ReactiveMobxFormFieldNamePrefix: React.PropTypes.string
 	}
 
 	static defaultProps = {
@@ -69,7 +69,7 @@ export class Control extends React.Component<ControlProps, any> {
 
 		this.form = context._ReactiveMobxForm;
 
-		this.name = context._ReactiveMobxFormFieldSection ? `${context._ReactiveMobxFormFieldSection}.${props.name}` : props.name;
+		this.name = context._ReactiveMobxFormFieldNamePrefix ? `${context._ReactiveMobxFormFieldNamePrefix}.${props.name}` : props.name;
 
 		this.isCheckbox = props.type === 'checkbox';
 		this.isRadio = props.type === 'radio';

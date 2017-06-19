@@ -107,18 +107,7 @@ export class Form {
 	}
 
 	findFieldInHierarchy(path) {
-		return path.reduce((f, node, idx) => {
-			if (idx === path.length - 1 && isNumeric(path[idx])) { // last item is numeric like [... , '0']
-				return f;
-			}
-
-			if (idx === 0) {
-				return f.get(node);
-			}
-
-			return isObservableMap(f) ? f.get(node) : f.subFields.get(node);
-
-		}, this.fields);
+		return path.reduce((f, node, idx) => (idx === 0 ? f.get(node) : f.subFields.get(node)), this.fields);
 	}
 
 	registerValidation() {
