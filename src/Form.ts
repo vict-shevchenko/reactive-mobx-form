@@ -99,9 +99,15 @@ export class Form {
 	}
 
 	@action removeField(fieldName: string) {
-		this.fields.delete(fieldName);
+		const fieldPath = objectPath(fieldName);
+		const lastNode = fieldPath[fieldPath.length - 1];
+		const parentField: FieldArray | FieldSection | ObservableMap<formField> = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
 
-		// todo: handle delete also nested fields
+		if (isObservableMap(parentField)) {
+			parentField.delete(lastNode); 
+		} else {
+			parentField.subFields.delete(lastNode);
+		}
 	}
 
 	@action reset() {
