@@ -21,7 +21,8 @@ export class ViewStore {
 			case "readme": return "/readme";
 			case "SimpleForm": return `/examples/simple/SimpleForm`;
 			case "SyncFieldValidation": return '/examples/sync-validation/SyncFieldValidation';
-			case "ControlSection": return '/examples/control-section/ControlSection'
+			case "ControlSection": return '/examples/control-section/ControlSection';
+			case "ControlArray": return '/examples/control-array/ControlArray';
 		}
 	}
 

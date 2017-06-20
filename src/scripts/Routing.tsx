@@ -11,9 +11,11 @@ export default function startRouting(viewStore:ViewStore) {
 		[`${prefix}/readme`]: () => viewStore.showDocPage('readme', '/'),
 		[`${prefix}/examples/simple/SimpleForm`]: () => viewStore.showExamplePage('SimpleForm', 'examples/simple'),
 		[`${prefix}/examples/sync-validation/SyncFieldValidation`]: () => viewStore.showExamplePage('SyncFieldValidation', 'examples/sync-validation'),
-		[`${prefix}/examples/control-section/ControlSection`]: () => viewStore.showExamplePage('ControlSection', 'examples/control-section')
+		[`${prefix}/examples/control-section/ControlSection`]: () => viewStore.showExamplePage('ControlSection', 'examples/control-section'),
+		[`${prefix}/examples/control-array/ControlArray`]: () => viewStore.showExamplePage('ControlArray', 'examples/control-array')
 
-}).configure({
+
+	}).configure({
 		html5history: true
 	}).init();
 

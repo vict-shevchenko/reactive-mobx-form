@@ -8,6 +8,7 @@ import * as beautify from 'json-beautify';
 import SimpleForm from '../../examples/simple/SimpleForm';
 import SyncValidationForm from '../../examples/sync-validation/SyncFieldValidation';
 import ControlSectionForm from '../../examples/control-section/ControlSection';
+import ControlArrayForm from '../../examples/control-array/ControlArray';
 
 
 
@@ -34,6 +35,7 @@ const ExampleOverview = observer(({name, document }:{name?:string, document?:any
 				{name === 'SimpleForm' ? <SimpleForm onSubmit={handleSubmit}/> : ''}
 				{name === 'SyncFieldValidation' ? <SyncValidationForm onSubmit={handleSubmit}/> : ''}
 				{name === 'ControlSection' ? <ControlSectionForm onSubmit={handleSubmit}/> : ''}
+				{name === 'ControlArray' ? <ControlArrayForm onSubmit={handleSubmit}/> : ''}
 			</div>
 			<div>Values</div>
 			<div>
