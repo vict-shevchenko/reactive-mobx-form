@@ -15,6 +15,7 @@ function renderCurrentView(store:ViewStore) {
 			return <Document document={view.document}/>;
 		case "SimpleForm":
 		case "SyncFieldValidation":
+		case "ControlSection":
 			return <Example name={view.name} document={view.document}/>;
 		default:
 			return <h1>Welcome to reactive-mobx-form</h1>

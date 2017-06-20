@@ -18,11 +18,11 @@ module.exports = {
 	devtool: 'source-map',
 	resolve: {
 		modules: ["node_modules", path.resolve(__dirname, "app")],
-		extensions: [".js", ".ts", ".json", ".jsx", ".tsx", ".css", ".scss"],
+		extensions: [".js", ".ts", ".json", ".jsx", ".tsx", ".css", ".scss"]/*,
 		alias: {
 			'react': 'preact-compat',
 			'react-dom': 'preact-compat'
-		}
+		}*/
 	},
 
 	module: {

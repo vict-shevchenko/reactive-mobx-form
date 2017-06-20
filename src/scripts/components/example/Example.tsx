@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {inject, observer} from 'mobx-react'
 import { FormStore } from 'reactive-mobx-form';
 import * as marked from 'marked';
@@ -7,6 +7,8 @@ import * as beautify from 'json-beautify';
 
 import SimpleForm from '../../examples/simple/SimpleForm';
 import SyncValidationForm from '../../examples/sync-validation/SyncFieldValidation';
+import ControlSectionForm from '../../examples/control-section/ControlSection';
+
 
 
 const prettify = markdown =>
@@ -31,6 +33,7 @@ const ExampleOverview = observer(({name, document }:{name?:string, document?:any
 			<div className="form-example">
 				{name === 'SimpleForm' ? <SimpleForm onSubmit={handleSubmit}/> : ''}
 				{name === 'SyncFieldValidation' ? <SyncValidationForm onSubmit={handleSubmit}/> : ''}
+				{name === 'ControlSection' ? <ControlSectionForm onSubmit={handleSubmit}/> : ''}
 			</div>
 			<div>Values</div>
 			<div>

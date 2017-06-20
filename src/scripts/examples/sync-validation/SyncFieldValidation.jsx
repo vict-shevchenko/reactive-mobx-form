@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import * as React from 'react';
 import {reactiveMobxForm, Control} from 'reactive-mobx-form';
 
 
@@ -15,9 +15,9 @@ function ContactFormTextField({ input, meta, type, placeholder, label }) {
 }
 
 
-class ContactForm extends Component {
+class ContactForm extends React.Component {
 	render() {
-		const { submit, reset, submitting, isValid } = this.props;
+		const { submit, reset, submitting, valid } = this.props;
 
 		return (
 			<form onSubmit={submit}>
@@ -57,7 +57,7 @@ class ContactForm extends Component {
 				</div>
 
 				<section>
-					<button type="submit" disabled={!isValid}>Submit</button>
+					<button type="submit" disabled={!valid}>Submit</button>
 					<button type="button" onClick={reset}>Reset</button>
 				</section>
 			</form>
