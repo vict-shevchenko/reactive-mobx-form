@@ -21,12 +21,19 @@ If considering a software development as next steps:
  Its now possible: 
  1. Render simple one level forms
  2. Validate fields, see **validatorjs** docs
- 3. Submit a form
+ 3. Render multi-level fields with `ControlSection` Component
+ 4. Submit a form
  
  ## Dependancy
  reactive-mobx-forms depends directly on [validatorjs](https://github.com/skaterdav85/validatorjs) library. It is small, effective and scalable. 
  
  reactive-mobx-forms peer dependencies are **mobx** and **mobx-react**
+
+ ## Know Issues
+ 1. There is a problem when using [preact](https://github.com/developit/preact). For some reason, if inside of componentWillMount any state change is executed(form.refisterField => changes form.values => changes form.validation => changes form.errors, that are observed by Control Component), all lifecicle methods of Component are executed twice. Which then tries to register filed twice. Possible ways of solving can be:
+    1. Register field in componentDidMount 
+    2. Get rid of componentWillMount and do stuff in constructor
+ This requires more investigation....
  
  ## Installation
  
