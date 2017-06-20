@@ -6,12 +6,17 @@ function Dishes({fields, push}) {
 	return (
 		<main>
 			{
-				fields.map(index => (
-					<Control name={index} coponent="input" type="text"/>
+				fields.map((index, idx )=> (
+					<div key={index}>
+						<label>Dish #{idx + 1}</label>
+						<div>
+							<Control name={index} component="input" type="text" />
+						</div>
+					</div>
 				))
 			}
 
-			<button type="button" onClick={push}>Add person</button>
+			<button type="button" onClick={push}>Add Dish</button>
 		</main>
 	)
 }
@@ -38,15 +43,15 @@ function Person() {
 
 function Persons({fields, push}) {
 	return (
-		<main>
+		<section>
 			{
 				fields.map(index => (
-					<ControlSection name={index} coponent={Person}/>
+					<ControlSection name={index} component={Person} key={index} />
 				))
 			}
 
 			<button type="button" onClick={push}>Add person</button>
-		</main>
+		</section>
 	);
 }
 

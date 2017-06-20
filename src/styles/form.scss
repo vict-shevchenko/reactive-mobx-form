@@ -7,7 +7,10 @@
 	}
 }
 
-.form-example form > div, .form-example form > main > div  {
+.form-example form > div,
+.form-example form > main > div,
+.form-example form > section > main > div,
+.form-example form > section > main  > main > div {
 	width: 100%;
 	margin-bottom: 10px;
 	display: flex;
@@ -49,6 +52,12 @@
 			color: firebrick;
 		}
 	}
+}
+
+.form-example form > section > main {
+	background-color: #eeeeee;
+	padding: 20px 5px;
+	margin: 20px;
 }
 
 .form-example form > div:last-of-type {
