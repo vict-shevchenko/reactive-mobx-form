@@ -11,6 +11,8 @@ If considering a software development as next steps:
 2. Make it right
 3. Make it fast
 
+Starting of version `0.2.10` library contains all basic functionallity for handling simple and complex(nested) forms. For now I will focus on its documentation and differnt improvements(performace and code organization). API should left stable for some time. If you are using a library and require any help, please create an issue.
+
 ## Motivation
  Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
  
@@ -24,7 +26,8 @@ If considering a software development as next steps:
  1. Render simple one level forms
  2. Validate fields, see **validatorjs** docs
  3. Render multi-level fields with `ControlSection` Component
- 4. Submit a form
+ 4. Render filed, that contains array of data. Both singe item array, or array of objects.
+ 5. Submit a form
  
  ## Dependancy
  reactive-mobx-forms depends directly on [validatorjs](https://github.com/skaterdav85/validatorjs) library. It is small, effective and scalable. 
