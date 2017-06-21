@@ -45,7 +45,12 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 				this.form.registerValidation();
 			}
 
+			componentDidmount() {
+				this.form.mounted = true;
+			}
+
 			componentWillUnmount() {
+				this.form.mounted = false;
 				this.props.formStore.unRegisterForm(formName);
 			}
 

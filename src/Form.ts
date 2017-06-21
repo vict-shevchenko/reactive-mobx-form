@@ -15,6 +15,8 @@ export class Form {
 
 	component: any;
 
+	mounted: boolean = false;
+
 	@observable fields: ObservableMap<{}> = observable.map();
 	@observable errors: Validator.Errors; // todo: initial value
 	@observable isValid: boolean | void; // todo: initial value
@@ -81,7 +83,7 @@ export class Form {
 
 			// we need to additinally check for not be observable, because in fieldArray push method just puts empty observable into map
 			if (existField && !isObservableMap(existField)) {
-				throw(new Error(`Field with name ${existField.name} already exist in Form. `));
+				throw (new Error(`Field with name ${existField.name} already exist in Form. `));
 			}
 			else {
 				if (isObservableMap(parentField)) {
@@ -90,23 +92,31 @@ export class Form {
 					parentField.registerField(field);
 				}
 			}
-			
+
 		}
 		catch (e) {
 			console.log(`Field ${field.name} can't be registred. Check name hierarchy.`, e)
 		}
-		
+
 	}
 
 	@action removeField(fieldName: string) {
-		const fieldPath = objectPath(fieldName);
-		const lastNode = fieldPath[fieldPath.length - 1];
-		const parentField: FieldArray | FieldSection | ObservableMap<formField> = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
+		const fieldPath: Array<string> = objectPath(fieldName);
 
-		if (isObservableMap(parentField)) {
-			parentField.delete(lastNode); 
-		} else {
-			parentField.subFields.delete(lastNode);
+
+		if (fieldPath.length === 1) { // this is form.fields first child
+			this.fields.delete(fieldName)
+		}
+		else { // this is some nested field
+			const lastIndex  : number = fieldPath.length - 1;
+			const lastNode   : string = fieldPath[lastIndex];
+			const parentField: FieldArray | FieldSection = this.findFieldInHierarchy(fieldPath.slice(0, lastIndex));
+
+			// in React ComponentWillUnmount is fired from parent to child, so if no parent exist -> it was already unmounted.
+			// No need to clean-up children
+			if (parentField) {
+				parentField.subFields.delete(lastNode);
+			}
 		}
 	}
 

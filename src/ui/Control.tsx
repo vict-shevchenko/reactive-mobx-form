@@ -94,7 +94,6 @@ export class Control extends React.Component<ControlProps, any> {
 		} else {
 			this.createField();
 		}
-		
 
 		this.field.subscribeToFormValidation(this.form);
 	}
@@ -111,8 +110,9 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	componentWillUnmount() {
-		// handle proper remove of fields
-		this.form.removeField(this.name);
+		if (this.form.mounted) {
+			this.form.removeField(this.name);
+		}
 	}
 
 	verifyRequiredProps() {

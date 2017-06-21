@@ -61,7 +61,9 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	}
 
 	componentWillUnmount() {
-		this.form.removeField(this.name);
+		if (this.form.mounted) {
+			this.form.removeField(this.name);
+		}
 	}
 
 	verifyRequiredProps() {

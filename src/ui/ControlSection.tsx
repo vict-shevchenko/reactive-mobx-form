@@ -58,7 +58,9 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 	}
 
 	componentWillUnmount() {
-		this.form.removeField(this.name);
+		if (this.form.mounted) {
+			this.form.removeField(this.name);
+		}
 	}
 
 	verifyRequiredProps() {
