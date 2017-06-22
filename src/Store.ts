@@ -1,16 +1,16 @@
-import { observable } from 'mobx';
+import { observable, ObservableMap } from 'mobx';
 import { Form } from './Form';
 
 export class FormStore {
-	@observable forms: {[propType:string]:Form} = {};
+	@observable forms: ObservableMap<{}> = observable.map();
 
 	registerForm(name: string, form:Form) {
-		this.forms[name] = form;
+		this.forms.set(name, form);
 	}
 
 	unRegisterForm(name:string){
-		if (this.forms[name]) {
-			delete this.forms[name];
+		if (this.forms.has(name)) {
+			this.forms.delete(name)
 		}
 	}
 }
