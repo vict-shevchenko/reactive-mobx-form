@@ -4,7 +4,7 @@ import {reactiveMobxForm, Control} from 'reactive-mobx-form';
 
 class ContactForm extends React.Component {
 	render() {
-		const { submit, reset, submitting, valid } = this.props;
+		const { submit, reset } = this.props;
 
 		return (
 			<form onSubmit={submit}>

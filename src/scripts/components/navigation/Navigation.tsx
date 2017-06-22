@@ -1,61 +1,14 @@
 import * as React from 'react';
-import {inject, observer} from 'mobx-react';
-import {ViewStore} from "../../store/ViewStore";
+import { Link } from 'react-router-dom';
 
-
-
-/*function renderNavigationLevel(layout, level:number, path:string, navItems: any) {
-	layout.forEach(navItem => {
-		navItems.push(<NavigationItem displayName={navItem.displayName} name={navItem.name} path={`${path}/${navItem.path}`} level={level} />);
-
-		if(navItem.pages) {
-			renderNavigationLevel(navItem.pages, level+1, `${path}/${navItem.path}`, navItems)
-		}
-	})
-}*/
-
-/*function renderNavigation() {
-	let navItems = [];
-	renderNavigationLevel(layout, 1, '', navItems);
-	return navItems;
-}*/
-
-
-/*const NavigationItem:React.SFC<{name:string, path:string, level:number}> = ({name, path, level}) => (
-	<div>{name} -- {path} -- {level}</div>
-);*/
-
-const NavItem:any = ({onClick, indent, children}:{onClick:any, indent: number, children:any}) => (
-	<a onClick={(e) => {e.preventDefault(); onClick()}} href="#" className={`nav-item nav-item_indent-${indent}`}>
-		{children}
-	</a>
-);
-
-@inject('viewStore')
-@observer
-export default class Navigation extends React.Component<any, any> {
-
-	constructor() {
-		super();
-
-		this.showPage = this.showPage.bind(this);
-	}
-
-	showPage(isExample, name, path) {
-		const show = isExample ? this.props.viewStore.showExamplePage : this.props.viewStore.showDocPage;
-
-		show.bind(this.props.viewStore)(name, path);
-	}
-
-	render() {
-		return (
-			<div>
-				<NavItem onClick={() => this.showPage(false, 'readme', '')} >Read me</NavItem>
-				<NavItem onClick={() => this.showPage(true,  'SimpleForm', 'examples/simple')} indent={2} >Simple Form</NavItem>
-				<NavItem onClick={() => this.showPage(true,  'SyncFieldValidation', 'examples/sync-validation')} indent={2} >Sync Field Validation</NavItem>
-				<NavItem onClick={() => this.showPage(true,  'ControlSection', 'examples/control-section')} indent={2} >ControlSection</NavItem>
-				<NavItem onClick={() => this.showPage(true,  'ControlArray', 'examples/control-array')} indent={2} >ControlArray</NavItem>
-			</div>
-		);
-	}
+export default function Navigation() {
+	return (
+		<div>
+			<Link className="nav-item" to="/">Read me</Link>
+			<Link className="nav-item" to="/examples/simple/SimpleForm">Simple Form</Link>
+			<Link className="nav-item" to="/examples/sync-validation/SyncFieldValidation">Sync Field Validation</Link>
+			<Link className="nav-item" to="/examples/control-section/ControlSection">ControlSection</Link>
+			<Link className="nav-item" to="/examples/control-array/ControlArray">ControlArray</Link>
+		</div>
+	)
 }
