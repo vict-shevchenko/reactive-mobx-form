@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { observable } from 'mobx';
-import {inject, observer} from 'mobx-react'
+import { observer} from 'mobx-react'
 import { fromPromise } from 'mobx-utils';
 import { doFetchCall } from '../../utils/fetch';
 import * as marked from 'marked';
 import * as Prism from '../../utils/prism'
-import {ViewStore} from "../../store/ViewStore";
 
 interface iDocumentProps {
 	document: string
