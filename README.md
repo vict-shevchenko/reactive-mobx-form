@@ -3,6 +3,9 @@ Forms library for React+MobX application. Under the hood it uses efficient MobX 
 
 The library is inspired by [Angular Reactive Forms](https://angular.io/guide/reactive-forms) and [Redux Form](http://redux-form.com). It has simalar syntax to Redux Form, because of concept that are neutural to React world. So if you previously had experience with it, it will be easy for you to start using `reactive-mobx-form`. But still one of the goals of this library is to be simple in usage for everyone.
 
+## Documentation
+[Examples](https://vict-shevchenko.github.io/reactive-mobx-form) can be found here. Documentation is under development, but you already can see some code and usage
+
 ## Important notice
 Library is on its initial development stage, is unstable and may contain bugs. Most of all API will change.
 
@@ -16,36 +19,36 @@ Starting of version `0.2.10` library contains all basic functionallity for handl
 ## Motivation
  Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
  
- Goals:
- 1. Minimal configuration
- 2. Easy to learn and start with
- 3. Preferable over own solutions(I hope it to be)
+Goals:
+1. Minimal configuration
+2. Easy to learn and start with
+3. Preferable over own solutions(I hope it to be)
 
- ## Capabilities
- Its now possible: 
- 1. Render simple one level forms
- 2. Validate fields, see **validatorjs** docs
- 3. Render multi-level fields with `ControlSection` Component
- 4. Render filed, that contains array of data. Both singe item array, or array of objects.
- 5. Submit a form
- 
- ## Dependancy
- reactive-mobx-forms depends directly on [validatorjs](https://github.com/skaterdav85/validatorjs) library. It is small, effective and scalable. 
- 
- reactive-mobx-forms peer dependencies are **mobx** and **mobx-react**
+## Capabilities
+Its now possible: 
+1. Render simple one level forms
+2. Validate fields, see **validatorjs** docs
+3. Render multi-level fields with `ControlSection` Component
+4. Render filed, that contains array of data. Both singe item array, or array of objects.
+5. Submit a form
 
- ## Know Issues
- 1. There is a problem when using [preact](https://github.com/developit/preact). For some reason, if inside of componentWillMount any state change is executed(form.refisterField => changes form.values => changes form.validation => changes form.errors, that are observed by Control Component), all lifecicle methods of Component are executed twice. Which then tries to register filed twice. Possible ways of solving can be:
-    1. Register field in componentDidMount 
-    2. Get rid of componentWillMount and do stuff in constructor
- This requires more investigation....
- 
- ## Installation
- 
- ```
- npm install reactive-mobx-form --save
- ```
- 
+## Dependancy
+reactive-mobx-forms depends directly on [validatorjs](https://github.com/skaterdav85/validatorjs) library. It is small, effective and scalable. 
+
+reactive-mobx-forms peer dependencies are **mobx** and **mobx-react**
+
+## Know Issues
+1. There is a problem when using [preact](https://github.com/developit/preact). For some reason, if inside of componentWillMount any state change is executed(form.refisterField => changes form.values => changes form.validation => changes form.errors, that are observed by Control Component), all lifecicle methods of Component are executed twice. Which then tries to register filed twice. Possible ways of solving can be:
+  1. Register field in componentDidMount 
+  2. Get rid of componentWillMount and do stuff in constructor
+This requires more investigation....
+
+## Installation
+
+```
+npm install reactive-mobx-form --save
+```
+
 ## Usage
 
 ### Step 1
