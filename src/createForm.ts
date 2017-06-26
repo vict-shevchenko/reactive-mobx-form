@@ -60,14 +60,16 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 				event.preventDefault();
 
 				this.form.submitting = true;
-				console.log('handling submit from form and calling parent');
+
 				Promise.all([this.props.onSubmit(this.form.values)])
 					.catch(error => {
 						this.form.submissionError = error;
 					})
 					.then(result => {
-						this.form.submitting = false;
 						this.resetForm();
+					})
+					.then(() => {
+						this.form.submitting = false;
 					})
 			}
 
