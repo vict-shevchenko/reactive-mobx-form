@@ -33,9 +33,14 @@ Its now possible:
 5. Submit a form
 
 ## Dependancy
-reactive-mobx-forms depends directly on [validatorjs](https://github.com/skaterdav85/validatorjs) library. It is small, effective and scalable. 
+reactive-mobx-forms depends directly on:
+1. [validatorjs](https://github.com/skaterdav85/validatorjs) library for validation. It is small, effective and scalable. 
+2. [prop-types](https://github.com/facebook/prop-types)
 
-reactive-mobx-forms peer dependencies are **mobx** and **mobx-react**
+reactive-mobx-forms peer dependencies are:
+1. [react](https://github.com/facebook/react)
+2. [mobx](https://github.com/mobxjs/mobx)
+3. [mobx-react](https://github.com/mobxjs/mobx-react)
 
 ## Know Issues
 1. There is a problem when using [preact](https://github.com/developit/preact). For some reason, if inside of componentWillMount any state change is executed(form.refisterField => changes form.values => changes form.validation => changes form.errors, that are observed by Control Component), all lifecicle methods of Component are executed twice. Which then tries to register filed twice. Possible ways of solving can be:

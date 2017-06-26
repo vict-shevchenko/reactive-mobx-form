@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field'
@@ -23,12 +24,12 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
 
 	static contextTypes = {
-		_ReactiveMobxForm: React.PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldNamePrefix: React.PropTypes.string
+		_ReactiveMobxForm: PropTypes.object.isRequired,
+		_ReactiveMobxFormFieldNamePrefix: PropTypes.string
 	}
 
 	static childContextTypes = {
-		_ReactiveMobxFormFieldNamePrefix: React.PropTypes.string.isRequired,
+		_ReactiveMobxFormFieldNamePrefix: PropTypes.string.isRequired,
 	}
 
 	static defaultProps = {

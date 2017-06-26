@@ -1,4 +1,5 @@
-import React, { Component, createElement, PropTypes } from 'react';
+import React, { Component, createElement } from 'react';
+import * as PropTypes from 'prop-types';
 import { observable, action, computed } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
