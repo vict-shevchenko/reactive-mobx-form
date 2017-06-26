@@ -78,6 +78,7 @@ export class Field {
 
 	@action reset() {
 		this.value = this.initialValue;
+		this.isTouched = false;
 	}
 
 	subscribeToFormValidation(form: Form) {
