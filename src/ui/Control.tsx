@@ -87,7 +87,7 @@ export class Control extends React.Component<ControlProps, any> {
 	componentWillMount() {
 		// Radio buttons have several controls which all should point to the same field in a form
 		if (this.isRadio) {
-			this.field = this.form.findFieldInHierarchy(objectPath(this.name));
+			this.field = this.form.findFieldInHierarchy(objectPath(this.name)) as Field;
 
 			if (!this.field) {
 				this.createField();

@@ -46,7 +46,7 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 				this.form.registerValidation();
 			}
 
-			componentDidmount() {
+			componentDidMount() {
 				this.form.mounted = true;
 			}
 

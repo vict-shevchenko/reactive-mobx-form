@@ -69,35 +69,31 @@ export class Form {
 	}
 
 	@computed get rules() { // todo: check if rule is computed on new field add
-		return this.fields.values().reduce((rules: any, field: formField) => {
-			return Object.assign(rules, field.rules)
-		}, {});
+		return this.fields.values().reduce((rules:any, field: formField) => Object.assign(rules, field.rules), {});
 	}
 
 	@action registerField(field: formField): void {
 		const fieldPath = objectPath(field.name);
 
 		try {
-			const existField: formField = this.findFieldInHierarchy(fieldPath);
-			const parentField: FieldArray | FieldSection | ObservableMap<formField> = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
+			const existField  = this.findFieldInHierarchy(fieldPath);
+			const parentField = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
 
-			// we need to additinally check for not be observable, because in fieldArray push method just puts empty observable into map
-			if (existField && !isObservableMap(existField)) {
-				throw (new Error(`Field with name ${existField.name} already exist in Form. `));
+			if (existField) {
+				throw (new Error(`Field with name ${(existField as formField).name} already exist in Form. `));
 			}
 			else {
-				if (isObservableMap(parentField)) {
-					parentField.set(field.name, field)
-				} else {
-					parentField.registerField(field);
-				}
+				(parentField as FieldArray | FieldSection | Form).addField(field);
 			}
 
 		}
 		catch (e) {
 			console.log(`Field ${field.name} can't be registred. Check name hierarchy.`, e)
 		}
+	}
 
+	@action addField(field: formField) {
+		this.fields.set(field.name, field);
 	}
 
 	@action removeField(fieldName: string) {
@@ -110,12 +106,12 @@ export class Form {
 		else { // this is some nested field
 			const lastIndex  : number = fieldPath.length - 1;
 			const lastNode   : string = fieldPath[lastIndex];
-			const parentField: FieldArray | FieldSection = this.findFieldInHierarchy(fieldPath.slice(0, lastIndex));
+			const parentField         = this.findFieldInHierarchy(fieldPath.slice(0, lastIndex));
 
 			// in React ComponentWillUnmount is fired from parent to child, so if no parent exist -> it was already unmounted.
 			// No need to clean-up children
 			if (parentField) {
-				parentField.subFields.delete(lastNode);
+				(parentField as FieldArray | FieldSection).removeSubField(lastNode);
 			}
 		}
 	}
@@ -126,8 +122,13 @@ export class Form {
 		});
 	}
 
-	findFieldInHierarchy(path) {
-		return path.reduce((f, node, idx) => (idx === 0 ? f.get(node) : f.subFields.get(node)), this.fields);
+	getField(index:string): formField {
+		return (this.fields as ObservableMap<formField>).get(index);
+	}
+
+	findFieldInHierarchy(path: Array<string>) : Form | formField {
+		// todo: f ? f.getField(node) : f - is super stupid check for parent was removed, just pass udefined for all suc childrens
+		return path.reduce((f: Form | FieldArray | FieldSection, node:string) => f ? f.getField(node) : f, this);
 	}
 
 	registerValidation() {

@@ -20,7 +20,7 @@ export class FieldSection {
 		this.name = name;
 	}
 
-	@action registerField(field: formField) {
+	@action addField(field: formField) {
 
 		// todo: looks like this is not a good solution to copy this part of code 
 		const fieldPath = objectPath(field.name);
@@ -33,12 +33,20 @@ export class FieldSection {
 		this.subFields.values().forEach((field:formField) => field.reset());
 	}
 
+	@action removeSubField(index) {
+		this.subFields.delete(index);
+	}
+
+	getField(index:string): formField {
+		return (this.subFields as ObservableMap<formField>).get(index);
+	}
+
 	@computed get value() {
-		return this.subFields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {})
+		return this.subFields.entries().reduce((values:any, entry:[string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
 	}
 
 	@computed get rules() {
-		return this.subFields.values().reduce((values:any, subField: formField) => Object.assign(values, subField.rules ), {})
+		return this.subFields.values().reduce((rules:any, field: formField) => Object.assign(rules, field.rules), {});
 	}
 
 	// todo: fix this

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
+import { observable } from 'mobx'; 
 import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field'
@@ -16,9 +17,9 @@ interface ControlArrayProps {
 
 @observer
 export class ControlArray extends React.Component<ControlArrayProps, any> {
-	name: string;
+	name : string;
 	field: FieldArray;
-	form: Form;
+	form : Form;
 
 	static requiredProps: Array<string> = ['component', 'name'];
 	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
@@ -35,6 +36,8 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	static defaultProps = {
 		rules: 'array'
 	}
+
+	@observable fieldsProxy: Array<any> = [];
 
 	constructor(props, context) {
 		super(props, context);
@@ -57,7 +60,7 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 				Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
 				[ '', this.props.rules]; // construct normalised field definition
 
-		this.field = new FieldArray(this.name, fieldDefinition);
+		this.field = new FieldArray(this.name);
 		this.form.registerField(this.field);
 	}
 
@@ -77,12 +80,15 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 
 	render() {
 		const propsToPass = omit(this.props, ControlArray.propNamesToOmitWhenByPass);
+
+		const length =  this.fieldsProxy.length; // todo: why we need this to rerender?
+
 		return React.createElement((this.props.component as any), 
 				Object.assign(
 						{}, 
 						{
-							fields: this.field.subFields.keys(),
-							push  : this.field.push.bind(this.field) 
+							fields: this.fieldsProxy,
+							
 						},
 						propsToPass
 					)
