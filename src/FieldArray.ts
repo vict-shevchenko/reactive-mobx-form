@@ -10,7 +10,8 @@ import { ObservableArray } from "mobx/lib/types/observablearray";
 
 
 export class FieldArray {
-	readonly name: string;
+	name: string;
+	autoRemove: boolean = false;
 	//readonly _rules: string;
 	// readonly _isFieldArray: boolean = true;
 
@@ -57,6 +58,11 @@ export class FieldArray {
 		// Avoid mobx.js:1905 [mobx.array] Attempt to read an array index (0) that is out of bounds (0). 
 		// Please check length first. Out of bound indices will not be tracked by MobX
 		return (this.subFields.length > parseInt(index, 10)) ? this.subFields[index] : undefined;
+	}
+
+	setAutoRemove() {
+		this.autoRemove = true;
+		this.subFields.forEach((subField: formField) => subField.setAutoRemove())
 	}
 
 	// we need some normal solution here, as pushing empty map to -> render Controls in View -> replace empty map with FieldSection

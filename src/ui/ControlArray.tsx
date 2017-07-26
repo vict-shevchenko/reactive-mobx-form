@@ -65,7 +65,8 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	}
 
 	componentWillUnmount() {
-		if (this.form.mounted) {
+		if (!this.field.autoRemove) {
+			this.field.setAutoRemove();
 			this.form.removeField(this.name);
 		}
 	}
@@ -88,7 +89,6 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 						{}, 
 						{
 							fields: this.fieldsProxy,
-							
 						},
 						propsToPass
 					)

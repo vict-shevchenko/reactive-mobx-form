@@ -10,7 +10,8 @@ import { objectPath } from "./utils";
 
 
 export class FieldSection {
-	readonly name: string;
+	name: string;
+	autoRemove: boolean = false;
 	// readonly _isFieldSection: boolean = true;
 
 	@observable subFields: ObservableMap<{}> = observable.map(); // todo: does not look good
@@ -39,6 +40,11 @@ export class FieldSection {
 
 	getField(index:string): formField {
 		return (this.subFields as ObservableMap<formField>).get(index);
+	}
+
+	setAutoRemove() {
+		this.autoRemove = true;
+		this.subFields.values().forEach((subField: formField) => subField.setAutoRemove())
 	}
 
 	@computed get value() {

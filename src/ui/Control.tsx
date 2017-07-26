@@ -72,16 +72,16 @@ export class Control extends React.Component<ControlProps, any> {
 
 		this.name = context._ReactiveMobxFormFieldNamePrefix ? `${context._ReactiveMobxFormFieldNamePrefix}.${props.name}` : props.name;
 
-		this.isCheckbox = props.type === 'checkbox';
-		this.isRadio = props.type === 'radio';
-		this.isFile = props.type === 'file';
-		this.isSelect = props.component === 'select';
-		this.isNumber = props.type === 'number';
+		this.isCheckbox  = props.type      === 'checkbox';
+		this.isRadio     = props.type      === 'radio';
+		this.isFile      = props.type      === 'file';
+		this.isNumber    = props.type      === 'number';
+		this.isSelect    = props.component === 'select';
 		this.isCheckable = this.isCheckbox || this.isRadio;
 
 		this.onChange = this.onChange.bind(this);
-		this.onFocus = this.onFocus.bind(this);
-		this.onBlur = this.onBlur.bind(this);
+		this.onFocus  = this.onFocus.bind(this);
+		this.onBlur   = this.onBlur.bind(this);
 	}
 
 	componentWillMount() {
@@ -99,10 +99,14 @@ export class Control extends React.Component<ControlProps, any> {
 		this.field.subscribeToFormValidation(this.form);
 	}
 
+	componentDidMount() {
+		// this.field
+	}
+
 	createField() {
 		const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[this.name] ?
-				Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
-				[this.isCheckbox ? false : '', this.props.rules];
+			  Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
+			  [this.isCheckbox ? false : '', this.props.rules];
 
 		this.warnOnIncorrectInitialValues(fieldDefinition);
 
@@ -111,7 +115,7 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	componentWillUnmount() {
-		if (this.form.mounted) {
+		if (!this.field.autoRemove) {
 			this.form.removeField(this.name);
 		}
 	}

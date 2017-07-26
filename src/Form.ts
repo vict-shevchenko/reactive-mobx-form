@@ -101,7 +101,8 @@ export class Form {
 
 
 		if (fieldPath.length === 1) { // this is form.fields first child
-			this.fields.delete(fieldName)
+			(this.fields.get(fieldName) as formField).setAutoRemove();
+			this.fields.delete(fieldName);
 		}
 		else { // this is some nested field
 			const lastIndex  : number = fieldPath.length - 1;

@@ -22,12 +22,11 @@ function hasErrorArraysChanged(oldErrors: Array<string>, newErrors: Array<string
 }
 
 export class Field {
+	name: string;
+	autoRemove: boolean = false;
 
-	readonly name: string;
 	readonly initialValue: fieldValue = '';
 	readonly _rules: string = '';
-
-	type: string;
 
 	@observable value: fieldValue = '';
 	@observable errors: Array<string> = [];
@@ -79,6 +78,10 @@ export class Field {
 	@action reset() {
 		this.value = this.initialValue;
 		this.isTouched = false;
+	}
+
+	setAutoRemove() {
+		this.autoRemove = true;
 	}
 
 	subscribeToFormValidation(form: Form) {
