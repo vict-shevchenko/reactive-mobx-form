@@ -122,7 +122,7 @@ export class Control extends React.Component<ControlProps, any> {
 
 	verifyRequiredProps() {
 		Control.requiredProps.forEach(reqiredPropName => {
-			if (!this.props[reqiredPropName]) {
+			if (this.props[reqiredPropName] === undefined) {
 				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
 			}
 		});
