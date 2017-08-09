@@ -120,6 +120,19 @@ export class Control extends React.Component<ControlProps, any> {
 		}
 	}
 
+	componentWillReceiveProps(nextProps: ControlProps, nextContext: any) {
+		const name = nextContext._ReactiveMobxFormFieldNamePrefix ? `${nextContext._ReactiveMobxFormFieldNamePrefix}.${nextProps.name}` : nextProps.name.toString();
+
+		if (this.name !== name || this.props.rules !== nextProps.rules) {
+			const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[name] ?
+			  Field.normalizeFieldDefinition(this.form.formSchema[name]) : // normalize field definition from initial form schema
+			  [this.isCheckbox ? false : '', nextProps.rules];
+
+			this.field.update(name, fieldDefinition);
+			this.name = name;
+		}
+	}
+
 	verifyRequiredProps() {
 		Control.requiredProps.forEach(reqiredPropName => {
 			if (this.props[reqiredPropName] === undefined) {

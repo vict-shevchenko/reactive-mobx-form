@@ -65,6 +65,15 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 		}
 	}
 
+	componentWillReceiveProps(nextProps: ControlSectionProps, nextContext:any) {
+		const name = nextContext._ReactiveMobxFormFieldNamePrefix ? `${nextContext._ReactiveMobxFormFieldNamePrefix}.${nextProps.name}` : nextProps.name.toString();
+
+		if (this.name !== name) {
+			this.name = name;
+			this.field.update(name);
+		}
+	}
+
 	verifyRequiredProps() {
 		ControlSection.requiredProps.forEach(reqiredPropName => {
 			if (this.props[reqiredPropName] === undefined) {

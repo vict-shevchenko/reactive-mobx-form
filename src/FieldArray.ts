@@ -12,15 +12,16 @@ import { ObservableArray } from "mobx/lib/types/observablearray";
 export class FieldArray {
 	name: string;
 	autoRemove: boolean = false;
-	//readonly _rules: string;
-	// readonly _isFieldArray: boolean = true;
 
 	@observable subFields: Array<formField> = [];
 	@observable errors: Array<string> = [];
 
-	constructor(name: string/*, fieldDefinition: normalizesdFieldDefinition*/) {
+	constructor(name: string) {
+		this.update(name);
+	}
+
+	update(name: string) {
 		this.name = name;
-		// this._rules = fieldDefinition[1];
 	}
 
 	@action addField(field: formField) {
@@ -71,11 +72,12 @@ export class FieldArray {
 	}*/
 
 	@computed get value() {
-		return this.subFields.map((subField: formField) => subField.value);
+		// filter in order to avoid errors when subFields has a gap for item to be insetred
+		return this.subFields.filter((subField: formField) => subField).map((subField: formField) => subField.value);
 	}
 
 	@computed get rules() {
-		return this.subFields.reduce((rules, subField: formField) => Object.assign(rules, subField.rules), {});
+		return this.subFields.filter((subField: formField) => subField).reduce((rules, subField: formField) => Object.assign(rules, subField.rules), {});
 	}
 
 	// todo: fix this

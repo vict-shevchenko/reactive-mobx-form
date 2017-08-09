@@ -18,6 +18,10 @@ export class FieldSection {
 	// @observable errors: Array<string> = [];
 
 	constructor(name: string) {
+		this.update(name);
+	}
+
+	update(name: string) {
 		this.name = name;
 	}
 

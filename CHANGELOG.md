@@ -1,5 +1,8 @@
-# 0.2.12 [Unreleased]
-- Improved logic of working with `field` object passed into component by `ControlArray`[Breacking Change]. No push, all methods are in `field`
+# 0.3.0 [Breacking Change]
+- Improved logic of working with `fields` array passed into `ControlArray`'s component [Breacking Change].
+- No more separate methods for `fields`
+- All methods for manipulatin are in `fields.prototype`
+- They are: `map, add, insert, remove, swap`
 
 # 0.2.11
 - Fix problem with unmountin of `Control*` components. Now unmounting cause correct removing of corresponding `Field` instance from `form.fields`

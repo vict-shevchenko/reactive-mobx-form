@@ -22,16 +22,15 @@ function hasErrorArraysChanged(oldErrors: Array<string>, newErrors: Array<string
 }
 
 export class Field {
-	name: string;
 	autoRemove: boolean = false;
-
-	readonly initialValue: fieldValue = '';
-	readonly _rules: string = '';
-
-	@observable value: fieldValue = '';
-	@observable errors: Array<string> = [];
-	@observable isFocused: boolean = false;
-	@observable isTouched: boolean = false;
+	initialValue: fieldValue = '';
+	
+	@observable name  :    string; // rules are updated on FieldArray remove item
+	@observable _rules:    string; // rules are updated on FieldArray remove item
+	@observable value :    fieldValue    = '';
+	@observable errors:    Array<string> = [];
+	@observable isFocused: boolean       = false;
+	@observable isTouched: boolean       = false;
 
 	static normalizeFieldDefinition(fieldDefinition: fieldDefinition): normalizesdFieldDefinition {
 		if (Array.isArray(fieldDefinition)) {
@@ -42,9 +41,13 @@ export class Field {
 	}
 
 	constructor(name: string, fieldDefinition: normalizesdFieldDefinition) {
+		this.update(name, fieldDefinition);
+	}
+
+	update(name: string, fieldDefinition: fieldDefinition) {
 		this.name = name;
 		this.initialValue = fieldDefinition[0];
-		this.value = this.initialValue;
+		this.value = this.value || this.initialValue;
 		this._rules = fieldDefinition[1];
 	}
 
