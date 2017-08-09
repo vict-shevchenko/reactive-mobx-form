@@ -34,7 +34,7 @@ const Address = inject('appState')(observer(({appState}) =>
 	</div>
 ));
 
-const Person = () => (
+const Person = ({fields, name}) => (
 	<div>
 		<div>
 			<label htmlFor="firstName">First Name</label>
@@ -45,26 +45,29 @@ const Person = () => (
 			<Control name="lastName" component="input" type="text" alt="some text"  label="FN"/>
 		</div>
 		<ControlArray name="hobbies" component={Hobbies} />
+		<button type="button" onClick={() => fields.remove(name)}> Remove</button>
 	</div>
 );
 
 
-const Persons = ({fields, push}) => (
+const Persons = ({ fields }) => (
 	<div>
-		{fields.map(index => (<ControlSection name={index} component={Person} key={index} />))}
+		{fields.map((el, index, fields) => (<ControlSection key={el} name={index} component={Person} fields={fields}/>))}
 		----<br/>
-		{fields.map(index => <span key={index}>,{index}</span>)}<br/>
+		{fields.map((el, index)  => <span key={el}>{`elem-${el} - idx-${index}`}, </span>)}<br/>
 
-		<button onClick={push} type="button">Add more persons</button>
+		<button onClick={fields.add} type="button">Add more persons</button>
+		<button onClick={() => fields.swap(1,3)} type="button">Reorder</button>
 	</div>
 
 );
 
-const Hobbies = (props) => (
+const Hobbies = ({fields}) => (
 	<div>
 		<label>Hobbies</label>
+		<button onClick={fields.add} type="button">Add Hobbie</button>
 		<div>
-			<Control name="0" component="input" type="text"/>
+			{fields.map((el, index) => (<Control key={el} name={index} component="input" type="text"/>))}
 		</div>
 	</div>
 );
