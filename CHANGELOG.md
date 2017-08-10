@@ -1,3 +1,6 @@
+# 0.3.0 
+- Pass `submitError` property to Form component
+
 # 0.3.0 [Breacking Change]
 - Improved logic of working with `fields` array passed into `ControlArray`'s component [Breacking Change].
 - No more separate methods for `fields`
