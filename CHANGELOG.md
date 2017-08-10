@@ -1,4 +1,7 @@
-# 0.3.0 
+# 0.3.2 
+- `isDirty` property now is computed correctly
+
+# 0.3.1 
 - Pass `submitError` property to Form component
 
 # 0.3.0 [Breacking Change]
