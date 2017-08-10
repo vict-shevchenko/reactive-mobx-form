@@ -3,7 +3,7 @@ import { observable, action, computed, reaction, ObservableMap, isObservableMap 
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, normalizesdFieldDefinition, formSchema, formField } from './interface';
+import { fieldDefinition, normalizesdFieldDefinition, formSchema, formField, IFormValues } from './interface';
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
@@ -17,8 +17,8 @@ export class Form {
 
 	mounted: boolean = false;
 
-	@observable fields: ObservableMap<{}> = observable.map();
-	@observable errors: Validator.Errors; // todo: initial value
+	@observable fields = new ObservableMap<formField>();
+	@observable errors : Validator.Errors; // todo: initial value
 	@observable isValid: boolean | void; // todo: initial value
 
 	@observable submitting: boolean = false;
@@ -54,7 +54,7 @@ export class Form {
 	}
 
 	@computed get isDirty() { // todo: should be implementede for ControlArray
-		return this.fields.values().some((field: formField) => field.isDirty);
+		return this.fields.values().some(field => field.isDirty);
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
@@ -65,11 +65,11 @@ export class Form {
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
 		//return this.fields.entries().map(entry => ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
-		return this.fields.entries().reduce((values: any, entry: [string, formField]) => Object.assign(values, { [entry[0]]: entry[1].value }), {});
+		return this.fields.entries().reduce((values: IFormValues, [name, field]) => (values[name] = field.value, values), {});
 	}
 
 	@computed get rules() { // todo: check if rule is computed on new field add
-		return this.fields.values().reduce((rules:any, field: formField) => Object.assign(rules, field.rules), {});
+		return this.fields.values().reduce((rules:any, field) => Object.assign(rules, field.rules), {});
 	}
 
 	@action registerField(field: formField): void {

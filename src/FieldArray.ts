@@ -71,17 +71,20 @@ export class FieldArray {
 		this.subFields.set((this.subFields.size).toString(), observable.map())
 	}*/
 
-	@computed get value() {
+	@computed get realSubFields() {
 		// filter in order to avoid errors when subFields has a gap for item to be insetred
-		return this.subFields.filter((subField: formField) => subField).map((subField: formField) => subField.value);
+		return this.subFields.filter((subField: formField) => subField);
+	}
+
+	@computed get value() {
+		return this.realSubFields.map((subField: formField) => subField.value);
 	}
 
 	@computed get rules() {
-		return this.subFields.filter((subField: formField) => subField).reduce((rules, subField: formField) => Object.assign(rules, subField.rules), {});
+		return this.realSubFields.reduce((rules, subField: formField) => Object.assign(rules, subField.rules), {});
 	}
 
-	// todo: fix this
 	@computed get isDirty() {
-		return true;
+		return this.realSubFields.some(subField => subField.isDirty);
 	}
 }

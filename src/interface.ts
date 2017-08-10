@@ -16,3 +16,7 @@ export interface formSchema {
 export interface normalizedFormSchema {
 	[propType: string]: normalizesdFieldDefinition
 }
+
+export interface IFormValues {
+	[propType: string]: fieldValue
+}
