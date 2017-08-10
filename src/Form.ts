@@ -23,7 +23,7 @@ export class Form {
 
 	@observable submitting: boolean = false;
 	@observable validating: boolean = false;
-	@observable submissionError: string = '';
+	@observable submitError: any;
 
 	// computed
 	/*

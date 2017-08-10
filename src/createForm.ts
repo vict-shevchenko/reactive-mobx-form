@@ -63,7 +63,7 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 
 				Promise.all([this.props.onSubmit(this.form.values)])
 					.catch(error => {
-						this.form.submissionError = error;
+						this.form.submitError = error;
 					})
 					.then(result => {
 						this.resetForm();
@@ -82,6 +82,7 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 					submit: this.submitForm.bind(this),
 					reset: this.resetForm.bind(this),
 					submitting: this.form.submitting, // todo: when submit change - full form render method is executed. Thing on more performat approach. May be Submitting component
+					submitError: this.form.submitError,
 					/* validation: form.validation, */ //todo - this case render been called when any field change
 					valid: this.form.isValid,
 					dirty: this.form.isDirty
