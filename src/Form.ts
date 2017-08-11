@@ -118,9 +118,7 @@ export class Form {
 	}
 
 	@action reset() {
-		this.fields.forEach((field: formField) => {
-			field.reset();
-		});
+		this.fields.forEach(field => field.reset());
 	}
 
 	getField(index:string): formField {

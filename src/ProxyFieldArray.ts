@@ -1,4 +1,4 @@
-import { observable, IObservableArray } from 'mobx';
+import { observable, autorun, reaction, IObservableArray } from 'mobx';
 
 export default class ProxyFieldArray {
 	forEach: any;
@@ -18,6 +18,15 @@ export default class ProxyFieldArray {
 		this.remove = this.remove.bind(this);
 		this.forEach = this.observableArray.forEach.bind(this.observableArray);
 		this.clear = this.observableArray.clear.bind(this.observableArray);
+
+		reaction(() => (this.fieldArraySubFields.length === 0), data => { // in case fieldArray.subfields became empty (form reset, or all items were removed)
+			if (data === true) {
+				if (this.observableArray.length !== 0) { // fieldProxy items exist -> form was resetted, clean up ui
+					this.observableArray.clear();
+				}
+
+			}
+		})
 	}
 
 	public add(): void {

@@ -47,12 +47,12 @@ export class FieldArray {
 	}
 
 	@action reset() {
+		this.subFields.forEach((subField) => subField.setAutoRemove());
 		(this.subFields as IObservableArray<formField>).clear();
 	}
 
 	@action removeSubField(index) {
 		(this.subFields as IObservableArray<formField>).splice(index, 1);
-		// todo: rules are sticked to names, so we need to align names of fields;
 	}
 
 	getField(index:string) {
@@ -63,7 +63,7 @@ export class FieldArray {
 
 	setAutoRemove() {
 		this.autoRemove = true;
-		this.subFields.forEach((subField: formField) => subField.setAutoRemove())
+		this.subFields.forEach((subField: formField) => subField.setAutoRemove());
 	}
 
 	// we need some normal solution here, as pushing empty map to -> render Controls in View -> replace empty map with FieldSection
