@@ -1,3 +1,7 @@
+# 0.3.3
+- Fix Bug, that `Form.reset` did not removed ControlArray children from ui
+- Allow `ControlArray` to be the nested child of other `ControlArray`
+
 # 0.3.2 
 - `isDirty` property now is computed correctly
 
