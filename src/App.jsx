@@ -11,11 +11,20 @@ const FormView = inject('formStore')(observer(({formStore}) => <pre>{beautify(fo
 
 
 class App extends Component {
-	handleSubmit(form) {
+	/*handleSubmit(form) {
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				console.log(JSON.stringify(form));
 				resolve('done');
+			}, 1500)
+		})
+	}*/
+
+	handleSubmit(form) {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				console.log(JSON.stringify(form));
+				reject('error');
 			}, 1500)
 		})
 	}

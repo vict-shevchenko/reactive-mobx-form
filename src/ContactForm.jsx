@@ -74,7 +74,7 @@ const Hobbies = ({fields}) => (
 
 class ContactForm extends Component {
 	render() {
-		const { submit, reset, submitting, valid, dirty } = this.props;
+		const { submit, reset, submitting, submitError, valid, dirty } = this.props;
 		return (
 			<form onSubmit={submit}>
 				{/*<div>
@@ -134,8 +134,9 @@ class ContactForm extends Component {
 					</div>
 				</div>
 
-				Form Dirty --- {`${dirty}`}
+				Form Dirty --- {`${dirty}`} <br/>
 				Form Valid - - {`${valid}`} <br/>
+				Submit Error  - - {`${submitError}`} <br/>
 				<button type="submit">Submit</button>  is Submitting - {`${submitting}`} <br/>
 				<button onClick={reset} type="button">Reset</button>
 			</form>
