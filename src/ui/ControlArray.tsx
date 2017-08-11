@@ -76,7 +76,7 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 
 	verifyRequiredProps() {
 		ControlArray.requiredProps.forEach(reqiredPropName => {
-			if (!this.props[reqiredPropName]) {
+			if (this.props[reqiredPropName] === undefined) {
 				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
 			}
 		});
