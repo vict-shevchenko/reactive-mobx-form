@@ -18,13 +18,15 @@
 
 
 	&>label {
-		flex: 1 1 auto;
+		flex: 0 1 150px;
 		text-align: right;
 		padding-right: 15px;
+		white-space: nowrap;
+		min-width: 88px;
 	}
 
 	&>div {
-		flex: 0 0 450px;
+		flex: 1 1 auto;
 
 		input[type="text"], input[type="email"], select, textarea  {
 			width: 100%;
@@ -51,6 +53,11 @@
 		.err {
 			color: firebrick;
 		}
+	}
+
+	&>button {
+		margin-right: 0;
+		height: 30px;
 	}
 }
 

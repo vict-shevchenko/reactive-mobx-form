@@ -38,12 +38,12 @@ class DocumentOverview extends React.Component<iDocumentProps, any>{
 	render() {
 		switch (this.document.state) {
 			case "pending":
-				return <h1>Loading documents..</h1>;
+				return <div className="pageContent"><p>Loading documents..</p></div>;
 			case "rejected":
-				return <span >{this.document.value}</span>;
+				return <div className="pageContent"><span >{this.document.value}</span></div>;
 			case "fulfilled":
 				return (
-					<div>
+					<div className="pageContent">
 						<div dangerouslySetInnerHTML={{__html:marked(prettify(this.document.value))}} />
 					</div>
 				)

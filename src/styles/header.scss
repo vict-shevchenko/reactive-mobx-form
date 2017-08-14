@@ -1,0 +1,15 @@
+.header {
+	height: 110px;
+	padding-top: 30px;
+	text-align: center;
+
+	&__logo {
+		display: inline-block;
+	}
+
+	&__slogan {
+		display: inline-block;
+		font-size: 12px;
+		line-height: 28px;
+	}
+}

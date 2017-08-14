@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export default function Navigation() {
 	return (
-		<div>
-			<Link className="nav-item" to="/">Read me</Link>
-			<Link className="nav-item" to="/examples/simple/SimpleForm">Simple Form</Link>
-			<Link className="nav-item" to="/examples/sync-validation/SyncFieldValidation">Sync Field Validation</Link>
-			<Link className="nav-item" to="/examples/control-section/ControlSection">ControlSection</Link>
-			<Link className="nav-item" to="/examples/control-array/ControlArray">ControlArray</Link>
+		<div className="navigation">
+			<NavLink className="navItem" activeClassName="navItem--active" to="/" exact>HOME / README</NavLink>
+			<NavLink className="navItem" activeClassName="navItem--active" to="/examples">EXAMPLES</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/simple/SimpleForm">Simple Form</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/sync-validation/SyncFieldValidation">Sync Field Validation</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/control-section/ControlSection">ControlSection</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/control-array/ControlArray">ControlArray</NavLink>
+			<NavLink className="navItem" activeClassName="navItem--active" to="/donate">DONATE</NavLink>
 		</div>
 	)
 }

@@ -56,7 +56,7 @@ class ExampleOverview extends React.Component<any, any>{
 		const formName = this.props.match.params.name;
 
 		return (
-			<div>
+			<div className="pageContent">
 				<div>
 					<Document document={`docs/examples/${dir}/${formName}`} />
 				</div>

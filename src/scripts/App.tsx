@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 import Navigation from "./components/navigation/Navigation";
 import Document from "./components/document/Document";
 import Example from "./components/example/Example";
+import Header from "./components/header/Header";
 
 require('../styles/main.scss');
 
@@ -18,15 +19,14 @@ export default class App extends React.Component<any, undefined> {
 	render() {
 		return (
 			<div className="site">
-				<div className="site__header">header</div>
 				<div className="site__navigation">
+					<Header />
 					<Navigation />
 				</div>
 				<div className="site__content">
 					<Route exact path="/" component={Home}/>
 					<Route path="/examples/:dir/:name" component={Example}/>
 				</div>
-				<div className="site__footer">footer</div>
 			</div>
 		)
 	}

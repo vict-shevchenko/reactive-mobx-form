@@ -1,7 +1,9 @@
 @import "~bourbon/app/assets/stylesheets/_bourbon";
+@import "_variables";
 @import "normalize";
 @import "prism.css";
 @import "form";
+@import "header";
 @import "navigation";
 
 
@@ -9,31 +11,26 @@ html, body, #root, .site {
 	@include size(100%);
 }
 
-input, textarea {
+body {
+	font-family: 'Lato', sans-serif;
+	color: #222;
+}
+
+* {
 	box-sizing: border-box;
 }
 
-$grey: #ccc;
-$green: forestgreen;
+code[class*="language-"], pre[class*="language-"] {
+	font-size: 12px;
+}
+
 
 .site {
 	display: grid;
-	grid-template-columns: 200px 1fr;
-	grid-template-rows: 100px 1fr 100px;
+	grid-template-columns: 250px 1fr;
+	grid-template-rows: 1fr;
 	grid-template-areas:
-		"header header"
-		"navigation content"
-		"footer footer";
-
-	&__header {
-		grid-area: header;
-		border-bottom: 1px solid $grey;
-	}
-
-	&__footer {
-		grid-area: footer;
-		border-top: 1px solid $grey;
-	}
+		"navigation content";
 
 	&__navigation {
 		grid-area: navigation;
@@ -47,5 +44,17 @@ $green: forestgreen;
 	}
 }
 
+.pageContent {
+	max-width: 770px;
+	margin: 0 auto;
+	line-height: 28px;
 
+	h1 {
+		font-size: 64px;
+		color: $purple;
+	}
 
+	a {
+		color: $purple;
+	}
+}

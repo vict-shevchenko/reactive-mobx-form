@@ -39,9 +39,15 @@ class Code extends React.Component<iCodeProps, any> {
 			case "rejected":
 				return <span >{this.code.value}</span>;
 			case "fulfilled":
+
+				const code = Prism.highlight(this.code.value, Prism.languages.jsx);
+				let html = marked(`<pre class="language-jsx"><code class="language-jsx">${code}</code></pre>`);
+
+				html = html.replace(/ {4}/g, '\t');
+
 				return (
 					<div>
-						<div dangerouslySetInnerHTML={{ __html: marked(`<pre class="language-jsx"><code class="language-jsx">${Prism.highlight(this.code.value, Prism.languages.jsx)}</code></pre>`)}} />
+						<div dangerouslySetInnerHTML={{ __html: html}} />
 					</div>
 				)
 		}

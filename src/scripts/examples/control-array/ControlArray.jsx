@@ -2,28 +2,34 @@ import * as React from 'react';
 import {reactiveMobxForm, Control, ControlArray, ControlSection} from 'reactive-mobx-form';
 
 
-function Dishes({fields, push}) {
+function Dishes({ fields }) {
 	return (
 		<main>
 			{
-				fields.map((index, idx )=> (
-					<div key={index}>
-						<label>Dish #{idx + 1}</label>
+				fields.map((key, index )=> (
+					<div key={key}>
+						<label>Dish #{`${index + 1}`}</label>
 						<div>
 							<Control name={index} component="input" type="text" />
 						</div>
+						<button type="button" onClick={() => fields.remove(index)}>Remove</button>
 					</div>
 				))
 			}
 
-			<button type="button" onClick={push}>Add Dish</button>
+			<button type="button" onClick={fields.add}>Add Dish</button>
 		</main>
 	)
 }
 
-function Person() {
+function Person({ name, remove }) {
 	return (
 		<main>
+			<div>
+				<label>Person {name + 1}</label>
+				<div />
+				<button type="button" onClick={remove}>Remove Person</button>
+			</div>
 			<div>
 				<label>First Name</label>
 				<div>
@@ -41,16 +47,16 @@ function Person() {
 	);
 }
 
-function Persons({fields, push}) {
+function Persons({fields}) {
 	return (
 		<section>
 			{
-				fields.map(index => (
-					<ControlSection name={index} component={Person} key={index} />
+				fields.map((key, index, fields) => (
+					<ControlSection key={key} name={index} component={Person} remove={() => fields.remove(index)} />
 				))
 			}
 
-			<button type="button" onClick={push}>Add person</button>
+			<button type="button" onClick={fields.add}>Add person</button>
 		</section>
 	);
 }
