@@ -5,7 +5,8 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build-dev": "rm -rf dist && webpack    --config webpack.config.js --progress --color",
-    "build-prod": "rm -rf dist && webpack -p --config webpack.config.js --progress"
+    "build-prod": "rm -rf dist && webpack -p --config webpack.config.js --progress",
+    "deploy": "cp dist/*.* ../gh-pages/dist"
   },
   "repository": {
     "type": "git",
