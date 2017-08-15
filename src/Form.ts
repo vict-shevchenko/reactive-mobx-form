@@ -3,7 +3,7 @@ import { observable, action, computed, reaction, ObservableMap, isObservableMap 
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, normalizesdFieldDefinition, formSchema, formField, IFormValues } from './interface';
+import { fieldDefinition, normalizesdFieldDefinition, IFormSchema, formField, IFormValues } from './interface';
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
@@ -11,7 +11,7 @@ import { FieldSection } from "./FieldSection";
 import { objectPath, isNumeric } from "./utils";
 
 export class Form {
-	formSchema: formSchema;
+	formSchema: IFormSchema;
 
 	component: any;
 

@@ -1,3 +1,6 @@
+# 0.4.0 [Unreleased]
+- Possibility to globally / locally(per form) to set up language of error messages, and how the field name inside error messages is formated.
+
 # 0.3.3
 - Fix Bug, that `Form.reset` did not removed ControlArray children from ui
 - Allow `ControlArray` to be the nested child of other `ControlArray`

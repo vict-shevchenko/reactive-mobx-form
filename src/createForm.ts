@@ -2,39 +2,41 @@ import React, { Component, createElement } from 'react';
 import * as PropTypes from 'prop-types';
 import { observable, action, computed } from 'mobx';
 import { inject, observer } from 'mobx-react';
+import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { formSchema } from './interface';
+import { IFormSchema, IFormParameters, IValidatorjsConfiguration } from './interface';
 
-function isFormSchemaValid(schema: formSchema) {
+function isFormSchemaValid(schema: IFormSchema) {
 	return schema && typeof schema === 'object' && !Array.isArray(schema)
 }
 
 
-export function createForm(formName: string, initialSchema: formSchema = {}) {
+export function createForm(formName: string, parameters?: IFormParameters ) {
 
 	return wrappedForm => {
 		@inject('formStore')
 		@observer
-		class FormUI extends Component<{ formStore: any, onSubmit?: any, schema?: formSchema }, any> {
+		class FormUI extends Component<{ formStore: any, onSubmit?: any, schema?: IFormSchema }, any> {
 			form: Form;
 
 			static childContextTypes = {
 				_ReactiveMobxForm: PropTypes.object.isRequired
 			}
 
-			static defaultProps = {
-				schema: {}
-			};
-
 			constructor(props, context) {
 				super(props, context);
 				
 				// todo: remove for production build
-				const mergedSchema = (isFormSchemaValid(initialSchema) && isFormSchemaValid(props.schema)) ? Object.assign(initialSchema, props.schema) : {} 
+				const mergedSchema = (isFormSchemaValid(parameters.schema) && isFormSchemaValid(props.schema)) ? Object.assign(parameters.schema, props.schema) : {} 
 
 				this.form = new Form(mergedSchema);
 				this.form.component = wrappedForm; // for debugging/error handling purposes
+
+				// set up Validator
+				if (parameters.validator) {
+					configureValidatorjs(parameters.validator);
+				}
 			}
 
 			getChildContext() {
@@ -93,4 +95,9 @@ export function createForm(formName: string, initialSchema: formSchema = {}) {
 
 		return FormUI;
 	}
+}
+
+export function configureValidatorjs(configParameters: IValidatorjsConfiguration) {
+	configParameters.language && Validator.useLang(configParameters.language);
+	configParameters.setAttributeFormatter && Validator.setAttributeFormatter(configParameters.setAttributeFormatter);
 }
