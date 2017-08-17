@@ -3,7 +3,7 @@ import { observable, action, computed, reaction, ObservableMap, isObservableMap 
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, normalizesdFieldDefinition, IFormSchema, formField, IFormValues } from './interface';
+import { fieldDefinition, normalizesdFieldDefinition, IFormSchema, formField, IFormValues, IFormErrorMessages } from './interface';
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
@@ -11,6 +11,7 @@ import { FieldSection } from "./FieldSection";
 import { objectPath, isNumeric } from "./utils";
 
 export class Form {
+	errorMessages: IFormErrorMessages;
 	formSchema: IFormSchema;
 
 	component: any;
@@ -49,8 +50,9 @@ export class Form {
 		return normalized;
 	}*/
 
-	constructor(formSchema) {
+	constructor(formSchema: IFormSchema, errorMessages: IFormErrorMessages) {
 		this.formSchema = formSchema;
+		this.errorMessages = errorMessages;
 	}
 
 	@computed get isDirty() { // todo: should be implementede for ControlArray
@@ -59,7 +61,7 @@ export class Form {
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
 	@computed get validation() {
-		return new Validator(this.values, this.rules);
+		return new Validator(this.values, this.rules, this.errorMessages);
 	}
 
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization

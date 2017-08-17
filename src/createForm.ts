@@ -5,14 +5,29 @@ import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { IFormSchema, IFormParameters, IValidatorjsConfiguration } from './interface';
+import { IFormSchema, IFormDefinition, IValidatorjsConfiguration } from './interface';
 
-function isFormSchemaValid(schema: IFormSchema) {
-	return schema && typeof schema === 'object' && !Array.isArray(schema)
+function isConfigParamValid(param) {
+	return param && typeof param === 'object' && !Array.isArray(param);
+}
+
+function validateConfigParams(formName: string, params: any) {
+	if (!Object.keys(params).every(paramName => isConfigParamValid(params[paramName]))) {
+		throw new Error('Error validating form initialization parameters');
+	}
+
+	if (!formName || typeof formName !== 'string') {
+		throw new Error('Form name shoud be non empty string');
+	}
 }
 
 
-export function createForm(formName: string, parameters?: IFormParameters ) {
+export function createForm(formName: string , formDefinition: IFormDefinition ) {
+
+	const { validator:configValidator, schema:configSchema, errorMessages} = formDefinition;
+
+	// run validation for only parameters presented in a form definition object
+	validateConfigParams(formName, [configValidator, configSchema, errorMessages].filter(i => i));
 
 	return wrappedForm => {
 		@inject('formStore')
@@ -26,16 +41,17 @@ export function createForm(formName: string, parameters?: IFormParameters ) {
 
 			constructor(props, context) {
 				super(props, context);
-				
-				// todo: remove for production build
-				const mergedSchema = (isFormSchemaValid(parameters.schema) && isFormSchemaValid(props.schema)) ? Object.assign(parameters.schema, props.schema) : {} 
 
-				this.form = new Form(mergedSchema);
+				if (props.schema && !isConfigParamValid(props.schema)) {
+					throw new Error('attribute "schema" provided to Form has incorrect format. Object expected');
+				}
+
+				this.form = new Form(Object.assign(configSchema || {}, props.schema || {}), errorMessages);
 				this.form.component = wrappedForm; // for debugging/error handling purposes
 
 				// set up Validator
-				if (parameters.validator) {
-					configureValidatorjs(parameters.validator);
+				if (configValidator) {
+					configureValidatorjs(configValidator);
 				}
 			}
 

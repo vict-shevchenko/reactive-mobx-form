@@ -22,9 +22,14 @@ export interface IValidatorjsConfiguration {
 	setAttributeFormatter?: (attribute: string) => string,
 }
 
-export interface IFormParameters {
+export interface IFormErrorMessages {
+	[propType: string]: string
+}
+
+export interface IFormDefinition {
 	validator?: IValidatorjsConfiguration, 
-	schema?: IFormSchema
+	schema?: IFormSchema,
+	errorMessages?: IFormErrorMessages
 }
 
 export interface IFormValues {
