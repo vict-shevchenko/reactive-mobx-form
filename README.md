@@ -210,7 +210,7 @@ With custom error messages it is possible to completely modify error message for
 ```javascript
 const ContactFormReactive = reactiveMobxForm('contacts', {
     errorMessages: {
-			'required': 'You forgot to give a :attribute' // this format will be userd for all required fields
+      'required': 'You forgot to give a :attribute' // this format will be userd for all required fields
       'required.email': 'Without an :attribute we can\'t reach you!' // format for required email field
 		}
   })(ContactForm)
