@@ -1,4 +1,4 @@
-# 0.4.0 [Unreleased]
+# 0.4.0
 - Possibility to globally / locally(per form) to set up language of error messages, and how the field name inside error messages is formated.
 - Validation of form configuration parameters
 - Possibility to set custom error message per rule or rule + field name

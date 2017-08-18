@@ -198,9 +198,9 @@ In place where you initialize form
 const ContactFormReactive = reactiveMobxForm('contacts', {
     validator: {
       setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' '),
-      attributeNames: { // this option is available per form only
-        'users[0] : 'First User'
-      }
+    },
+    attributeNames: { // this option is available per form only
+      'users[0] : 'First User'
     }
   })(ContactForm)
 ```
