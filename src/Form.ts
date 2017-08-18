@@ -3,7 +3,7 @@ import { observable, action, computed, reaction, ObservableMap, isObservableMap 
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, normalizesdFieldDefinition, IFormSchema, formField, IFormValues, IFormErrorMessages } from './interface';
+import { fieldDefinition, normalizesdFieldDefinition, IFormSchema, formField, IFormValues, IFormErrorMessages, IFormAttributeNames } from './interface';
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
@@ -11,6 +11,7 @@ import { FieldSection } from "./FieldSection";
 import { objectPath, isNumeric } from "./utils";
 
 export class Form {
+	attributeNames: IFormAttributeNames;
 	errorMessages: IFormErrorMessages;
 	formSchema: IFormSchema;
 
@@ -50,9 +51,10 @@ export class Form {
 		return normalized;
 	}*/
 
-	constructor(formSchema: IFormSchema, errorMessages: IFormErrorMessages) {
-		this.formSchema = formSchema;
-		this.errorMessages = errorMessages;
+	constructor(formSchema: IFormSchema, errorMessages: IFormErrorMessages, attributeNames: IFormAttributeNames) {
+		this.formSchema     = formSchema;
+		this.errorMessages  = errorMessages;
+		this.attributeNames = attributeNames;
 	}
 
 	@computed get isDirty() { // todo: should be implementede for ControlArray
@@ -136,6 +138,7 @@ export class Form {
 		reaction(
 			() => this.validation,
 			() => {
+				this.validation.setAttributeNames(this.attributeNames);
 				this.isValid = this.validation.passes();
 				this.errors = this.validation.errors;
 			}

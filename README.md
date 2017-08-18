@@ -197,12 +197,17 @@ In place where you initialize form
 ```javascript
 const ContactFormReactive = reactiveMobxForm('contacts', {
     validator: {
-      setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' ')
+      setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' '),
+      attributeNames: { // this option is available per form only
+        'users[0] : 'First User'
+      }
     }
   })(ContactForm)
 ```
 
-`setAttributeFormatter` property should be a function, that accepts 1 parmenter field name, processes and returns it. In this example if we had a field name like 'user.first' it will be 'user first' in error message.
+`setAttributeFormatter` property should be a function, that accepts 1 parmenter field name, processes and returns it. In this example if we had a field name like 'user.name' it will be 'user name' in error message.
+
+`attributeNames` is an object that maps field name to attribute in error message
 
 ## Custom Error Messages
 With custom error messages it is possible to completely modify error message for some rule or combination of rule and field

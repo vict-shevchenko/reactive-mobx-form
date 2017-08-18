@@ -24,10 +24,10 @@ function validateConfigParams(formName: string, params: any) {
 
 export function createForm(formName: string , formDefinition: IFormDefinition ) {
 
-	const { validator:configValidator, schema:configSchema, errorMessages} = formDefinition;
+	const { validator:configValidator, schema:configSchema, errorMessages, attributeNames} = formDefinition;
 
 	// run validation for only parameters presented in a form definition object
-	validateConfigParams(formName, [configValidator, configSchema, errorMessages].filter(i => i));
+	validateConfigParams(formName, [configValidator, configSchema, errorMessages, attributeNames].filter(i => i));
 
 	return wrappedForm => {
 		@inject('formStore')
@@ -46,7 +46,7 @@ export function createForm(formName: string , formDefinition: IFormDefinition ) 
 					throw new Error('attribute "schema" provided to Form has incorrect format. Object expected');
 				}
 
-				this.form = new Form(Object.assign(configSchema || {}, props.schema || {}), errorMessages);
+				this.form = new Form(Object.assign(configSchema || {}, props.schema || {}), errorMessages, attributeNames);
 				this.form.component = wrappedForm; // for debugging/error handling purposes
 
 				// set up Validator
