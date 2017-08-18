@@ -1,5 +1,7 @@
 # 0.4.0 [Unreleased]
 - Possibility to globally / locally(per form) to set up language of error messages, and how the field name inside error messages is formated.
+- Validation of form configuration parameters
+- Possibility to set custom error message per rule or rule + field name
 
 # 0.3.3
 - Fix Bug, that `Form.reset` did not removed ControlArray children from ui

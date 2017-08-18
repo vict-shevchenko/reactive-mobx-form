@@ -99,10 +99,13 @@ class ContactForm extends Component {
   }
 }
 
-const ContactFormReactive = reactiveMobxForm('contacts', schema)(ContactForm); // 2nd parameter (schema) is optional. 
+const ContactFormReactive = reactiveMobxForm('contacts' [, formDefinition])(ContactForm); // 2nd parameter (formDefinition) is optional. 
 
-// Use 2nd parameter to specify predefined initial values and validation rules, see format below.
-// If you get initial values from server, better pass them as 'schema' paramter to Form in parent component
+// Use 2nd parameter to specify 
+// - predefined initial values and validation rules, see format below.
+// - configuration for validation mechanism
+// - specify custom error messages
+// If you get initial values from server, better pass them as 'schema' attribute to Form Component in parent component
 
 export default ContactFormReactive;
 ```
@@ -125,8 +128,18 @@ export default Page extends Component {
   }
 }
 ```
+## formDefinition
+`formDefinition` is an optional 2nd paramerer to `reactiveMobxForm` initialization function. Now it support 3 optional properties
 
-### formSchema
+```javascript
+{
+  validator: {},
+  schema: {},
+  errorMessages: {}
+}
+```
+
+## schema
 `formSchema` is an object with a configuration for form fields, allowing to specify their initialValues and validation rules.
 
 Syntax is next:
@@ -136,3 +149,69 @@ Wihtout validation:
 
 With validation:
 `{firstName: ['Viktor', 'required|string']}` uses **validatorjs** syntax.
+
+## Language Support
+By default error messages are in English. But you can change them either globally for all form or particulary for form.
+`reactive-mobx-form` provides you with interface for this. Under the hood it uses [Validatorjs Language Support](https://github.com/skaterdav85/validatorjs#language-support)
+
+### Change language globally
+In the `index.js` or other entry point of your app.
+
+```javascript
+import { configureValidator } from 'reactive-mobx-form';
+
+configureValidator({
+	language: 'ru'
+});
+```
+You can use MobX autorun funtion in order to execute this code each time app language change.
+
+### Change language per form
+In place where you initialize form
+
+```javascript
+const ContactFormReactive = reactiveMobxForm('contacts', {
+    validator: {
+      language: 'ru'
+    }
+  })(ContactForm);
+```
+
+## Custom attribute names
+When display error messages, you may want to modify how field name is displayed in error message. For example if field name is 'first_name' and this field is required. You'd like to see it in error message like 'The first name field is required.'. This may be done via setting custom attribute names. Same as language support, the functionallity relays on [Validatorjs Custom attribute names](https://github.com/skaterdav85/validatorjs#custom-attribute-names) and may be set globally or per form.
+
+### Change custom attribute names globally
+In the `index.js` or other entry point of your app.
+
+```javascript
+import { configureValidator } from 'reactive-mobx-form';
+
+configureValidator({
+	setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' ')
+});
+```
+
+### Change custom attribute names per form
+In place where you initialize form
+
+```javascript
+const ContactFormReactive = reactiveMobxForm('contacts', {
+    validator: {
+      setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' ')
+    }
+  })(ContactForm)
+```
+
+`setAttributeFormatter` property should be a function, that accepts 1 parmenter field name, processes and returns it. In this example if we had a field name like 'user.first' it will be 'user first' in error message.
+
+## Custom Error Messages
+With custom error messages it is possible to completely modify error message for some rule or combination of rule and field
+
+```javascript
+const ContactFormReactive = reactiveMobxForm('contacts', {
+    errorMessages: {
+			'required': 'You forgot to give a :attribute' // this format will be userd for all required fields
+      'required.email': 'Without an :attribute we can\'t reach you!' // format for required email field
+		}
+  })(ContactForm)
+```
