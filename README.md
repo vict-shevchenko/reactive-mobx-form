@@ -161,7 +161,7 @@ In the `index.js` or other entry point of your app.
 import { configureValidator } from 'reactive-mobx-form';
 
 configureValidator({
-	language: 'ru'
+  language: 'ru'
 });
 ```
 You can use MobX autorun funtion in order to execute this code each time app language change.
@@ -187,7 +187,7 @@ In the `index.js` or other entry point of your app.
 import { configureValidator } from 'reactive-mobx-form';
 
 configureValidator({
-	setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' ')
+  setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' ')
 });
 ```
 
@@ -212,6 +212,6 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
     errorMessages: {
       'required': 'You forgot to give a :attribute' // this format will be userd for all required fields
       'required.email': 'Without an :attribute we can\'t reach you!' // format for required email field
-		}
+    }
   })(ContactForm)
 ```
