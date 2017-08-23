@@ -30,11 +30,14 @@ export interface IFormAttributeNames {
 	[propType: string]: string
 }
 
-export interface IFormDefinition {
-	validator?: IValidatorjsConfiguration, 
-	schema?: IFormSchema,
+export interface IFormValidatiorDefinnition {
 	errorMessages?: IFormErrorMessages
 	attributeNames?: IFormAttributeNames
+}
+
+export interface IFormDefinition {
+	validator?: IFormValidatiorDefinnition, 
+	schema?: IFormSchema
 }
 
 export interface IFormValues {

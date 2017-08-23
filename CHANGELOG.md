@@ -1,3 +1,6 @@
+# 0.4.1 [Unreleased] [Breacking Change]
+- Changed a way how validatorjs parameters are passed to `reactiveMobXForm` creation function.
+
 # 0.4.0
 - Possibility to globally / locally(per form) to set up language of error messages, and how the field name inside error messages is formated.
 - Validation of form configuration parameters
