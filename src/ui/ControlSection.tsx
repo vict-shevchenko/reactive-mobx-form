@@ -38,7 +38,20 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
-		this.name = context._ReactiveMobxFormFieldNamePrefix ? `${context._ReactiveMobxFormFieldNamePrefix}.${props.name}` : props.name.toString();
+		this.name = this.constructName(context._ReactiveMobxFormFieldNamePrefix, props.name);
+	}
+
+	constructName(prefix = '', name: string | number) {
+		if (typeof name === 'number') {
+			if (!prefix) {
+				throw new Error('Field with numeric name can not be a root field.')
+			}
+
+			return `${prefix}[${name}]`;
+		}
+		else {
+			return prefix ? `${prefix}.${name}` : name;
+		}
 	}
 
 	getChildContext() {
@@ -66,7 +79,7 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 	}
 
 	componentWillReceiveProps(nextProps: ControlSectionProps, nextContext:any) {
-		const name = nextContext._ReactiveMobxFormFieldNamePrefix ? `${nextContext._ReactiveMobxFormFieldNamePrefix}.${nextProps.name}` : nextProps.name.toString();
+		const name = this.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== name) {
 			this.name = name;

@@ -45,7 +45,7 @@ export function createForm(formName: string , { validator: configValidator = {},
 					throw new Error('attribute "schema" provided to Form has incorrect format. Object expected');
 				}
 
-				this.form = new Form(Object.assign(configSchema || {}, props.schema || {}), errorMessages, attributeNames);
+				this.form = new Form(Object.assign(configSchema, props.schema || {}), errorMessages, attributeNames);
 				this.form.component = wrappedForm; // for debugging/error handling purposes
 			}
 

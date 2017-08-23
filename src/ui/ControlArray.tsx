@@ -42,7 +42,20 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 		this.verifyRequiredProps();
 
 		this.form = context._ReactiveMobxForm;
-		this.name = context._ReactiveMobxFormFieldNamePrefix ? `${context._ReactiveMobxFormFieldNamePrefix}.${props.name}` : props.name.toString();
+		this.name = this.constructName(context._ReactiveMobxFormFieldNamePrefix, props.name);
+	}
+
+	constructName(prefix = '', name: string | number) {
+		if (typeof name === 'number') {
+			if (!prefix) {
+				throw new Error('Field with numeric name can not be a root field.')
+			}
+
+			return `${prefix}[${name}]`;
+		}
+		else {
+			return prefix ? `${prefix}.${name}` : name;
+		}
 	}
 
 	getChildContext() {
@@ -65,11 +78,11 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	}
 
 	componentWillReceiveProps(nextProps: ControlArrayProps, nextContext: any) {
-		const name = nextContext._ReactiveMobxFormFieldNamePrefix ? `${nextContext._ReactiveMobxFormFieldNamePrefix}.${nextProps.name}` : nextProps.name.toString();
+		const nextName = this.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
-		if (this.name !== name) {
-			this.field.update(name);
-			this.name = name;
+		if (this.name !== nextName) {
+			this.field.update(nextName);
+			this.name = nextName;
 			this.setState({}); // component Rerender -> gerChildContext -> contextUpdate
 		}
 	}

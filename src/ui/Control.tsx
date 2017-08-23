@@ -70,7 +70,7 @@ export class Control extends React.Component<ControlProps, any> {
 
 		this.form = context._ReactiveMobxForm;
 
-		this.name = context._ReactiveMobxFormFieldNamePrefix ? `${context._ReactiveMobxFormFieldNamePrefix}.${props.name}` : props.name;
+		this.name = this.constructName(context._ReactiveMobxFormFieldNamePrefix, props.name);
 
 		this.isCheckbox  = props.type      === 'checkbox';
 		this.isRadio     = props.type      === 'radio';
@@ -82,6 +82,19 @@ export class Control extends React.Component<ControlProps, any> {
 		this.onChange = this.onChange.bind(this);
 		this.onFocus  = this.onFocus.bind(this);
 		this.onBlur   = this.onBlur.bind(this);
+	}
+
+	constructName(prefix: string, name: string | number) : string {
+		if (typeof name === 'number') {
+			if (!prefix) {
+				throw new Error('Field with numeric name can not be a root field.')
+			}
+
+			return `${prefix}[${name}]`;
+		}
+		else {
+			return prefix ? `${prefix}.${name}` : name;
+		}
 	}
 
 	componentWillMount() {
@@ -121,15 +134,15 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	componentWillReceiveProps(nextProps: ControlProps, nextContext: any) {
-		const name = nextContext._ReactiveMobxFormFieldNamePrefix ? `${nextContext._ReactiveMobxFormFieldNamePrefix}.${nextProps.name}` : nextProps.name.toString();
+		const nextName = this.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
-		if (this.name !== name || this.props.rules !== nextProps.rules) {
-			const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[name] ?
-			  Field.normalizeFieldDefinition(this.form.formSchema[name]) : // normalize field definition from initial form schema
+		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
+			const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[nextName] ?
+			  Field.normalizeFieldDefinition(this.form.formSchema[nextName]) : // normalize field definition from initial form schema
 			  [this.isCheckbox ? false : '', nextProps.rules];
 
-			this.field.update(name, fieldDefinition);
-			this.name = name;
+			this.field.update(nextName, fieldDefinition);
+			this.name = nextName;
 		}
 	}
 
