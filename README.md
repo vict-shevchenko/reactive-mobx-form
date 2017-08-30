@@ -168,7 +168,7 @@ configureValidator({
 
 You can use MobX autorun funtion in order to execute this code each time app language change. Be carefull as changing the language happens on `Validator` class and effects all forms, even created before language switch.
 
-## Custom attribute names
+### Custom attribute names
 When display error messages, you may want to modify how field name is displayed in error message. For example if field name is 'user.name' and this field is required. You'd like to see it in error message like 'The user name field is required.'. This may be done via setting custom attribute names(locally) or attribute names formatter function(globally). Same as language support, the functionallity relays on [Validatorjs Custom attribute names](https://github.com/skaterdav85/validatorjs#custom-attribute-names).
 
 ### Change custom attribute names globally
