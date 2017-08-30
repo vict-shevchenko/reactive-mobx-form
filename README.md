@@ -182,6 +182,7 @@ configureValidator({
   setAttributeFormatter: (attribute) => attribute.replace(/\./g, ' ')
 });
 ```
+
 `setAttributeFormatter` property should be a function, that accepts 1 parmenter field name, processes and returns it. In this example if we had a field name like 'user.name' it will be 'user name' in error message.
 
 ### Change custom attribute names per form instance
@@ -197,6 +198,7 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
     }
   })(ContactForm)
 ```
+
 `attributeNames` is an object that maps field name to attribute in error message. So if we had a field name like 'user.[0]' it will be 'First user' in error message.
 
 ## Custom Error Messages
