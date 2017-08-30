@@ -128,6 +128,7 @@ export default Page extends Component {
   }
 }
 ```
+
 ## formDefinition
 `formDefinition` is an optional 2nd paramerer to `reactiveMobxForm` initialization function. Now it support 2 optional properties
 
