@@ -165,6 +165,7 @@ configureValidator({
   language: 'ru'
 });
 ```
+
 You can use MobX autorun funtion in order to execute this code each time app language change. Be carefull as changing the language happens on `Validator` class and effects all forms, even created before language switch.
 
 ## Custom attribute names
