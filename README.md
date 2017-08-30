@@ -129,7 +129,7 @@ export default Page extends Component {
 }
 ```
 ## formDefinition
-`formDefinition` is an optional 2nd paramerer to `reactiveMobxForm` initialization function. Now it support 3 optional properties
+`formDefinition` is an optional 2nd paramerer to `reactiveMobxForm` initialization function. Now it support 2 optional properties
 
 ```javascript
 {
@@ -168,7 +168,7 @@ configureValidator({
 You can use MobX autorun funtion in order to execute this code each time app language change. Be carefull as changing the language happens on `Validator` class and effects all forms, even created before language switch.
 
 ## Custom attribute names
-When display error messages, you may want to modify how field name is displayed in error message. For example if field name is 'first_name' and this field is required. You'd like to see it in error message like 'The first name field is required.'. This may be done via setting custom attribute names or attribute names formatter function. Same as language support, the functionallity relays on [Validatorjs Custom attribute names](https://github.com/skaterdav85/validatorjs#custom-attribute-names).
+When display error messages, you may want to modify how field name is displayed in error message. For example if field name is 'user.name' and this field is required. You'd like to see it in error message like 'The user name field is required.'. This may be done via setting custom attribute names(locally) or attribute names formatter function(globally). Same as language support, the functionallity relays on [Validatorjs Custom attribute names](https://github.com/skaterdav85/validatorjs#custom-attribute-names).
 
 ### Change custom attribute names globally
 In the `index.js` or other entry point of your app.
@@ -183,7 +183,7 @@ configureValidator({
 `setAttributeFormatter` property should be a function, that accepts 1 parmenter field name, processes and returns it. In this example if we had a field name like 'user.name' it will be 'user name' in error message.
 
 ### Change custom attribute names per form instance
-In place where you initialize form
+Here we will benefit from other optional parameter to `reactiveMobxForm` creation function called `validator` .In place where you initialize form
 
 ```javascript
 const ContactFormReactive = reactiveMobxForm('contacts', {
@@ -195,7 +195,7 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
     }
   })(ContactForm)
 ```
-`attributeNames` is an object that maps field name to attribute in error message
+`attributeNames` is an object that maps field name to attribute in error message. So if we had a field name like 'user.[0]' it will be 'First user' in error message.
 
 ## Custom Error Messages
 With custom error messages it is possible to completely modify error message for some rule or combination of rule and field
