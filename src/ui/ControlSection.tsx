@@ -7,6 +7,7 @@ import { Field } from '../Field'
 import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
 import { FieldSection } from "../FieldSection";
 import { omit } from "../utils";
+import BaseControl from "./BaseControl";
 
 interface ControlSectionProps {
 	name: string;
@@ -14,7 +15,7 @@ interface ControlSectionProps {
 }
 
 @observer
-export class ControlSection extends React.Component<ControlSectionProps, any> {
+export class ControlSection extends BaseControl<ControlSectionProps, any> {
 	name : string;
 	form : Form;
 	field: FieldSection;
@@ -33,25 +34,7 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 	}
 
 	constructor(props, context) {
-		super(props, context);
-
-		this.verifyRequiredProps();
-
-		this.form = context._ReactiveMobxForm;
-		this.name = this.constructName(context._ReactiveMobxFormFieldNamePrefix, props.name);
-	}
-
-	constructName(prefix = '', name: string | number) {
-		if (typeof name === 'number') {
-			if (!prefix) {
-				throw new Error('Field with numeric name can not be a root field.')
-			}
-
-			return `${prefix}[${name}]`;
-		}
-		else {
-			return prefix ? `${prefix}.${name}` : name;
-		}
+		super(props, context, ControlSection.requiredProps);
 	}
 
 	getChildContext() {
@@ -62,7 +45,7 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 
 
 	componentWillMount() {
-		// As ControlSection is an aggregation unit it should not present in section
+		// As ControlSection is an aggregation unit it should not present in schema
 		if (this.form.formSchema[this.name]) {
 			throw (new Error(`Control Section with name ${this.name} should not be in schema`));
 		}
@@ -79,20 +62,12 @@ export class ControlSection extends React.Component<ControlSectionProps, any> {
 	}
 
 	componentWillReceiveProps(nextProps: ControlSectionProps, nextContext:any) {
-		const name = this.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
+		const name = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== name) {
 			this.name = name;
 			this.field.update(name);
 		}
-	}
-
-	verifyRequiredProps() {
-		ControlSection.requiredProps.forEach(reqiredPropName => {
-			if (this.props[reqiredPropName] === undefined) {
-				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
-			}
-		});
 	}
 
 	render() {

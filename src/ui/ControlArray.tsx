@@ -9,6 +9,7 @@ import ProxyFieldArray from '../ProxyFieldArray';
 import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
 import { FieldArray } from "../FieldArray";
 import { omit } from "../utils";
+import BaseControl from "./BaseControl";
 
 interface ControlArrayProps {
 	name: string;
@@ -16,7 +17,7 @@ interface ControlArrayProps {
 }
 
 @observer
-export class ControlArray extends React.Component<ControlArrayProps, any> {
+export class ControlArray extends BaseControl<ControlArrayProps, any> {
 	proxiedFieldsProp: ProxyFieldArray;
 	name: string;
 	field: FieldArray;
@@ -37,25 +38,7 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	@observable fieldsProp: Array<string> = [];
 
 	constructor(props, context) {
-		super(props, context);
-
-		this.verifyRequiredProps();
-
-		this.form = context._ReactiveMobxForm;
-		this.name = this.constructName(context._ReactiveMobxFormFieldNamePrefix, props.name);
-	}
-
-	constructName(prefix = '', name: string | number) {
-		if (typeof name === 'number') {
-			if (!prefix) {
-				throw new Error('Field with numeric name can not be a root field.')
-			}
-
-			return `${prefix}[${name}]`;
-		}
-		else {
-			return prefix ? `${prefix}.${name}` : name;
-		}
+		super(props, context, ControlArray.requiredProps);
 	}
 
 	getChildContext() {
@@ -78,21 +61,13 @@ export class ControlArray extends React.Component<ControlArrayProps, any> {
 	}
 
 	componentWillReceiveProps(nextProps: ControlArrayProps, nextContext: any) {
-		const nextName = this.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
+		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName) {
 			this.field.update(nextName);
 			this.name = nextName;
 			this.setState({}); // component Rerender -> gerChildContext -> contextUpdate
 		}
-	}
-
-	verifyRequiredProps() {
-		ControlArray.requiredProps.forEach(reqiredPropName => {
-			if (this.props[reqiredPropName] === undefined) {
-				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
-			}
-		});
 	}
 
 	render() {

@@ -1,6 +1,7 @@
 # 0.4.1 [Unreleased] [Breacking Change]
 - Changed a way how validatorjs parameters are passed to `reactiveMobXForm` creation function.
 - Changed a way how control names are build. from `person.0.firstName` to `person[0].firstname`
+- Introduced a `BaseControl` class to keep all logic shared between all types of Controls
 
 # 0.4.0
 - Possibility to globally / locally(per form) to set up language of error messages, and how the field name inside error messages is formated.

@@ -6,6 +6,7 @@ import { Field } from '../Field'
 
 import { normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
 import { omit, objectPath } from "../utils";
+import BaseControl from "./BaseControl";
 
 
 // todo: probabbly may be used when implementing withRef
@@ -40,7 +41,7 @@ interface ControlProps {
 }
 
 @observer
-export class Control extends React.Component<ControlProps, any> {
+export class Control extends BaseControl<ControlProps, any> {
 	name: string;
 	isNumber: boolean;
 	isSelect: boolean;
@@ -64,13 +65,7 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	constructor(props, context) {
-		super(props, context);
-
-		this.verifyRequiredProps();
-
-		this.form = context._ReactiveMobxForm;
-
-		this.name = this.constructName(context._ReactiveMobxFormFieldNamePrefix, props.name);
+		super(props, context, Control.requiredProps);
 
 		this.isCheckbox  = props.type      === 'checkbox';
 		this.isRadio     = props.type      === 'radio';
@@ -82,19 +77,6 @@ export class Control extends React.Component<ControlProps, any> {
 		this.onChange = this.onChange.bind(this);
 		this.onFocus  = this.onFocus.bind(this);
 		this.onBlur   = this.onBlur.bind(this);
-	}
-
-	constructName(prefix: string, name: string | number) : string {
-		if (typeof name === 'number') {
-			if (!prefix) {
-				throw new Error('Field with numeric name can not be a root field.')
-			}
-
-			return `${prefix}[${name}]`;
-		}
-		else {
-			return prefix ? `${prefix}.${name}` : name;
-		}
 	}
 
 	componentWillMount() {
@@ -110,10 +92,6 @@ export class Control extends React.Component<ControlProps, any> {
 		}
 
 		this.field.subscribeToFormValidation(this.form);
-	}
-
-	componentDidMount() {
-		// this.field
 	}
 
 	createField() {
@@ -134,7 +112,7 @@ export class Control extends React.Component<ControlProps, any> {
 	}
 
 	componentWillReceiveProps(nextProps: ControlProps, nextContext: any) {
-		const nextName = this.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
+		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
 			const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[nextName] ?
@@ -144,14 +122,6 @@ export class Control extends React.Component<ControlProps, any> {
 			this.field.update(nextName, fieldDefinition);
 			this.name = nextName;
 		}
-	}
-
-	verifyRequiredProps() {
-		Control.requiredProps.forEach(reqiredPropName => {
-			if (this.props[reqiredPropName] === undefined) {
-				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component. Cehck '${this.context._ReactiveMobxForm.component.name}' component`)
-			}
-		});
 	}
 
 	warnOnIncorrectInitialValues(fieldDefinition:normalizesdFieldDefinition) {
