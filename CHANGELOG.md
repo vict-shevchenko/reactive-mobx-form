@@ -1,3 +1,7 @@
+# 0.5.1
+- Fix bug with form failing to initialize without parameters
+- Fix bug with form that has validation, failed to initilaize without `validator.attributeNames` parameter;
+
 # 0.5.0
 - Changed a way how validatorjs parameters are passed to `reactiveMobXForm` creation function.
 - Changed a way how control names are build. from `person.0.firstName` to `person[0].firstname`

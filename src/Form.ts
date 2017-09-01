@@ -138,7 +138,9 @@ export class Form {
 		reaction(
 			() => this.validation,
 			() => {
-				this.validation.setAttributeNames(this.attributeNames);
+				if(this.attributeNames) {
+					this.validation.setAttributeNames(this.attributeNames);
+				}
 				this.isValid = this.validation.passes();
 				this.errors = this.validation.errors;
 			}
