@@ -27,7 +27,7 @@ code[class*="language-"], pre[class*="language-"] {
 
 .site {
 	display: grid;
-	grid-template-columns: 250px 1fr;
+	grid-template-columns: 305px 1fr;
 	grid-template-rows: 1fr;
 	grid-template-areas:
 		"navigation content";
@@ -45,17 +45,23 @@ code[class*="language-"], pre[class*="language-"] {
 }
 
 .pageContent {
-	max-width: 770px;
+	max-width: 660px;
 	margin: 0 auto;
 	line-height: 28px;
 
 	h1 {
 		font-size: 64px;
-		line-height: 54px;
+		line-height: 68px;
 		color: $purple;
 	}
 
 	a {
 		color: $purple;
+	}
+}
+
+@media (min-width: 1279px) {
+	.pageContent {
+		max-width: 770px;
 	}
 }

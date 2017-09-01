@@ -27,6 +27,10 @@
 			background-image: linear-gradient(174deg, #3023ae, #c96dd8);
 		}
 	}
+
+	&:hover {
+		color: $purple;
+	}
 }
 
 
@@ -48,5 +52,9 @@
 	&--active {
 		color: $purple;
 		background-color: #fff;
+	}
+
+	&:hover {
+		color: $purple;
 	}
 }
