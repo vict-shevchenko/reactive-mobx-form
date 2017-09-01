@@ -1,0 +1,12 @@
+{
+	"extends": "tslint:recommended",
+	"rules": {
+		"indent": [true, "tabs", 4],
+		"member-ordering": [false],
+		"object-literal-sort-keys": false,
+		"ordered-imports": false,
+		"quotemark": [true, "single", "jsx-double"],
+		"trailing-comma": [true, { "multiline": "never", "singleline": "never" }]
+	},
+	"jsRules": {}
+}
