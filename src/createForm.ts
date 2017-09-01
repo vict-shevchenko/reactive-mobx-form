@@ -1,18 +1,18 @@
 import React, { Component, createElement } from 'react';
 import * as PropTypes from 'prop-types';
-import { observable, action, computed } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { IFormSchema, IFormDefinition, IValidatorjsConfiguration } from './interface';
+import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from './interface';
 
 function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
 }
 
 function validateConfigParams(formName: string, params: any) {
-	if (!Object.keys(params).every(paramName => isConfigParamValid(params[paramName]))) {
+	if (!Object.keys(params).every((paramName) => isConfigParamValid(params[paramName]))) {
 		throw new Error('Error validating form initialization parameters');
 	}
 
@@ -21,22 +21,21 @@ function validateConfigParams(formName: string, params: any) {
 	}
 }
 
-
-export function createForm(formName: string , formDefinition: IFormDefinition = {} ) {
+export function createForm(formName: string, formDefinition: IFormDefinition = {}) {
 	const { validator: validatorDefinition = {}, schema: schemaDefinition = {} } = formDefinition;
 	const { errorMessages, attributeNames } = validatorDefinition;
-	
+
 	validateConfigParams(formName, [validatorDefinition, schemaDefinition]);
 
-	return wrappedForm => {
+	return (wrappedForm) => {
 		@inject('formStore')
 		@observer
 		class FormUI extends Component<{ formStore: any, onSubmit?: any, schema?: IFormSchema }, any> {
-			form: Form;
-
-			static childContextTypes = {
+			public static childContextTypes = {
 				_ReactiveMobxForm: PropTypes.object.isRequired
-			}
+			};
+
+			public form: Form;
 
 			constructor(props, context) {
 				super(props, context);
@@ -49,65 +48,73 @@ export function createForm(formName: string , formDefinition: IFormDefinition = 
 				this.form.component = wrappedForm; // for debugging/error handling purposes
 			}
 
-			getChildContext() {
+			private getChildContext() {
 				return { _ReactiveMobxForm: this.form };
 			}
 
-			componentWillMount() {
+			public componentWillMount() {
 				this.props.formStore.registerForm(formName, this.form);
 				this.form.registerValidation();
 			}
 
-			componentDidMount() {
+			public componentDidMount() {
 				this.form.mounted = true;
 			}
 
-			componentWillUnmount() {
+			public componentWillUnmount() {
 				this.form.mounted = false;
 				this.props.formStore.unRegisterForm(formName);
 			}
 
 			// todo: pass additional information to submimt
-			submitForm(event: Event) {
+			public submitForm(event: Event) {
 				event.preventDefault();
 
 				this.form.submitting = true;
 
 				Promise.all([this.props.onSubmit(this.form.values)])
-					.catch(error => {
+					.catch((error) => {
 						this.form.submitError = error;
 					})
-					.then(result => {
+					.then((result) => {
 						this.resetForm();
 					})
 					.then(() => {
 						this.form.submitting = false;
-					})
+					});
 			}
 
-			resetForm() {
+			public resetForm() {
 				this.form.reset();
 			}
 
-			render() {
+			public render() {
 				return createElement(wrappedForm, {
 					submit: this.submitForm.bind(this),
 					reset: this.resetForm.bind(this),
-					submitting: this.form.submitting, // todo: when submit change - full form render method is executed. Thing on more performat approach. May be Submitting component
+					// todo: when submit change - full form render method is executed.
+					// Thing on more performat approach. May be Submitting component
+					submitting: this.form.submitting,
 					submitError: this.form.submitError,
-					/* validation: form.validation, */ //todo - this case render been called when any field change
+					// todo - this case render been called when any field change
+					/* validation: form.validation, */
 					valid: this.form.isValid,
 					dirty: this.form.isDirty
-					/* errors: this.form.errors */ //todo - this case render been called when any field change
+					// todo - this case render been called when any field change
+					/* errors: this.form.errors */
 				});
 			}
 		}
 
 		return FormUI;
-	}
+	};
 }
 
 export function configureValidatorjs(configParameters: IValidatorjsConfiguration) {
-	configParameters.language && Validator.useLang(configParameters.language);
-	configParameters.setAttributeFormatter && Validator.setAttributeFormatter(configParameters.setAttributeFormatter);
+	if (configParameters.language) {
+		Validator.useLang(configParameters.language);
+	}
+	if (configParameters.setAttributeFormatter) {
+		Validator.setAttributeFormatter(configParameters.setAttributeFormatter);
+	}
 }
