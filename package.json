@@ -1,6 +1,6 @@
 {
   "name": "reactive-mobx-form",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Reactive forms for React running on MobX",
   "main": "index.js",
   "scripts": {
