@@ -66,9 +66,11 @@ class ContactForm extends React.Component {
 }
 
 const ContactFormReactive = reactiveMobxForm('contacts', {
-	firstName: ['', 'required'],
-	lastName : ['', 'required'],
-	email    : ['', 'required|email'],
+  schema: {
+    firstName: ['', 'required'],
+    lastName : ['', 'required'],
+    email    : ['', 'required|email'],
+  }
 })(ContactForm);
 
 export default ContactFormReactive;
