@@ -1,3 +1,6 @@
+# 0.5.2
+- Add typings
+
 # 0.5.1
 - Fix bug with form failing to initialize without parameters
 - Fix bug with form that has validation, failed to initilaize without `validator.attributeNames` parameter;
