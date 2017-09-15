@@ -1,65 +1,58 @@
 import React, { Component, createElement } from 'react';
-import { observable, action, computed, autorun, isObservableArray, ObservableMap } from 'mobx';
-
-import { Form } from './Form';
-import { Field } from './Field';
+import { observable, action, computed, ObservableMap } from 'mobx';
+import { fieldValue, IFormValues } from '../interfaces/Form';
+import { formField } from './types';
 import { objectPath } from './utils';
 
-import { fieldValue, IFieldDefinition, INormalizesdFieldDefinition, IFormValues } from '../interfaces/Form';
-import { formField } from './types';
-
-
 export class FieldSection {
-	name: string;
-	autoRemove: boolean = false;
-	// readonly _isFieldSection: boolean = true;
+	public name: string;
+	public autoRemove: boolean = false;
 
-	@observable subFields = new ObservableMap<formField>(); // todo: does not look good
-	// @observable errors: Array<string> = [];
+	@observable public subFields = new ObservableMap<formField>();
 
 	constructor(name: string) {
 		this.update(name);
 	}
 
-	update(name: string) {
+	public update(name: string) {
 		this.name = name;
 	}
 
-	@action addField(field: formField) {
+	@action public addField(field: formField) {
 
-		// todo: looks like this is not a good solution to copy this part of code 
+		// todo: looks like this is not a good solution to copy this part of code fron FieldArray
 		const fieldPath = objectPath(field.name);
 		const lastPathNode = fieldPath[fieldPath.length - 1];
-		
+
 		this.subFields.set(lastPathNode, field);
 	}
 
-	@action reset() {
-		this.subFields.values().forEach((field) => field.reset());
+	@action public reset() {
+		this.subFields.values().forEach(subField => subField.reset());
 	}
 
-	@action removeSubField(index) {
+	@action public removeSubField(index: string) {
 		this.subFields.delete(index);
 	}
 
-	getField(index:string): formField {
+	public getField(index: string) {
 		return (this.subFields as ObservableMap<formField>).get(index);
 	}
 
-	setAutoRemove() {
+	public setAutoRemove(): void {
 		this.autoRemove = true;
-		this.subFields.values().forEach((subField: formField) => subField.setAutoRemove())
+		this.subFields.values().forEach(subField => subField.setAutoRemove());
 	}
 
 	@computed get value() {
-		return this.subFields.entries().reduce((values: IFormValues, [name, field]) => (values[name] = field.value, values), {});
+		return this.subFields.entries().reduce((values, [name, field]) => (values[name] = field.value, values), {});
 	}
 
 	@computed get rules() {
-		return this.subFields.values().reduce((rules:any, field: formField) => Object.assign(rules, field.rules), {});
+		return this.subFields.values().reduce((rules, field) => Object.assign(rules, field.rules), {});
 	}
 
 	@computed get isDirty() {
-		return this.subFields.values().some(subField => subField.isDirty)
+		return this.subFields.values().some(subField => subField.isDirty);
 	}
 }
