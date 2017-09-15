@@ -1,6 +1,7 @@
 {
 	"extends": "tslint:recommended",
 	"rules": {
+		"arrow-parens": [true, "ban-single-arg-parens"],
 		"indent": [
 			true,
 			"tabs",
@@ -17,6 +18,7 @@
 			"check-open-brace",
 			"check-whitespace"
 		],
+		"one-variable-per-declaration": false,
 		"ordered-imports": false,
 		"quotemark": [
 			true,

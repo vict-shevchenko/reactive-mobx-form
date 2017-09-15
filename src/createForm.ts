@@ -12,7 +12,7 @@ function isConfigParamValid(param) {
 }
 
 function validateConfigParams(formName: string, params: any) {
-	if (!Object.keys(params).every((paramName) => isConfigParamValid(params[paramName]))) {
+	if (!Object.keys(params).every(paramName => isConfigParamValid(params[paramName]))) {
 		throw new Error('Error validating form initialization parameters');
 	}
 
@@ -27,7 +27,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 	validateConfigParams(formName, [validatorDefinition, schemaDefinition]);
 
-	return (wrappedForm) => {
+	return wrappedForm => {
 		@inject('formStore')
 		@observer
 		class FormUI extends Component<{ formStore: any, onSubmit?: any, schema?: IFormSchema }, any> {
@@ -73,10 +73,10 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				this.form.submitting = true;
 
 				Promise.all([this.props.onSubmit(this.form.values)])
-					.catch((error) => {
+					.catch(error => {
 						this.form.submitError = error;
 					})
-					.then((result) => {
+					.then(result => {
 						this.resetForm();
 					})
 					.then(() => {
