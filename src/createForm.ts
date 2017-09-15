@@ -67,7 +67,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			// todo: pass additional information to submimt
-			public submitForm(event: Event) {
+			public submitForm(event: Event): void {
 				event.preventDefault();
 
 				this.form.submitting = true;
@@ -84,7 +84,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 					});
 			}
 
-			public resetForm() {
+			public resetForm(): void {
 				this.form.reset();
 			}
 

@@ -3,6 +3,7 @@
   "version": "0.5.1",
   "description": "Reactive forms for React running on MobX",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "tslint --project tsconfig.json --config tslint.json"
   },
