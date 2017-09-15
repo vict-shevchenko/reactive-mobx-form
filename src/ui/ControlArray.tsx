@@ -6,18 +6,14 @@ import { Form } from '../Form';
 import { Field } from '../Field'
 import ProxyFieldArray from '../ProxyFieldArray';
 
-import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
+import { fieldDefinition, normalizesdFieldDefinition } from '../../interfaces/Form'
 import { FieldArray } from "../FieldArray";
 import { omit } from "../utils";
 import BaseControl from "./BaseControl";
-
-interface ControlArrayProps {
-	name: string;
-	component: React.Component<any, any> | React.SFC<any> | string;
-}
+import { IControlArrayProps } from '../../interfaces/Control';
 
 @observer
-export class ControlArray extends BaseControl<ControlArrayProps, any> {
+export class ControlArray extends BaseControl<IControlArrayProps, any> {
 	proxiedFieldsProp: ProxyFieldArray;
 	name: string;
 	field: FieldArray;
@@ -60,7 +56,7 @@ export class ControlArray extends BaseControl<ControlArrayProps, any> {
 		}
 	}
 
-	componentWillReceiveProps(nextProps: ControlArrayProps, nextContext: any) {
+	componentWillReceiveProps(nextProps: IControlArrayProps, nextContext: any) {
 		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName) {

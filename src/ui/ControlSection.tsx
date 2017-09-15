@@ -2,20 +2,17 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
-import { Field } from '../Field'
+import { Field } from '../Field';
 
-import { fieldDefinition, normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
+import { fieldDefinition, normalizesdFieldDefinition } from '../../interfaces/Form'
 import { FieldSection } from "../FieldSection";
 import { omit } from "../utils";
 import BaseControl from "./BaseControl";
+import { IControlSectionProps } from '../../interfaces/Control';
 
-interface ControlSectionProps {
-	name: string;
-	component: React.Component<any, any> | React.SFC<any> | string;
-}
 
 @observer
-export class ControlSection extends BaseControl<ControlSectionProps, any> {
+export class ControlSection extends BaseControl<IControlSectionProps, any> {
 	name : string;
 	form : Form;
 	field: FieldSection;
@@ -61,7 +58,7 @@ export class ControlSection extends BaseControl<ControlSectionProps, any> {
 		}
 	}
 
-	componentWillReceiveProps(nextProps: ControlSectionProps, nextContext:any) {
+	componentWillReceiveProps(nextProps: IControlSectionProps, nextContext:any) {
 		const name = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== name) {

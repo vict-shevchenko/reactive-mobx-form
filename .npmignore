@@ -1,6 +1,6 @@
 src/**/*.*
 lib/**/*.js.map
-lib/interface.js
+lib/types.js
 docs/**/*.*
 .gitignore
 .npmignore

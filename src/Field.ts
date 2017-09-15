@@ -2,7 +2,7 @@ import React, { Component, createElement } from 'react';
 import { observable, action, computed, autorun } from 'mobx';
 import * as Validator from 'validatorjs';
 
-import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from './interface';
+import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from '../interfaces/Form';
 import { Form } from "./Form";
 
 // todo: may be removed

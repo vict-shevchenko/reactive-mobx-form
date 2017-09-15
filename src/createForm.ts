@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from './interface';
+import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from '../interfaces/Form';
 
 function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);

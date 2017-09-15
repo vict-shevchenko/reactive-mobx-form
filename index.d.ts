@@ -16,23 +16,33 @@
 
 /*~ If this module has methods, declare them as functions like so.
  */
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./src/interface";
+import React = require("react");
 import { ObservableMap } from "mobx";
-import { Form } from './src/Form';
 
-export type IReactComponent = React.StatelessComponent | React.ComponentClass | React.ClassicComponentClass;
+import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./interfaces/Form";
+import { IControlProps, IControlArrayProps, IControlSectionProps } from "./interfaces/Control";
 
-export function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition):
-    (wrappedForm: IReactComponent) => React.ClassicComponentClass<{ onSubmit?: any, schema?: IFormSchema }>
-;
-
-export function configureValidator(configParameters: IValidatorjsConfiguration): void;
+declare class Form {
+    values: () => any;
+}
 
 declare class FormStore {
     forms: ObservableMap<Form>
     registerForm(): void;
     unRegisterForm(): void;
 }
+
+type IReactComponent = React.StatelessComponent | React.ComponentClass | React.ClassicComponentClass;
+
+declare function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition):
+    (wrappedForm: IReactComponent) => React.ClassicComponentClass<{onSubmit?: any, schema?: IFormSchema }>
+;
+
+declare function configureValidator(configParameters: IValidatorjsConfiguration): void;
+
+declare class Control extends React.Component<IControlProps, any> {}
+declare class ControlArray extends React.Component<IControlArrayProps, any> {}
+declare class ControlSection extends React.Component<IControlSectionProps, any> {}
 
 
 

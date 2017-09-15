@@ -3,7 +3,7 @@ import * as PropTypes from 'prop-types';
 import { Form } from '../Form';
 import { Field } from '../Field'
 
-import { normalizesdFieldDefinition } from '../interface'
+import { normalizesdFieldDefinition } from '../../interfaces/Form';
 import { omit, objectPath } from "../utils";
 
 interface iBaseControlProps {

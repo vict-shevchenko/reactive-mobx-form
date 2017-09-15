@@ -3,7 +3,8 @@ import { observable, action, computed, reaction, ObservableMap, isObservableMap 
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, normalizesdFieldDefinition, IFormSchema, formField, IFormValues, IFormErrorMessages, IFormAttributeNames } from './interface';
+import { fieldDefinition, IFormSchema, IFormValues, IFormErrorMessages, IFormAttributeNames } from '../interfaces/Form';
+import { formField } from './types';
 
 import { Field } from './Field';
 import { FieldArray } from "./FieldArray";
@@ -41,15 +42,6 @@ export class Form {
 	error
 	*/
 
-	/*static normalizeSchema(formSchema: formSchema): normalizedFormSchema {
-		const normalized = {};
-
-		Object.keys(formSchema).map(fieldName => {
-			normalized[fieldName] = Field.normalizeFieldDefinition(formSchema[fieldName])
-		});
-
-		return normalized;
-	}*/
 
 	constructor(formSchema: IFormSchema, errorMessages: IFormErrorMessages, attributeNames: IFormAttributeNames) {
 		this.formSchema     = formSchema;

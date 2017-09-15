@@ -4,9 +4,10 @@ import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field'
 
-import { normalizesdFieldDefinition, normalizedFormSchema } from '../interface'
+import { normalizesdFieldDefinition } from '../../interfaces/Form';
 import { omit, objectPath } from "../utils";
 import BaseControl from "./BaseControl";
+import { IControlProps } from '../../interfaces/Control';
 
 
 // todo: probabbly may be used when implementing withRef
@@ -16,32 +17,10 @@ import BaseControl from "./BaseControl";
   typeof Component.prototype.isReactComponent === 'object'
 )*/
 
-//todo: add value property to make field a controled component
-
-interface ControlProps {
-	name: string;
-
-	component: React.Component<any, any> | React.SFC<any> | string;
-	rules: string;
-
-	type: string;
-
-	children?: any;
-
-
-	value?: string // should be fieldValue
-	/*
-	placeholder?: string;
-	label?: string;
-	*/
-
-	onFocus?(event: Event): void;
-	onBlur?(event: Event): void;
-	onChange?(event: Event): void;
-}
+// todo: add value property to make field a controled component
 
 @observer
-export class Control extends BaseControl<ControlProps, any> {
+export class Control extends BaseControl<IControlProps, any> {
 	name: string;
 	isNumber: boolean;
 	isSelect: boolean;
@@ -111,7 +90,7 @@ export class Control extends BaseControl<ControlProps, any> {
 		}
 	}
 
-	componentWillReceiveProps(nextProps: ControlProps, nextContext: any) {
+	componentWillReceiveProps(nextProps: IControlProps, nextContext: any) {
 		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
