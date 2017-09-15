@@ -1,102 +1,76 @@
 import React, { Component, createElement } from 'react';
 import { observable, action, computed, autorun } from 'mobx';
-import * as Validator from 'validatorjs';
-
-import { fieldValue, fieldDefinition, normalizesdFieldDefinition } from '../interfaces/Form';
-import { Form } from "./Form";
-
-// todo: may be removed
-function hasErrorArraysChanged(oldErrors: Array<string>, newErrors: Array<string>): boolean {
-	if (oldErrors.length !== newErrors.length) {
-		return true
-	}
-	else if (oldErrors.length === newErrors.length && newErrors.length > 0) {
-		for (let i = 0; i < newErrors.length; i++) {
-			if (oldErrors[i] !== newErrors[i]) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
+import { fieldValue, INormalizesdFieldDefinition } from '../interfaces/Form';
+import { Form } from './Form';
 
 export class Field {
-	autoRemove: boolean = false;
-	initialValue: fieldValue = '';
-	
-	@observable name  :    string; // rules are updated on FieldArray remove item
-	@observable _rules:    string; // rules are updated on FieldArray remove item
-	@observable value :    fieldValue    = '';
-	@observable errors:    Array<string> = [];
-	@observable isFocused: boolean       = false;
-	@observable isTouched: boolean       = false;
+	public autoRemove: boolean = false;
+	private initialValue: fieldValue;
 
-	static normalizeFieldDefinition(fieldDefinition: fieldDefinition): normalizesdFieldDefinition {
-		if (Array.isArray(fieldDefinition)) {
-			return (fieldDefinition.length == 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
-		}
+	/* tslint:disable: typedef-whitespace */
+	@observable public name     : string; // name is updated on FieldArray remove item
+	@observable public value    : fieldValue;
+	@observable public errors   : string[] = [];
+	@observable public isFocused: boolean  = false;
+	@observable public isTouched: boolean  = false;
 
-		return [fieldDefinition, ''];
-	}
+	@observable private _rules: string; // rules are updated on FieldArray remove item
+	/* tslint:enable: typedef-whitespace */
 
-	constructor(name: string, fieldDefinition: normalizesdFieldDefinition) {
+	constructor(name: string, fieldDefinition: INormalizesdFieldDefinition) {
 		this.update(name, fieldDefinition);
 	}
 
-	update(name: string, fieldDefinition: fieldDefinition) {
+	public update(name: string, fieldDefinition: INormalizesdFieldDefinition): void {
 		this.name = name;
 		this.initialValue = fieldDefinition[0];
 		this.value = this.value || this.initialValue;
 		this._rules = fieldDefinition[1];
 	}
 
-	@computed get isDirty() {
+	@computed get isDirty(): boolean {
 		return this.value !== this.initialValue;
 	}
 
-	@computed get isValid() {
+	@computed get isValid(): boolean {
 		return this.errors.length === 0;
 	}
 
 	@computed get rules() {
-		return this._rules ? { [this.name]: this._rules } : {}
+		return this._rules ? { [this.name]: this._rules } : {};
 	}
 
-	@action onFocus() {
+	@action public onFocus(): void  {
 		this.isFocused = true;
 		if (!this.isTouched) {
 			this.isTouched = true;
 		}
 	}
 
-	@action onBlur() {
+	@action public onBlur(): void  {
 		this.isFocused = false;
 	}
 
-	@action onChange(value: fieldValue) {
+	@action public onChange(value: fieldValue): void  {
 		this.value = value;
 	}
 
-	@action reset() {
+	@action public reset(): void  {
 		this.value = this.initialValue;
 		this.isTouched = false;
 	}
 
-	setAutoRemove() {
+	public setAutoRemove(): void  {
 		this.autoRemove = true;
 	}
 
-	subscribeToFormValidation(form: Form) {
+	public subscribeToFormValidation(form: Form): void {
 		autorun(() => {
-			const errors: Array<string> = form.errors.get(this.name);
-
-			// todo: use .join here?
-			// if (hasErrorArraysChanged(this.errors, errors)) {
+			const errors: string[] = form.errors.get(this.name);
 
 			if (this.errors.join() !== errors.join()) {
 				this.errors = errors;
 			}
-		})
+		});
 	}
 }

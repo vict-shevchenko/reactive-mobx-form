@@ -5,7 +5,7 @@ import { Form } from './Form';
 import { Field } from './Field';
 import { objectPath } from './utils';
 
-import { fieldValue, fieldDefinition, normalizesdFieldDefinition, IFormValues } from '../interfaces/Form';
+import { fieldValue, IFieldDefinition, INormalizesdFieldDefinition, IFormValues } from '../interfaces/Form';
 import { formField } from './types';
 
 

@@ -6,7 +6,7 @@ import { Form } from '../Form';
 import { Field } from '../Field'
 import ProxyFieldArray from '../ProxyFieldArray';
 
-import { fieldDefinition, normalizesdFieldDefinition } from '../../interfaces/Form'
+import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form'
 import { FieldArray } from "../FieldArray";
 import { omit } from "../utils";
 import BaseControl from "./BaseControl";

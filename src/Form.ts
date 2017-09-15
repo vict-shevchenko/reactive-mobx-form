@@ -3,7 +3,7 @@ import { observable, action, computed, reaction, ObservableMap, isObservableMap 
 import * as Validator from 'validatorjs';
 
 
-import { fieldDefinition, IFormSchema, IFormValues, IFormErrorMessages, IFormAttributeNames } from '../interfaces/Form';
+import { IFieldDefinition, IFormSchema, IFormValues, IFormErrorMessages, IFormAttributeNames } from '../interfaces/Form';
 import { formField } from './types';
 
 import { Field } from './Field';

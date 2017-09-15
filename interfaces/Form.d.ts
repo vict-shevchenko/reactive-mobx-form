@@ -1,10 +1,10 @@
 export type fieldValue = string | number | boolean;
-export type normalizesdFieldDefinition = [(fieldValue), string];
-export type fieldDefinition = (fieldValue) | [fieldValue] | normalizesdFieldDefinition;
+export type INormalizesdFieldDefinition = [(fieldValue), string];
+export type IFieldDefinition = (fieldValue) | [fieldValue] | INormalizesdFieldDefinition;
 
 
 export interface IFormSchema {
-	[propType: string]: fieldDefinition;
+	[propType: string]: IFieldDefinition;
 }
 
 export interface IFormErrorMessages {

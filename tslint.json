@@ -1,12 +1,53 @@
 {
 	"extends": "tslint:recommended",
 	"rules": {
-		"indent": [true, "tabs", 4],
-		"member-ordering": [false],
+		"indent": [
+			true,
+			"tabs",
+			4
+		],
+		"member-ordering": [
+			false
+		],
 		"object-literal-sort-keys": false,
+		"one-line": [
+			true,
+			"check-catch",
+			"check-finally",
+			"check-open-brace",
+			"check-whitespace"
+		],
 		"ordered-imports": false,
-		"quotemark": [true, "single", "jsx-double"],
-		"trailing-comma": [true, { "multiline": "never", "singleline": "never" }]
+		"quotemark": [
+			true,
+			"single",
+			"jsx-double"
+		],
+		"trailing-comma": [
+			true,
+			{
+				"multiline": "never",
+				"singleline": "never"
+			}
+		],
+		"typedef-whitespace": [
+			true,
+			{
+				"call-signature": "nospace",
+				"index-signature": "nospace",
+				"parameter": "nospace",
+				"property-declaration": "nospace",
+				"variable-declaration": "nospace"
+			},
+			{
+				"call-signature": "onespace",
+				"index-signature": "onespace",
+				"parameter": "onespace",
+				"property-declaration": "onespace",
+				"variable-declaration": "onespace"
+			}
+		],
+		"variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
 	},
 	"jsRules": {}
 }

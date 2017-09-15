@@ -4,7 +4,7 @@ import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field';
 
-import { fieldDefinition, normalizesdFieldDefinition } from '../../interfaces/Form'
+import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form'
 import { FieldSection } from "../FieldSection";
 import { omit } from "../utils";
 import BaseControl from "./BaseControl";

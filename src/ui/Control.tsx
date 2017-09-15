@@ -4,7 +4,7 @@ import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field'
 
-import { normalizesdFieldDefinition } from '../../interfaces/Form';
+import { INormalizesdFieldDefinition, IFieldDefinition, fieldValue } from '../../interfaces/Form';
 import { omit, objectPath } from "../utils";
 import BaseControl from "./BaseControl";
 import { IControlProps } from '../../interfaces/Control';
@@ -43,6 +43,14 @@ export class Control extends BaseControl<IControlProps, any> {
 		rules: ''
 	}
 
+	public static normalizeFieldDefinition(fieldDefinition: IFieldDefinition): INormalizesdFieldDefinition {
+		if (Array.isArray(fieldDefinition)) {
+			return (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
+		}
+
+		return [fieldDefinition, ''];
+	}
+
 	constructor(props, context) {
 		super(props, context, Control.requiredProps);
 
@@ -74,8 +82,8 @@ export class Control extends BaseControl<IControlProps, any> {
 	}
 
 	createField() {
-		const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[this.name] ?
-			  Field.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
+		const fieldDefinition: INormalizesdFieldDefinition = this.form.formSchema[this.name] ?
+			  Control.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
 			  [this.isCheckbox ? false : '', this.props.rules];
 
 		this.warnOnIncorrectInitialValues(fieldDefinition);
@@ -94,8 +102,8 @@ export class Control extends BaseControl<IControlProps, any> {
 		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
-			const fieldDefinition: normalizesdFieldDefinition = this.form.formSchema[nextName] ?
-			  Field.normalizeFieldDefinition(this.form.formSchema[nextName]) : // normalize field definition from initial form schema
+			const fieldDefinition: INormalizesdFieldDefinition = this.form.formSchema[nextName] ?
+			  Control.normalizeFieldDefinition(this.form.formSchema[nextName]) : // normalize field definition from initial form schema
 			  [this.isCheckbox ? false : '', nextProps.rules];
 
 			this.field.update(nextName, fieldDefinition);
@@ -103,7 +111,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		}
 	}
 
-	warnOnIncorrectInitialValues(fieldDefinition:normalizesdFieldDefinition) {
+	warnOnIncorrectInitialValues(fieldDefinition:INormalizesdFieldDefinition) {
 		const inititlaValue = fieldDefinition[0];
 		const initialValueType = typeof inititlaValue; // initial value
 
