@@ -1,32 +1,27 @@
 import { observable, autorun, reaction, IObservableArray } from 'mobx';
 
 export default class ProxyFieldArray {
-	forEach: any;
-	fieldArraySubFields: any;
-	clear: any;
-	observableArray: IObservableArray<string>;
+	public forEach: any;
+	public clear: any;
 	private insertionCounter: number = 0;
 
-	constructor(observableArray, fieldArraySubFields) {
-
-		this.observableArray = observableArray;
-		this.fieldArraySubFields = fieldArraySubFields;
+	constructor(public observableArray: IObservableArray<string>, public fieldArraySubFields: any) {
 		Object.setPrototypeOf(this, ProxyFieldArray.prototype);
 
-		this.add = this.add.bind(this);
-		this.insert = this.insert.bind(this);
-		this.remove = this.remove.bind(this);
+		this.add     = this.add.bind(this);
+		this.insert  = this.insert.bind(this);
+		this.remove  = this.remove.bind(this);
 		this.forEach = this.observableArray.forEach.bind(this.observableArray);
-		this.clear = this.observableArray.clear.bind(this.observableArray);
+		this.clear   = this.observableArray.clear.bind(this.observableArray);
 
-		reaction(() => (this.fieldArraySubFields.length === 0), data => { // in case fieldArray.subfields became empty (form reset, or all items were removed)
+		reaction(() => (this.fieldArraySubFields.length === 0), data => {
+			// in case fieldArray.subfields became empty (form reset, or all items were removed)
 			if (data === true) {
 				if (this.observableArray.length !== 0) { // fieldProxy items exist -> form was resetted, clean up ui
 					this.observableArray.clear();
 				}
-
 			}
-		})
+		});
 	}
 
 	public add(): void {
