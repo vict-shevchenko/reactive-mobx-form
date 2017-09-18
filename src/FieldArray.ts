@@ -47,8 +47,8 @@ export class FieldArray {
 		(this.subFields as IObservableArray<formField>).clear();
 	}
 
-	@action public removeSubField(index) {
-		(this.subFields as IObservableArray<formField>).splice(index, 1);
+	@action public removeSubField(index: string) {
+		(this.subFields as IObservableArray<formField>).splice(parseInt(index, 10), 1);
 	}
 
 	public getField(index: string): formField | undefined {

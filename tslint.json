@@ -13,8 +13,6 @@
 		"object-literal-sort-keys": false,
 		"one-line": [
 			true,
-			"check-catch",
-			"check-finally",
 			"check-open-brace",
 			"check-whitespace"
 		],

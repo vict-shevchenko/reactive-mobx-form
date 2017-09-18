@@ -1,32 +1,23 @@
 import React, { Component, createElement } from 'react';
 import { observable, action, computed, reaction, ObservableMap, isObservableMap } from 'mobx';
 import * as Validator from 'validatorjs';
-
-
-import { IFieldDefinition, IFormSchema, IFormValues, IFormErrorMessages, IFormAttributeNames } from '../interfaces/Form';
+import { IFieldDefinition, IFormSchema, IFormErrorMessages, IFormAttributeNames } from '../interfaces/Form';
 import { formField } from './types';
-
 import { Field } from './Field';
-import { FieldArray } from "./FieldArray";
-import { FieldSection } from "./FieldSection";
-import { objectPath, isNumeric } from "./utils";
+import { FieldArray } from './FieldArray';
+import { FieldSection } from './FieldSection';
+import { objectPath, isNumeric } from './utils';
 
 export class Form {
-	attributeNames: IFormAttributeNames;
-	errorMessages: IFormErrorMessages;
-	formSchema: IFormSchema;
+	public component: any;
 
-	component: any;
+	@observable public fields = new ObservableMap<formField>();
+	@observable public errors: Validator.Errors; // todo: initial value
+	@observable public isValid: boolean | void; // todo: initial value
 
-	mounted: boolean = false;
-
-	@observable fields = new ObservableMap<formField>();
-	@observable errors : Validator.Errors; // todo: initial value
-	@observable isValid: boolean | void; // todo: initial value
-
-	@observable submitting: boolean = false;
-	@observable validating: boolean = false;
-	@observable submitError: any;
+	@observable public submitting: boolean = false;
+	@observable public validating: boolean = false;
+	@observable public submitError: any;
 
 	// computed
 	/*
@@ -42,14 +33,13 @@ export class Form {
 	error
 	*/
 
-
-	constructor(formSchema: IFormSchema, errorMessages: IFormErrorMessages, attributeNames: IFormAttributeNames) {
-		this.formSchema     = formSchema;
-		this.errorMessages  = errorMessages;
-		this.attributeNames = attributeNames;
+	constructor(
+		public formSchema: IFormSchema,
+		private errorMessages: IFormErrorMessages,
+		private attributeNames: IFormAttributeNames) {
 	}
 
-	@computed get isDirty() { // todo: should be implementede for ControlArray
+	@computed get isDirty(): boolean {
 		return this.fields.values().some(field => field.isDirty);
 	}
 
@@ -60,15 +50,16 @@ export class Form {
 
 	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
 	@computed get values() {
-		//return this.fields.entries().map(entry => ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
-		return this.fields.entries().reduce((values: IFormValues, [name, field]) => (values[name] = field.value, values), {});
+		// return this.fields.entries().map(entry =>
+		// ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
+		return this.fields.entries().reduce((values, [name, field]) => (values[name] = field.value, values), {});
 	}
 
-	@computed get rules() { // todo: check if rule is computed on new field add
-		return this.fields.values().reduce((rules:any, field) => Object.assign(rules, field.rules), {});
+	@computed get rules(): {[propName: string]: string} { // todo: check if rule is computed on new field add
+		return this.fields.values().reduce((rules, field) => Object.assign(rules, field.rules), {});
 	}
 
-	@action registerField(field: formField): void {
+	@action public registerField(field: formField): void {
 		const fieldPath = objectPath(field.name);
 
 		try {
@@ -84,27 +75,26 @@ export class Form {
 
 		}
 		catch (e) {
-			console.log(`Field ${field.name} can't be registred. Check name hierarchy.`, e)
+			console.log(`Field ${field.name} can't be registred. Check name hierarchy.`, e); // tslint:disable-line
 		}
 	}
 
-	@action addField(field: formField) {
+	@action public addField(field: formField): void {
 		this.fields.set(field.name, field);
 	}
 
-	@action removeField(fieldName: string) {
-		const fieldPath: Array<string> = objectPath(fieldName);
-
+	@action public removeField(fieldName: string) {
+		const fieldPath = objectPath(fieldName);
 
 		if (fieldPath.length === 1) { // this is form.fields first child
 			(this.fields.get(fieldName) as formField).setAutoRemove();
 			this.fields.delete(fieldName);
 		}
-		else { // this is some nested field
-			const lastIndex  : number = fieldPath.length - 1;
-			const lastNode   : string = fieldPath[lastIndex];
-			const parentField         = this.findFieldInHierarchy(fieldPath.slice(0, lastIndex));
-
+		else { /* tslint:disable: indent */ // this is some nested field
+			const lastIndex   = fieldPath.length - 1,
+			      lastNode    = fieldPath[lastIndex],
+			      parentField = this.findFieldInHierarchy(fieldPath.slice(0, lastIndex));
+			/* tslint:enable: indent */
 			// in React ComponentWillUnmount is fired from parent to child, so if no parent exist -> it was already unmounted.
 			// No need to clean-up children
 			if (parentField) {
@@ -113,29 +103,30 @@ export class Form {
 		}
 	}
 
-	@action reset() {
+	@action public reset() {
 		this.fields.forEach(field => field.reset());
 	}
 
-	getField(index:string): formField {
+	public getField(index: string): formField {
 		return (this.fields as ObservableMap<formField>).get(index);
 	}
 
-	findFieldInHierarchy(path: Array<string>) : Form | formField {
-		// todo: f ? f.getField(node) : f - is super stupid check for parent was removed, just pass udefined for all suc childrens
-		return path.reduce((f: Form | FieldArray | FieldSection, node:string) => f ? f.getField(node) : f, this);
+	public findFieldInHierarchy(path: string[]): Form | formField {
+		// todo: f ? f.getField(node) : f - is super stupid check for parent was removed,
+		// just pass udefined for all suc childrens
+		return path.reduce((f: Form | FieldArray | FieldSection, node) => f ? f.getField(node) : f, this);
 	}
 
-	registerValidation() {
+	public registerValidation() {
 		reaction(
 			() => this.validation,
 			() => {
-				if(this.attributeNames) {
+				if (this.attributeNames) {
 					this.validation.setAttributeNames(this.attributeNames);
 				}
 				this.isValid = this.validation.passes();
 				this.errors = this.validation.errors;
 			}
-		)
+		);
 	}
 }

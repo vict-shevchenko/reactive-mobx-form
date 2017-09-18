@@ -66,6 +66,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		this.onBlur   = this.onBlur.bind(this);
 	}
 
+
 	componentWillMount() {
 		// Radio buttons have several controls which all should point to the same field in a form
 		if (this.isRadio) {

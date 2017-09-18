@@ -57,12 +57,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				this.form.registerValidation();
 			}
 
-			public componentDidMount() {
-				this.form.mounted = true;
-			}
-
 			public componentWillUnmount() {
-				this.form.mounted = false;
 				this.props.formStore.unRegisterForm(formName);
 			}
 
