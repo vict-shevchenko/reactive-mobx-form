@@ -10,10 +10,14 @@ export interface IControlProps {
 	onChange?(event: Event): void;
 }
 
-interface INestingControlProps {
+interface IGroupControlProps {
 	name: string;
 	component: React.Component<any, any> | React.SFC<any> | string;
 }
 
-export interface IControlArrayProps extends INestingControlProps {}
-export interface IControlSectionProps extends INestingControlProps {}
+interface IGroupControlContext {
+	_ReactiveMobxFormFieldNamePrefix: string
+}
+
+export interface IControlArrayProps extends IGroupControlProps {}
+export interface IControlSectionProps extends IGroupControlProps {}

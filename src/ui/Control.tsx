@@ -2,16 +2,15 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
-import { Field } from '../Field'
+import { Field } from '../Field';
 
 import { INormalizesdFieldDefinition, IFieldDefinition, fieldValue } from '../../interfaces/Form';
-import { omit, objectPath } from "../utils";
-import BaseControl from "./BaseControl";
+import { omit, objectPath } from '../utils';
+import BaseControl from './BaseControl';
 import { IControlProps } from '../../interfaces/Control';
 
-
 // todo: probabbly may be used when implementing withRef
-/*const isClassComponent = Component => Boolean( 
+/*const isClassComponent = Component => Boolean(
   Component &&
   Component.prototype &&
   typeof Component.prototype.isReactComponent === 'object'
@@ -21,27 +20,25 @@ import { IControlProps } from '../../interfaces/Control';
 
 @observer
 export class Control extends BaseControl<IControlProps, any> {
-	name: string;
-	isNumber: boolean;
-	isSelect: boolean;
-	isCheckable: boolean;
-	isFile: boolean;
-	isRadio: boolean;
-	isCheckbox: boolean;
-	form: Form;
-	field: Field;
+	public name: string;
+	public form: Form;
+	public field: Field;
 
-	static requiredProps: Array<string> = ['component', 'name'];
-	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
+	private isNumber: boolean;
+	private isSelect: boolean;
+	private isCheckable: boolean;
+	private isFile: boolean;
+	private isRadio: boolean;
+	private isCheckbox: boolean;
 
-	static contextTypes = {
+	public static contextTypes = {
 		_ReactiveMobxForm: PropTypes.object.isRequired,
 		_ReactiveMobxFormFieldNamePrefix: PropTypes.string
-	}
+	};
 
-	static defaultProps = {
+	public static defaultProps = {
 		rules: ''
-	}
+	};
 
 	public static normalizeFieldDefinition(fieldDefinition: IFieldDefinition): INormalizesdFieldDefinition {
 		if (Array.isArray(fieldDefinition)) {
@@ -50,6 +47,9 @@ export class Control extends BaseControl<IControlProps, any> {
 
 		return [fieldDefinition, ''];
 	}
+
+	private static requiredProps: string[] = ['component', 'name'];
+	private static propNamesToOmitWhenByPass: string[] = ['component', 'rules'];
 
 	constructor(props, context) {
 		super(props, context, Control.requiredProps);
@@ -66,8 +66,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		this.onBlur   = this.onBlur.bind(this);
 	}
 
-
-	componentWillMount() {
+	public componentWillMount() {
 		// Radio buttons have several controls which all should point to the same field in a form
 		if (this.isRadio) {
 			this.field = this.form.findFieldInHierarchy(objectPath(this.name)) as Field;
@@ -82,37 +81,39 @@ export class Control extends BaseControl<IControlProps, any> {
 		this.field.subscribeToFormValidation(this.form);
 	}
 
-	createField() {
+	private createField(): void {
 		const fieldDefinition: INormalizesdFieldDefinition = this.form.formSchema[this.name] ?
-			  Control.normalizeFieldDefinition(this.form.formSchema[this.name]) : // normalize field definition from initial form schema
-			  [this.isCheckbox ? false : '', this.props.rules];
+			// normalize field definition from initial form schema
+			Control.normalizeFieldDefinition(this.form.formSchema[this.name]) :
+			[this.isCheckbox ? false : '', this.props.rules];
 
 		this.warnOnIncorrectInitialValues(fieldDefinition);
 
-		this.field = new Field(this.name, fieldDefinition)
+		this.field = new Field(this.name, fieldDefinition);
 		this.form.registerField(this.field);
 	}
 
-	componentWillUnmount() {
+	public componentWillUnmount(): void {
 		if (!this.field.autoRemove) {
 			this.form.removeField(this.name);
 		}
 	}
 
-	componentWillReceiveProps(nextProps: IControlProps, nextContext: any) {
+	public componentWillReceiveProps(nextProps: IControlProps, nextContext: any): void {
 		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
 			const fieldDefinition: INormalizesdFieldDefinition = this.form.formSchema[nextName] ?
-			  Control.normalizeFieldDefinition(this.form.formSchema[nextName]) : // normalize field definition from initial form schema
-			  [this.isCheckbox ? false : '', nextProps.rules];
+			// normalize field definition from initial form schema
+			Control.normalizeFieldDefinition(this.form.formSchema[nextName]) :
+			[this.isCheckbox ? false : '', nextProps.rules];
 
 			this.field.update(nextName, fieldDefinition);
 			this.name = nextName;
 		}
 	}
 
-	warnOnIncorrectInitialValues(fieldDefinition:INormalizesdFieldDefinition) {
+	private warnOnIncorrectInitialValues(fieldDefinition: INormalizesdFieldDefinition): void {
 		const inititlaValue = fieldDefinition[0];
 		const initialValueType = typeof inititlaValue; // initial value
 
@@ -125,15 +126,16 @@ export class Control extends BaseControl<IControlProps, any> {
 			(this.isNumber && initialValueType !== 'number') ||
 			(!this.isCheckbox && !this.isNumber && initialValueType !== 'string')
 		) {
+			// tslint:disable-next-line
 			console.warn(`Incorrect initial value profided to field '${this.name}'. Got '${initialValueType}'`)
 		}
 	}
 
-	onChange(event) {
+	private onChange(event): void {
 		let value;
 
 		if (this.isCheckbox) {
-			value = event.target.checked
+			value = event.target.checked;
 		} else if (this.isFile) {
 			value = event.target.files;
 		} else {
@@ -147,7 +149,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		}
 	}
 
-	onFocus(event) {
+	private onFocus(event): void {
 		this.field.onFocus();
 
 		if (this.props.onFocus) {
@@ -155,7 +157,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		}
 	}
 
-	onBlur(event) {
+	private onBlur(event): void {
 		this.field.onBlur();
 
 		if (this.props.onBlur) {
@@ -163,7 +165,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		}
 	}
 
-	render() {
+	public render() {
 		// todo: implement withRef today
 		const handlers = {
 			onChange: this.onChange,
@@ -173,15 +175,15 @@ export class Control extends BaseControl<IControlProps, any> {
 
 		const inputValue = {
 			value: this.isRadio ? this.props.value : (this.field.value as string)
-		}
+		};
 
 		let checked = {};
 
 		if (this.isCheckbox) {
-			checked = { checked: (this.field.value as boolean) }
+			checked = { checked: (this.field.value as boolean) };
 		}
 		else if (this.isRadio) {
-			checked = { checked: (this.field.value === this.props.value) }
+			checked = { checked: (this.field.value === this.props.value) };
 		}
 
 		const meta = {
@@ -190,7 +192,7 @@ export class Control extends BaseControl<IControlProps, any> {
 			dirty  : this.field.isDirty,
 			valid  : this.field.isValid,
 			errors : this.field.errors
-		}
+		};
 
 		const className = [
 			meta.touched ? 'rmf-touched' : 'rmf-untouched',
@@ -198,17 +200,22 @@ export class Control extends BaseControl<IControlProps, any> {
 			meta.valid   ? 'rmf-valid'   : 'rmf-invalid'
 		].join(' ');
 
-		const input = Object.assign({}, { className }, (this.isFile ? {} : inputValue), handlers, (this.isCheckable ? checked : {}));
+		const input = Object.assign(
+			{},
+			{ className },
+			(this.isFile ? {} : inputValue),
+			handlers,
+			(this.isCheckable ? checked : {})
+		);
 
 		const propsToPass = omit(this.props, Control.propNamesToOmitWhenByPass);
-
 
 		if (typeof this.props.component === 'function') {
 			return React.createElement(this.props.component, Object.assign({}, { input }, { meta }, propsToPass));
 		}
 
 		if (this.props.component === 'select') {
-			return <select {...input} {...propsToPass}>{this.props.children}</select>
+			return <select {...input} {...propsToPass}>{this.props.children}</select>;
 		}
 
 		// input with text, checkbox, radio, email, number, password type or textarea

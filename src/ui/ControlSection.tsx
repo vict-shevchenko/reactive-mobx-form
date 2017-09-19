@@ -2,63 +2,59 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
-import { Field } from '../Field';
-
-import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form'
-import { FieldSection } from "../FieldSection";
-import { omit } from "../utils";
-import BaseControl from "./BaseControl";
-import { IControlSectionProps } from '../../interfaces/Control';
-
+import { FieldSection } from '../FieldSection';
+import { omit } from '../utils';
+import BaseControl from './BaseControl';
+import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form';
+import { IControlSectionProps, IGroupControlContext } from '../../interfaces/Control';
 
 @observer
 export class ControlSection extends BaseControl<IControlSectionProps, any> {
-	name : string;
-	form : Form;
-	field: FieldSection;
+	public name: string;
+	public form: Form;
+	public field: FieldSection;
 
-	// todo: should be possible to use with children
-	static requiredProps: Array<string> = ['component', 'name'];
-	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
-
-	static contextTypes = {
+	public static contextTypes = {
 		_ReactiveMobxForm: PropTypes.object.isRequired,
 		_ReactiveMobxFormFieldNamePrefix: PropTypes.string
-	}
+	};
 
-	static childContextTypes = {
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string.isRequired,
-	}
+	public static childContextTypes = {
+		_ReactiveMobxFormFieldNamePrefix: PropTypes.string.isRequired
+	};
+
+	// todo: should be possible to use with children
+	private static requiredProps: string[] = ['component', 'name'];
+	private static propNamesToOmitWhenByPass: string[] = ['component', 'rules'];
 
 	constructor(props, context) {
 		super(props, context, ControlSection.requiredProps);
 	}
 
-	getChildContext() {
+	public getChildContext(): IGroupControlContext  {
 		return {
 			_ReactiveMobxFormFieldNamePrefix: this.name
 		};
 	}
 
-
-	componentWillMount() {
+	public componentWillMount(): void {
 		// As ControlSection is an aggregation unit it should not present in schema
 		if (this.form.formSchema[this.name]) {
 			throw (new Error(`Control Section with name ${this.name} should not be in schema`));
 		}
 
-		this.field = new FieldSection(this.name)
+		this.field = new FieldSection(this.name);
 		this.form.registerField(this.field);
 	}
 
-	componentWillUnmount() {
+	public componentWillUnmount(): void {
 		if (!this.field.autoRemove) {
 			this.field.setAutoRemove();
 			this.form.removeField(this.name);
 		}
 	}
 
-	componentWillReceiveProps(nextProps: IControlSectionProps, nextContext:any) {
+	public componentWillReceiveProps(nextProps: IControlSectionProps, nextContext: IGroupControlContext): void {
 		const name = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== name) {
@@ -67,8 +63,10 @@ export class ControlSection extends BaseControl<IControlSectionProps, any> {
 		}
 	}
 
-	render() {
+	public render() {
 		const propsToPass = omit(this.props, ControlSection.propNamesToOmitWhenByPass);
-		return React.createElement((this.props.component as any), Object.assign({}, { fields: this.field.subFields }, propsToPass));
+		return React.createElement((this.props.component as any),
+			Object.assign({}, { fields: this.field.subFields }, propsToPass)
+		);
 	}
 }

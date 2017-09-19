@@ -1,5 +1,5 @@
 import React, { Component, createElement } from 'react';
-import { observable, action, computed, autorun, isObservableArray, IObservableArray } from 'mobx';
+import { observable, action, computed, autorun } from 'mobx';
 import { fieldValue, IFieldDefinition, INormalizesdFieldDefinition } from '../interfaces/Form';
 import { formField } from './types';
 import { objectPath, isNumeric } from './utils';
@@ -8,7 +8,7 @@ export class FieldArray {
 	public name: string;
 	public autoRemove: boolean = false;
 
-	@observable public subFields: IObservableArray<formField>;
+	public subFields = observable<formField>([]);
 	@observable public errors: string[] = [];
 
 	constructor(name: string) {
@@ -44,11 +44,11 @@ export class FieldArray {
 
 	@action public reset() {
 		this.subFields.forEach(subField => subField.setAutoRemove());
-		(this.subFields as IObservableArray<formField>).clear();
+		this.subFields.clear();
 	}
 
 	@action public removeSubField(index: string) {
-		(this.subFields as IObservableArray<formField>).splice(parseInt(index, 10), 1);
+		this.subFields.splice(parseInt(index, 10), 1);
 	}
 
 	public getField(index: string): formField | undefined {

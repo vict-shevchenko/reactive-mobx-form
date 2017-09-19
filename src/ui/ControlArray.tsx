@@ -1,62 +1,60 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { observable } from 'mobx'; 
+import { observable, IObservableArray } from 'mobx';
 import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
-import { Field } from '../Field'
 import ProxyFieldArray from '../ProxyFieldArray';
-
-import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form'
-import { FieldArray } from "../FieldArray";
-import { omit } from "../utils";
-import BaseControl from "./BaseControl";
-import { IControlArrayProps } from '../../interfaces/Control';
+import { FieldArray } from '../FieldArray';
+import { omit } from '../utils';
+import BaseControl from './BaseControl';
+import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form';
+import { IControlArrayProps, IGroupControlContext } from '../../interfaces/Control';
 
 @observer
 export class ControlArray extends BaseControl<IControlArrayProps, any> {
-	proxiedFieldsProp: ProxyFieldArray;
-	name: string;
-	field: FieldArray;
-	form : Form;
+	public name: string;
+	public form: Form;
+	public field: FieldArray;
 
-	static requiredProps: Array<string> = ['component', 'name'];
-	static propNamesToOmitWhenByPass: Array<string> = ['component', 'rules'];
+	private proxiedFieldsProp: ProxyFieldArray;
+	private fieldsProp = observable<string>([]);
 
-	static contextTypes = {
+	public static contextTypes = {
 		_ReactiveMobxForm: PropTypes.object.isRequired,
 		_ReactiveMobxFormFieldNamePrefix: PropTypes.string
-	}
+	};
 
-	static childContextTypes = {
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string.isRequired,
-	}
+	public static childContextTypes = {
+		_ReactiveMobxFormFieldNamePrefix: PropTypes.string.isRequired
+	};
 
-	@observable fieldsProp: Array<string> = [];
+	private static requiredProps: string[] = ['component', 'name'];
+	private static propNamesToOmitWhenByPass: string[] = ['component', 'rules'];
 
 	constructor(props, context) {
 		super(props, context, ControlArray.requiredProps);
 	}
 
-	getChildContext() {
+	public getChildContext(): IGroupControlContext {
 		return {
 			_ReactiveMobxFormFieldNamePrefix: this.name
 		};
 	}
 
-	componentWillMount() {
+	public componentWillMount(): void {
 		this.field = new FieldArray(this.name);
 		this.form.registerField(this.field);
 		this.proxiedFieldsProp = new ProxyFieldArray(this.fieldsProp, this.field.subFields);
 	}
 
-	componentWillUnmount() {
+	public componentWillUnmount(): void {
 		if (!this.field.autoRemove) {
 			this.field.setAutoRemove();
 			this.form.removeField(this.name);
 		}
 	}
 
-	componentWillReceiveProps(nextProps: IControlArrayProps, nextContext: any) {
+	public componentWillReceiveProps(nextProps: IControlArrayProps, nextContext: IGroupControlContext): void {
 		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName) {
@@ -66,12 +64,12 @@ export class ControlArray extends BaseControl<IControlArrayProps, any> {
 		}
 	}
 
-	render() {
+	public render() {
 		const propsToPass = omit(this.props, ControlArray.propNamesToOmitWhenByPass);
 
 		const length =  this.fieldsProp.length; // todo: why we need this to rerender?
 
-		return React.createElement((this.props.component as any), 
+		return React.createElement((this.props.component as any),
 				Object.assign({}, { fields: this.proxiedFieldsProp }, propsToPass)
 			);
 	}
