@@ -1,3 +1,6 @@
+# 0.5.3
+- All code TSLinted
+
 # 0.5.2
 - Add typings
 
