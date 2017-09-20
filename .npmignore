@@ -1,4 +1,5 @@
 src/**/*.*
+__test__/**/*.*
 lib/**/*.js.map
 lib/types.js
 docs/**/*.*
