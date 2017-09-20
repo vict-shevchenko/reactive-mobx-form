@@ -6,7 +6,8 @@
   "types": "index.d.ts",
   "scripts": {
     "lint": "tslint --project tsconfig.json --config tslint.json",
-    "test": "jest"
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
   "repository": {
     "type": "git",
