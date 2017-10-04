@@ -2,34 +2,33 @@ export type fieldValue = string | number | boolean;
 export type INormalizesdFieldDefinition = [(fieldValue), string];
 export type IFieldDefinition = (fieldValue) | [fieldValue] | INormalizesdFieldDefinition;
 
-
 export interface IFormSchema {
 	[propType: string]: IFieldDefinition;
 }
 
 export interface IFormErrorMessages {
-	[propType: string]: string
+	[propType: string]: string;
 }
 
 export interface IFormAttributeNames {
-	[propType: string]: string
+	[propType: string]: string;
 }
 
 export interface IFormValidatiorDefinnition {
-	errorMessages?: IFormErrorMessages
-	attributeNames?: IFormAttributeNames
+	errorMessages?: IFormErrorMessages;
+	attributeNames?: IFormAttributeNames;
 }
 
 export interface IFormDefinition {
-	validator?: IFormValidatiorDefinnition, 
-	schema?: IFormSchema
+	validator?: IFormValidatiorDefinnition;
+	schema?: IFormSchema;
 }
 
 export interface IFormValues {
-	[propType: string]: fieldValue
+	[propType: string]: fieldValue;
 }
 
 export interface IValidatorjsConfiguration {
-	language?: string,
-	setAttributeFormatter?: (attribute: string) => string,
+	language?: string;
+	setAttributeFormatter?: (attribute: string) => string;
 }

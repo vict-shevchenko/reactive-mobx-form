@@ -16,7 +16,7 @@ interface IGroupControlProps {
 }
 
 interface IGroupControlContext {
-	_ReactiveMobxFormFieldNamePrefix: string
+	_ReactiveMobxFormFieldNamePrefix: string;
 }
 
 export interface IControlArrayProps extends IGroupControlProps {}
