@@ -1,11 +1,11 @@
 import React, { Component, createElement } from 'react';
-import * as PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { action, computed, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import * as Validator from 'validatorjs';
+import Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from '../interfaces/Form';
+import { IFormDefinition, IFormSchema, IValidatorjsConfiguration, IFormValues } from '../interfaces/Form';
 
 function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
@@ -30,7 +30,11 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 	return wrappedForm => {
 		@inject('formStore')
 		@observer
-		class FormUI extends Component<{ formStore: any, onSubmit?: any, schema?: IFormSchema }, any> {
+		class FormUI extends Component<{
+				formStore: any,
+				onSubmit?: (values: IFormValues) => Promise<any>,
+				schema?: IFormSchema
+			}, any> {
 			public static childContextTypes = {
 				_ReactiveMobxForm: PropTypes.object.isRequired
 			};
