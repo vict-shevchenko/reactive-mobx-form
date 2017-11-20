@@ -1,11 +1,24 @@
-# reactiveMobxForm(name: string, [, formDefinition: Object])
+## reactiveMobxForm(name: string, [, formDefinition: Object])
 
 High Order Component that is used to create reactiveMobXForm, set its form parameters and register form in FormStore
 
-### Retunrs: `function` that accepts one parameter, Form Component - that you would like to decorate with `reactiveMobxForm`
+### Retunrs: 
+
+`function` that accepts one parameter, Form Component - that you would like to decorate with `reactiveMobxForm`
+
+## Usage
+```javascript
+    import  {reactiveMobxForm } from 'reactive-mobx-form';
+	 
+	 ...
+
+	 export reactiveMobxForm('myForm')(MyFormComponent);
+```
+
 
 ## Parmeters
 
+`reactiveMobxForm` accepts 2 parameters string `name` and `formDefiniton` object.
 ### Required
 
 `name : String` - The name of your form, which will be used as a key to store your form data in `FormStore`
