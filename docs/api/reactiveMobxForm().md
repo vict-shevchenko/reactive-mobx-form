@@ -1,4 +1,4 @@
-## reactiveMobxForm(name: string, [, formDefinition: Object])
+## reactiveMobxForm(name: string [, formDefinition: Object])
 
 High Order Component that is used to create reactiveMobXForm, set its form parameters and register form in FormStore
 
