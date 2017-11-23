@@ -41,7 +41,7 @@ class Page extends React.Component {
 
 ```
 
-`ReactiveForm` can accept any amount of proerties, that will be transparently passed to your form component. Except to properties:
+`ReactiveForm` can accept any amount of properties, that will be transparently passed to your form component. Except two properties:
 - onSubmit
 - schema
 
