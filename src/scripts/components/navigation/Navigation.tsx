@@ -8,6 +8,9 @@ export default function Navigation() {
 
 			<NavLink className="navItem" activeClassName="navItem--active" to="/api">API</NavLink>
 			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/api/reactiveMobxForm()">reactiveMobxForm()</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/api/configureValidator()">configureValidator()</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/api/ReactiveForm">ReactiveForm</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/api/props">props</NavLink>
 
 			<NavLink className="navItem" activeClassName="navItem--active" to="/examples">EXAMPLES</NavLink>
 			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/simple/SimpleForm">Simple Form</NavLink>
