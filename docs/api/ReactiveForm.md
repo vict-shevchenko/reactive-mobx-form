@@ -33,7 +33,7 @@ class Page extends React.Component {
     
     return (
       <div>
-       <ReactiveForm someMyProp={someMyValue}/>
+       <ReactiveForm onSubmit={yourOnSummitFunction} schema={{ fieldName:'fieldInitialValue' }} someMyProp={someMyValue}/>
       </div>
     );
   }
