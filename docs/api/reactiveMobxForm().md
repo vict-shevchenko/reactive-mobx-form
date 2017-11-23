@@ -38,9 +38,24 @@ High Order Component that is used to create reactiveMobXForm, set its form param
 ```
 #### `validator`
 
-Property is responsible to set up how form validation will be performed, and is represented by 2 properties
+Property is responsible to set up how form validation will be performed, and is represented by 2 properties. Both are applied per form instance.
 
+- *attributeNames* - used to map a field name like `first-name` to a human readable form like `First Name`, used mostly to be displayed in error messages
+- *errorMessages* - used to completely modify error message text
 
+You can find usege in [examples](/reactive-mobx-form/#/examples).
 #### `schema`
 
-An object with a configuration for form fields, allowing to specify their initialValues and validation rules
+An object with a configuration for form fields, allowing to specify their initialValues and validation rules on a form creation stage. (you can also do this on form rendering sate by passing `schema` parameter to your `ReactiveForm` component).
+
+```
+// this three forms of schema definition are equal, 
+// saying that the value for a field named 'firstName' should be Viktor
+{firstName: 'Vikor'}
+{firstName: ['Viktor']}
+{firstName: ['Viktor', '']}
+
+// Here we also add validation (uses validatorjs syntax). 
+// This field and form will be invalid if field value is emplty or not string
+{firstName: ['Viktor', 'required|string']}
+```
