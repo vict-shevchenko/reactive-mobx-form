@@ -1,6 +1,6 @@
 ## ReactiveForm
 
-On any way you name it. Your decorated form that is produced via calling
+Or any way you name it. Your decorated form that is produced via calling `reactiveMobxForm` function.
 
 
 ```javascript
