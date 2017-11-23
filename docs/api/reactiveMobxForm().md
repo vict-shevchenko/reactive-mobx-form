@@ -48,7 +48,7 @@ You can find usege in [examples](/reactive-mobx-form/#/examples).
 
 An object with a configuration for form fields, allowing to specify their initialValues and validation rules on a form creation stage. (you can also do this on form rendering sate by passing `schema` parameter to your `ReactiveForm` component).
 
-```
+```javascript
 // this three forms of schema definition are equal, 
 // saying that the value for a field named 'firstName' should be Viktor
 {firstName: 'Vikor'}
