@@ -1,3 +1,6 @@
+# 0.5.4
+- Possibility to have several components with fields for one form. Use `unregisterOnUnmount: false` in order to dynamically add components with new Controls for existing form. 
+
 # 0.5.3
 - All code TSLinted
 
