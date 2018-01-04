@@ -59,3 +59,7 @@ An object with a configuration for form fields, allowing to specify their initia
 // This field and form will be invalid if field value is emplty or not string
 {firstName: ['Viktor', 'required|string']}
 ```
+
+#### `unregisterOnUnmount : boolean` 
+
+Should or should not the form state be cleaned form `formStore` when form component is unmounted

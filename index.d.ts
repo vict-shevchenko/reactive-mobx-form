@@ -19,8 +19,8 @@
 import React = require("react");
 import { ObservableMap } from "mobx";
 
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./interfaces/Form";
-import { IControlProps, IControlArrayProps, IControlSectionProps } from "./interfaces/Control";
+import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./src/interfaces/Form";
+import { IControlProps, IControlArrayProps, IControlSectionProps } from "./src/interfaces/Control";
 
 declare class Form {
     values: () => any;

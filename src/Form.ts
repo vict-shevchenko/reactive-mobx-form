@@ -1,7 +1,7 @@
 import React, { Component, createElement } from 'react';
 import { observable, action, computed, reaction, ObservableMap, isObservableMap } from 'mobx';
-import Validator from 'validatorjs';
-import { IFieldDefinition, IFormSchema, IFormErrorMessages, IFormAttributeNames } from '../interfaces/Form';
+import * as Validator from 'validatorjs';
+import { IFieldDefinition, IFormSchema, IFormErrorMessages, IFormAttributeNames } from './interfaces/Form';
 import { formField } from './types';
 import { Field } from './Field';
 import { FieldArray } from './FieldArray';

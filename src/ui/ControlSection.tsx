@@ -5,8 +5,8 @@ import { Form } from '../Form';
 import { FieldSection } from '../FieldSection';
 import { omit } from '../utils';
 import BaseControl from './BaseControl';
-import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form';
-import { IControlSectionProps, IGroupControlContext } from '../../interfaces/Control';
+import { IFieldDefinition, INormalizesdFieldDefinition } from '../interfaces/Form';
+import { IControlSectionProps, IGroupControlContext } from '../interfaces/Control';
 
 @observer
 export class ControlSection extends BaseControl<IControlSectionProps, any> {

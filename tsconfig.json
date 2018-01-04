@@ -11,6 +11,7 @@
         "jsx": "react",
         "strictNullChecks": false,
         "outDir": "lib",
+        "rootDir": "src",
         "noEmitOnError": false,
         "lib": [
             "dom",
@@ -24,6 +25,7 @@
         "node_modules",
         "build",
         "lib",
-        "__tests__"
+        "__tests__",
+        "__mocks__"
     ]
 }

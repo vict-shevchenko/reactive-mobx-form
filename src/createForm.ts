@@ -1,11 +1,12 @@
 import React, { Component, createElement } from 'react';
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
 import { action, computed, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import Validator from 'validatorjs';
+import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration, IFormValues } from '../interfaces/Form';
+import { IFormDefinition, IFormSchema, IValidatorjsConfiguration, IFormValues } from './interfaces/Form';
+import { FormStore } from './Store';
 
 function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
@@ -22,7 +23,11 @@ function validateConfigParams(formName: string, params: any) {
 }
 
 export function createForm(formName: string, formDefinition: IFormDefinition = {}) {
-	const { validator: validatorDefinition = {}, schema: schemaDefinition = {} } = formDefinition;
+	const {
+		validator: validatorDefinition = {},
+		schema: schemaDefinition = {},
+		unregisterOnUnmount = true
+	} = formDefinition;
 	const { errorMessages, attributeNames } = validatorDefinition;
 
 	validateConfigParams(formName, [validatorDefinition, schemaDefinition]);
@@ -31,10 +36,10 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 		@inject('formStore')
 		@observer
 		class FormUI extends Component<{
-				formStore: any,
-				onSubmit?: (values: IFormValues) => Promise<any>,
-				schema?: IFormSchema
-			}, any> {
+			formStore: FormStore,
+			onSubmit?: (values: IFormValues) => Promise<any>,
+			schema?: IFormSchema
+		}, any> {
 			public static childContextTypes = {
 				_ReactiveMobxForm: PropTypes.object.isRequired
 			};
@@ -48,8 +53,9 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 					throw new Error('attribute "schema" provided to Form has incorrect format. Object expected');
 				}
 
-				this.form = new Form(Object.assign(schemaDefinition, props.schema || {}), errorMessages, attributeNames);
-				this.form.component = wrappedForm; // for debugging/error handling purposes
+				const schema = Object.assign(schemaDefinition, this.props.schema || {});
+
+				this.form = this.props.formStore.registerForm(formName, schema, errorMessages, attributeNames);
 			}
 
 			private getChildContext() {
@@ -57,15 +63,17 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public componentWillMount() {
-				this.props.formStore.registerForm(formName, this.form);
-				this.form.registerValidation();
+				// for debugging/error handling purposes, todo: not useful for multi-component-form
+				this.form.component = wrappedForm;
 			}
 
 			public componentWillUnmount() {
-				this.props.formStore.unRegisterForm(formName);
+				if (unregisterOnUnmount) {
+					this.props.formStore.unRegisterForm(formName);
+				}
 			}
 
-			// todo: pass additional information to submimt
+			// todo: pass additional information to submit
 			public submitForm(event: Event): void {
 				event.preventDefault();
 

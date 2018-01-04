@@ -15,7 +15,7 @@ interface IGroupControlProps {
 	component: React.Component<any, any> | React.SFC<any> | string;
 }
 
-interface IGroupControlContext {
+export interface IGroupControlContext {
 	_ReactiveMobxFormFieldNamePrefix: string;
 }
 

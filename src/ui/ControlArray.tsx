@@ -7,8 +7,8 @@ import ProxyFieldArray from '../ProxyFieldArray';
 import { FieldArray } from '../FieldArray';
 import { omit } from '../utils';
 import BaseControl from './BaseControl';
-import { IFieldDefinition, INormalizesdFieldDefinition } from '../../interfaces/Form';
-import { IControlArrayProps, IGroupControlContext } from '../../interfaces/Control';
+import { IFieldDefinition, INormalizesdFieldDefinition } from '../interfaces/Form';
+import { IControlArrayProps, IGroupControlContext } from '../interfaces/Control';
 
 @observer
 export class ControlArray extends BaseControl<IControlArrayProps, any> {

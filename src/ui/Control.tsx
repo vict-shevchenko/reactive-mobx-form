@@ -4,10 +4,10 @@ import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field';
 
-import { INormalizesdFieldDefinition, IFieldDefinition, fieldValue } from '../../interfaces/Form';
+import { INormalizesdFieldDefinition, IFieldDefinition, fieldValue } from '../interfaces/Form';
 import { omit, objectPath } from '../utils';
 import BaseControl from './BaseControl';
-import { IControlProps } from '../../interfaces/Control';
+import { IControlProps } from '../interfaces/Control';
 
 // todo: probabbly may be used when implementing withRef
 /*const isClassComponent = Component => Boolean(

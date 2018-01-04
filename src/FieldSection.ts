@@ -1,6 +1,6 @@
 import React, { Component, createElement } from 'react';
 import { observable, action, computed, ObservableMap } from 'mobx';
-import { fieldValue, IFormValues } from '../interfaces/Form';
+import { fieldValue, IFormValues } from './interfaces/Form';
 import { formField } from './types';
 import { objectPath } from './utils';
 

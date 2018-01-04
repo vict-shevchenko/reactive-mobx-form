@@ -1,6 +1,6 @@
 import React, { Component, createElement } from 'react';
 import { observable, action, computed, autorun } from 'mobx';
-import { fieldValue, IFieldDefinition, INormalizesdFieldDefinition } from '../interfaces/Form';
+import { fieldValue, IFieldDefinition, INormalizesdFieldDefinition } from './interfaces/Form';
 import { formField } from './types';
 import { objectPath, isNumeric } from './utils';
 
