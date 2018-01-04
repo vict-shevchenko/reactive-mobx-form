@@ -21,7 +21,7 @@ describe('Testing creation of Form Component', () => {
 describe('Testing configuration of validators', () => {
 
 	test('Setting up the validatoin config should happen without errors', () => {
-		configureValidatorjs({language: 'ru', setAttributeFormatter: attr => (attr) });
+		configureValidatorjs({ language: 'ru', setAttributeFormatter: attr => (attr) });
 	});
 
 	// todo: requires full thesting that validation was correctly set up

@@ -17,7 +17,7 @@ describe('Testing the FormStore', () => {
 		expect(formStore.forms).toBeDefined();
 		expect(formStore.forms.size).toBe(0);
 
-		formStore.registerForm('myform', new Form({}, {}, {}));
+		formStore.registerForm('myform', {}, {}, {});
 
 		expect(formStore.forms.get('myform')).toBeDefined();
 

@@ -40,12 +40,17 @@
     "@types/react-dom": "^15.5.4",
     "@types/validatorjs": "^3.7.0",
     "jest": "^21.1.0",
-    "ts-jest": "^21.0.1",
+    "ts-jest": "^21.2.4",
     "tslint": "^5.7.0",
-    "typescript": "^2.5.2"
+    "typescript": "^2.6.2"
   },
   "jest": {
     "verbose": true,
+    "globals": {
+      "ts-jest": {
+        "skipBabel": true
+      }
+    },
     "transform": {
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
