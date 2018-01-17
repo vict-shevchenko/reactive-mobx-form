@@ -1,3 +1,8 @@
+# 0.6.0 [Breaking Changes]
+- Support for wizzard type forms, that allows form state to be preserved when form element is unmounted, and field state to be preserved when Control is unmounted
+- Introduced `formStore.getForm('formName')` - to get form instance
+- Introduced `form.getField('fieldName')` - to get field instance on form
+
 # 0.5.4
 - Possibility to have several components with fields for one form. Use `unregisterOnUnmount: false` in order to dynamically add components with new Controls for existing form. 
 
@@ -31,7 +36,7 @@
 # 0.3.1 
 - Pass `submitError` property to Form component
 
-# 0.3.0 [Breacking Change]
+# 0.3.0 [Breaking Change]
 - Improved logic of working with `fields` array passed into `ControlArray`'s component [Breacking Change].
 - No more separate methods for `fields`
 - All methods for manipulatin are in `fields.prototype`
