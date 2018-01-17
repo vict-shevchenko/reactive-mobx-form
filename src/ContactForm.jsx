@@ -52,7 +52,7 @@ const Person = ({fields, name}) => (
 
 const Persons = ({ fields }) => (
 	<div>
-		{fields.map((el, index, fields) => (<ControlSection key={el} name={index} component={Person} fields={fields}/>))}
+		{fields.map((el, index, fields) => (<ControlSection key={el} name={index} component={Person} fields={fields} />))}
 		----<br/>
 		{fields.map((el, index)  => <span key={el}>{`elem-${el} - idx-${index}`}, </span>)}<br/>
 
@@ -144,17 +144,28 @@ class ContactForm extends Component {
 	}
 }
 
-const ContactFormReactive = reactiveMobxForm('contacts',
-	{
-		'lastName': ['shevchenko', 'same:firstName'],
-		'email': ['', 'required|email'],
-		'age': [25, 'numeric|between:10,30'],
-		'acceptTerms': [true],
-		'favoriteFilm': ['dieHardwerwe'],
-		'sex':[''],
-		'job': [''],
-		'location.address.city': ['Kyiv', 'required'],
-		'perons': [[], 'array']
-	})(ContactForm);
+const ContactFormReactive = reactiveMobxForm('contacts', {
+		schema: {
+			'lastName': ['shevchenko', 'same:firstName'],
+			'email': ['', 'required|email'],
+			'age': [25, 'numeric|between:10,30'],
+			'acceptTerms': [true],
+			'favoriteFilm': ['dieHardwerwe'],
+			'sex':[''],
+			'job': [''],
+			'location.address.city': ['Kyiv', 'required'],
+			'perons': [[], 'array']
+		},
+		validator: {
+			errorMessages: {
+				'required.location.address.city': 'Yor forgot to specify a :attribute'
+			},
+			attributeNames: {
+				'location.address.city' : 'Your city',
+				'persons[0].firstName' : 'Имя первого пользователя'
+			}
+		}
+	}
+	)(ContactForm);
 
 export default ContactFormReactive;

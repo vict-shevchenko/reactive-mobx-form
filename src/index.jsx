@@ -5,10 +5,14 @@ import { AppContainer } from 'react-hot-loader';
 import AppState from './AppState';
 import App from './App';
 
-import { FormStore } from 'reactive-mobx-form';
+import { FormStore, configureValidator } from 'reactive-mobx-form';
 
 const appState = new AppState();
 const formStore = new FormStore();
+
+configureValidator({
+	language: 'ru'
+});
 
 render(
   <AppContainer>

@@ -4,6 +4,7 @@ import DevTools from 'mobx-react-devtools';
 import beautify from 'json-beautify';
 
 import ContactForm from './ContactForm';
+import FormExtension from "./FormExtension";
 
 const Button = inject('appState')(observer(({appState}) => <button>{appState.timer} -- {appState.showStreet.toString()}</button>));
 
@@ -11,6 +12,20 @@ const FormView = inject('formStore')(observer(({formStore}) => <pre>{beautify(fo
 
 
 class App extends Component {
+	constructor() {
+		super();
+
+		this.state = {
+			extensionVisible: true
+		}
+
+		this.toggleExtension = this.toggleExtension.bind(this);
+	}
+
+	toggleExtension() {
+		this.setState({extensionVisible: !this.state.extensionVisible});
+	}
+
 	/*handleSubmit(form) {
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
@@ -54,6 +69,9 @@ class App extends Component {
 				</button>*/}
 
 				<ContactForm onSubmit={this.handleSubmit.bind(this)} schema={{firstName: ['viktor']}}/>
+				{this.state.extensionVisible ? <FormExtension /> : null}
+
+				<button type="button" onClick={this.toggleExtension}> HIDE</button>
 
 				{/*<pre>{beautify(this.props.formStore.forms, null, 2, 100)}</pre>*/}
 				<FormView />
