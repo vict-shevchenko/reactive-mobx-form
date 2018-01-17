@@ -32,6 +32,9 @@ Function to execute when form needs to be submitted. Will call **`onSubmit`** pa
 **`reset` : function**
 Function to return form to initial state. Input fiels are returned to their initial values. Control Arrays are returned to initial amount if were added.
 
+**`destroy` : function**
+Function to manually unregister form in `formStore`.
+
 **`submitting` : boolean**
 Flag that is raised when form is submitting, useful if your submission function is async
 

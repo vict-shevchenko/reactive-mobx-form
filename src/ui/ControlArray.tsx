@@ -48,9 +48,9 @@ export class ControlArray extends BaseControl<IControlArrayProps, any> {
 	}
 
 	public componentWillUnmount(): void {
-		if (!this.field.autoRemove) {
+		if (!this.field.autoRemove || this.context._destroyControlStateOnUnmount) {
 			this.field.setAutoRemove();
-			this.form.removeField(this.name);
+			this.form.unregisterField(this.name);
 		}
 	}
 

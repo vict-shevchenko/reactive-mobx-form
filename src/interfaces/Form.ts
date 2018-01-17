@@ -22,7 +22,8 @@ export interface IFormValidatiorDefinnition {
 export interface IFormDefinition {
 	validator?: IFormValidatiorDefinnition;
 	schema?: IFormSchema;
-	unregisterOnUnmount?: boolean;
+	destroyFormStateOnUnmount?: boolean;
+	destroyControlStateOnUnmount?: boolean;
 }
 
 export interface IFormValues {

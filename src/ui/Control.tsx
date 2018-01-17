@@ -33,7 +33,8 @@ export class Control extends BaseControl<IControlProps, any> {
 
 	public static contextTypes = {
 		_ReactiveMobxForm: PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string
+		_ReactiveMobxFormFieldNamePrefix: PropTypes.string,
+		_destroyControlStateOnUnmount: PropTypes.bool
 	};
 
 	public static defaultProps = {
@@ -68,17 +69,17 @@ export class Control extends BaseControl<IControlProps, any> {
 
 	public componentWillMount() {
 		// Radio buttons have several controls which all should point to the same field in a form
-		if (this.isRadio) {
-			this.field = this.form.findFieldInHierarchy(objectPath(this.name)) as Field;
+		// if (this.isRadio) {
+		this.field = this.form.getField(this.name) as Field;
 
-			if (!this.field) {
-				this.createField();
-			}
-		} else {
+		if (!this.field) {
+			this.createField();
+			this.field.subscribeToFormValidation(this.form);
+		}
+	/* } else {
 			this.createField();
 		}
-
-		this.field.subscribeToFormValidation(this.form);
+ 	*/
 	}
 
 	private createField(): void {
@@ -94,8 +95,8 @@ export class Control extends BaseControl<IControlProps, any> {
 	}
 
 	public componentWillUnmount(): void {
-		if (!this.field.autoRemove) {
-			this.form.removeField(this.name);
+		if (!this.field.autoRemove && this.context._destroyControlStateOnUnmount) {
+			this.form.unregisterField(this.name);
 		}
 	}
 

@@ -48,7 +48,7 @@ export class Form {
 		return new Validator(this.values, this.rules, this.errorMessages);
 	}
 
-	// todo: values are recomputed each time field is registered, think if this is good begavior for form initialization
+	// todo: values are recomputed each time field is registered, think if this is good behavior for form initialization
 	@computed get values() {
 		// return this.fields.entries().map(entry =>
 		// ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
@@ -59,23 +59,43 @@ export class Form {
 		return this.fields.values().reduce((rules, field) => Object.assign(rules, field.rules), {});
 	}
 
+	@action public reset() {
+		this.fields.forEach(field => field.reset());
+	}
+
 	@action public registerField(field: formField): void {
 		const fieldPath = objectPath(field.name);
 
 		try {
-			const existField  = this.findFieldInHierarchy(fieldPath);
-			const parentField = this.findFieldInHierarchy(fieldPath.slice(0, fieldPath.length - 1));
+			const existField  = this.getField(fieldPath);
+			const fieldParent = this.getFieldParent(fieldPath);
 
 			if (existField) {
 				throw (new Error(`Field with name ${(existField as formField).name} already exist in Form. `));
 			}
 			else {
-				(parentField as FieldArray | FieldSection | Form).addField(field);
+				(fieldParent as FieldArray | FieldSection | Form).addField(field);
 			}
 
 		}
 		catch (e) {
-			console.log(`Field ${field.name} can't be registred. Check name hierarchy.`, e); // tslint:disable-line
+			console.warn(`Field ${field.name} can't be registered. Check name hierarchy.`, e); // tslint:disable-line
+		}
+	}
+
+	// in React ComponentWillUnmount is fired from parent to child, so if no parent exist -> it was already unmounted.
+	// No need to clean-up children
+	@action public unregisterField(fieldName: string) {
+		const fieldPath   = objectPath(fieldName),
+		      lastIndex   = fieldPath.length - 1,
+		      lastNode    = fieldPath[lastIndex],
+		      fieldParent = this.getFieldParent(fieldPath);
+
+		if (fieldParent) {
+			(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
+		}
+		else {
+			console.log('Attempt to remove field on already removed parent field', fieldName) // tslint:disable-line
 		}
 	}
 
@@ -83,38 +103,22 @@ export class Form {
 		this.fields.set(field.name, field);
 	}
 
-	@action public removeField(fieldName: string) {
-		const fieldPath = objectPath(fieldName);
-
-		if (fieldPath.length === 1) { // this is form.fields first child
-			(this.fields.get(fieldName) as formField).setAutoRemove();
-			this.fields.delete(fieldName);
+	@action public getField(fieldPath: string | string[]): formField {
+		try {
+			return this.findFieldInHierarchy(Array.isArray(fieldPath) ? fieldPath : objectPath(fieldPath));
 		}
-		else { /* tslint:disable: indent */ // this is some nested field
-			const lastIndex   = fieldPath.length - 1,
-			      lastNode    = fieldPath[lastIndex],
-			      parentField = this.findFieldInHierarchy(fieldPath.slice(0, lastIndex));
-			/* tslint:enable: indent */
-			// in React ComponentWillUnmount is fired from parent to child, so if no parent exist -> it was already unmounted.
-			// No need to clean-up children
-			if (parentField) {
-				(parentField as FieldArray | FieldSection).removeSubField(lastNode);
-			}
+		catch (e) {
+			console.warn(`Field can't be selected. Check name hierarchy. Probably some field on the chain does not exist`, e); // tslint:disable-line
 		}
 	}
 
-	@action public reset() {
-		this.fields.forEach(field => field.reset());
+	@action public removeField(fieldName: string): void {
+		(this.fields.get(fieldName) as formField).setAutoRemove();
+		this.fields.delete(fieldName);
 	}
 
-	public getField(index: string): formField {
-		return (this.fields as ObservableMap<formField>).get(index);
-	}
-
-	public findFieldInHierarchy(path: string[]): Form | formField {
-		// todo: f ? f.getField(node) : f - is super stupid check for parent was removed,
-		// just pass udefined for all suc childrens
-		return path.reduce((f: Form | FieldArray | FieldSection, node) => f ? f.getField(node) : f, this);
+	public selectField(fieldName: string): formField {
+		return this.fields.get(fieldName);
 	}
 
 	public registerValidation() {
@@ -128,5 +132,14 @@ export class Form {
 				this.errors = this.validation.errors;
 			}
 		);
+	}
+
+	private getFieldParent(path: string[]): Form | FieldArray | FieldSection {
+		return path.length === 1 ? this : (this.getField(path.slice(0, path.length - 1)) as FieldArray | FieldSection);
+	}
+
+	private findFieldInHierarchy(path: string[]): formField {
+		// f is Form initially, and formField after, can`t handle type error
+		return path.reduce((f: any, node) => (f as Form | FieldArray | FieldSection).selectField(node), this);
 	}
 }

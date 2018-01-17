@@ -31,11 +31,11 @@ export class FieldSection {
 		this.subFields.values().forEach(subField => subField.reset());
 	}
 
-	@action public removeSubField(index: string) {
+	@action public removeField(index: string) {
 		this.subFields.delete(index);
 	}
 
-	public getField(index: string) {
+	public selectField(index: string) {
 		return (this.subFields as ObservableMap<formField>).get(index);
 	}
 

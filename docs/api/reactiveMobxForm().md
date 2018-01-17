@@ -9,23 +9,36 @@ High Order Component that is used to create reactiveMobXForm, set its form param
 ## Usage
 ```javascript
     import  {reactiveMobxForm } from 'reactive-mobx-form';
-	 
-	 ...
 
-	 export reactiveMobxForm('myForm')(MyFormComponent);
+    ...
+    // Basic Usage
+    export reactiveMobxForm('myForm')(MyFormComponent);
+    
+    //Advances usage
+     export reactiveMobxForm('myForm' [,formDefinition])(MyFormComponent);
 ```
 
 
 ## Parmeters
 
-`reactiveMobxForm` accepts 2 parameters string `name` and `formDefiniton` object.
+`reactiveMobxForm` accepts 2 parameters
+1. Required `name`
+2. Optional `formDefiniton` object.
+
 ### Required
 
 `name : String` - The name of your form, which will be used as a key to store your form data in `FormStore`
 
 ### Optional
 
-`formDefiniton : Object` object with additonal form paramters. Shape looks like
+`formDefiniton : Object` object with additional form parameters. 
+Use this parameter to specify: 
+- predefined initial values and validation rules, see format below.
+- configuration for validation mechanism
+- specify custom error messages
+- specify parameters for form behavior
+
+Shape looks like:
 
 ```javascript
 {
@@ -34,8 +47,11 @@ High Order Component that is used to create reactiveMobXForm, set its form param
     attributeNames: {}
   },
   schema: {},
+  destroyFormStateOnUnmount: true,
+  destroyControlStateOnUnmount: true
 }
 ```
+
 #### `validator`
 
 Property is responsible to set up how form validation will be performed, and is represented by 2 properties. Both are applied per form instance.
@@ -46,7 +62,7 @@ Property is responsible to set up how form validation will be performed, and is 
 You can find usege in [examples](/reactive-mobx-form/#/examples).
 #### `schema`
 
-An object with a configuration for form fields, allowing to specify their initialValues and validation rules on a form creation stage. (you can also do this on form rendering sate by passing `schema` parameter to your `ReactiveForm` component).
+An object with a configuration for form fields, allowing to specify their initialValues and validation rules on a form creation stage. (you can also do this on form rendering sate by passing `schema` parameter to your `ReactiveForm` component). Rule syntax is taken from awesome [validatorjs](https://github.com/skaterdav85/validatorjs) library.
 
 ```javascript
 // this three forms of schema definition are equal, 
@@ -60,6 +76,12 @@ An object with a configuration for form fields, allowing to specify their initia
 {firstName: ['Viktor', 'required|string']}
 ```
 
-#### `unregisterOnUnmount : boolean` 
+**Hint: If you get initial values from server, better pass them as 'schema' attribute to generated ReactiveForm Component in parent component**
 
-Should or should not the form state be cleaned form `formStore` when form component is unmounted
+#### `destroyFormStateOnUnmount : boolean` 
+
+Should or should not the form state be cleaned from `formStore` when Form component is unmounted. It may be useful if you have some part of form appear dynamically. And would like not to remove all form State, when this part disappear. For example Wizard form.  Defaults to `true`.
+
+#### `destroyControlStateOnUnmount : boolean` 
+
+Should or should not the Control state be cleaned from FormState when Control component is unmounted. `reactive-mobx-form` is designed in a way, that onSubmit, your formState contains only fields that are presented on screen. That allows to omit writing a model of a form in JavaScript (like in Angular 2) and actually construct a model on a fly, based on Control components that are rendered. Defaults to `true`.

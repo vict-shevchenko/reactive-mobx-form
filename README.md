@@ -51,7 +51,7 @@ This requires more investigation....
 ## Installation
 
 ```
-npm install reactive-mobx-form --save
+npm install reactive-mobx-form --save // you can omit --save flag if using npm > 5
 ```
 
 ## Usage
@@ -101,14 +101,10 @@ class ContactForm extends Component {
 
 const ContactFormReactive = reactiveMobxForm('contacts' [, formDefinition])(ContactForm); // 2nd parameter (formDefinition) is optional. 
 
-// Use 2nd parameter to specify 
-// - predefined initial values and validation rules, see format below.
-// - configuration for validation mechanism
-// - specify custom error messages
-// If you get initial values from server, better pass them as 'schema' attribute to Form Component in parent component
-
 export default ContactFormReactive;
 ```
+
+Detailed explanation of [formDefinition](https://vict-shevchenko.github.io/reactive-mobx-form/#/api/reactiveMobxForm()) object
 
 ### Step 3
 Use your form and enjoy
@@ -129,29 +125,8 @@ export default Page extends Component {
 }
 ```
 
-## formDefinition
-`formDefinition` is an optional 2nd paramerer to `reactiveMobxForm` initialization function. Now it support 2 optional properties
-
-```javascript
-{
-  validator: {
-    errorMessages: {},
-    attributeNames: {}
-  },
-  schema: {},
-}
-```
-
-## schema
-`schema` is an object with a configuration for form fields, allowing to specify their initialValues and validation rules.
-
-Syntax is next:
-
-Wihtout validation:
-`{firstName: 'Vikor'}` is same as `{firstName: ['Viktor']}` and same as `{firstName: ['Viktor', '']}` 
-
-With validation:
-`{firstName: ['Viktor', 'required|string']}` uses **validatorjs** syntax.
+## How form submition is happening. 
+When you call `submit` function form `props` passed to your form - submition is started. Your `submit` function (those you have passed into `onSubmit` parameter) will be called inside of promise(so it may be async). If your `submit` function returns a `resolved Promise` - `form.reset` will be called to drop form state to initial one. If your `submit` function returns `rejectedPromise` than `form.submitionError` flag is raised and form keeps its state untouched.
 
 ## Language Support
 By default error messages are in English. But you can change them. `reactive-mobx-form` provides you with interface for this. Under the hood it uses [Validatorjs Language Support](https://github.com/skaterdav85/validatorjs#language-support)
@@ -214,3 +189,5 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
     }
   })(ContactForm)
 ```
+
+##[FAQ](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/docs/FAQ.md)

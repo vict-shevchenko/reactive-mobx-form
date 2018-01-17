@@ -26,7 +26,8 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 	const {
 		validator: validatorDefinition = {},
 		schema: schemaDefinition = {},
-		unregisterOnUnmount = true
+		destroyFormStateOnUnmount = true,
+		destroyControlStateOnUnmount = true
 	} = formDefinition;
 	const { errorMessages, attributeNames } = validatorDefinition;
 
@@ -41,7 +42,8 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			schema?: IFormSchema
 		}, any> {
 			public static childContextTypes = {
-				_ReactiveMobxForm: PropTypes.object.isRequired
+				_ReactiveMobxForm: PropTypes.object.isRequired,
+				_destroyControlStateOnUnmount: PropTypes.bool.isRequired
 			};
 
 			public form: Form;
@@ -59,7 +61,10 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			private getChildContext() {
-				return { _ReactiveMobxForm: this.form };
+				return {
+					_ReactiveMobxForm: this.form,
+					_destroyControlStateOnUnmount: destroyControlStateOnUnmount
+				};
 			}
 
 			public componentWillMount() {
@@ -68,9 +73,13 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public componentWillUnmount() {
-				if (unregisterOnUnmount) {
-					this.props.formStore.unRegisterForm(formName);
+				if (destroyFormStateOnUnmount) {
+					this.destroyForm();
 				}
+			}
+
+			public destroyForm() {
+				this.props.formStore.unRegisterForm(formName);
 			}
 
 			// todo: pass additional information to submit
@@ -99,6 +108,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				return createElement(wrappedForm, {
 					submit: this.submitForm.bind(this),
 					reset: this.resetForm.bind(this),
+					destroy: this.destroyForm.bind(this),
 					// todo: when submit change - full form render method is executed.
 					// Thing on more performat approach. May be Submitting component
 					submitting: this.form.submitting,
