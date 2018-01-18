@@ -100,11 +100,10 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				this.form.submitting = true;
 
 				Promise.all([this.props.onSubmit(this.form.values, ...rest)])
-					.catch(error => {
-						this.form.submitError = error;
-					})
 					.then(result => {
 						this.resetForm();
+					}, error => {
+						this.form.submitError = error;
 					})
 					.then(() => {
 						this.form.submitting = false;
