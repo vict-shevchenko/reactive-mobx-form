@@ -73,10 +73,14 @@ const Hobbies = ({fields}) => (
 );
 
 class ContactForm extends Component {
+	myCustomSubmit(event) {
+		this.props.submit(event);
+	}
+
 	render() {
 		const { submit, reset, submitting, submitError, valid, dirty } = this.props;
 		return (
-			<form onSubmit={submit}>
+			<form onSubmit={this.myCustomSubmit.bind(this)}>
 				{/*<div>
 					<label htmlFor="firstName">First Name</label>
 					<Control name="firstName" component={RenderField} type="text" alt="some text"  label="FN"/>

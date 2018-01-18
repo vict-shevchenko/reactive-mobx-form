@@ -39,7 +39,7 @@ class App extends Component {
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				console.log(JSON.stringify(form));
-				reject('error');
+				resolve('error');
 			}, 1500)
 		})
 	}
