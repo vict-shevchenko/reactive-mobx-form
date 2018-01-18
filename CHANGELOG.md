@@ -1,3 +1,6 @@
+#0.6.2
+- Fix reset form on submit promise resolve. And keep form state in case of rejection
+
 #0.6.1
 - `submit` function inside a form can accept additional parameters, that will be transparently passed to your submit callback (onSubmit) after form values.
 
