@@ -82,13 +82,24 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				this.props.formStore.unRegisterForm(formName);
 			}
 
-			// todo: pass additional information to submit
-			public submitForm(event: Event): void {
-				event.preventDefault();
+			public submitForm(event = new Event('submit'), ...rest: any[]): void {
+
+				try {
+					event.preventDefault();
+				}
+				catch (e) {
+					// tslint:disable-next-line
+					console.warn(`
+						'submit' function was called with incorrect 1st parameter.
+						React SyntheticEvent was expected but got ${JSON.stringify(event)}.
+						Please verify you are calling 'submit' from <form onSubmit> method,
+						or bypassing Event parameter via your custom onSubmit handler.
+					`);
+				}
 
 				this.form.submitting = true;
 
-				Promise.all([this.props.onSubmit(this.form.values)])
+				Promise.all([this.props.onSubmit(this.form.values, ...rest)])
 					.catch(error => {
 						this.form.submitError = error;
 					})
