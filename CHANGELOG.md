@@ -1,3 +1,6 @@
+#0.6.1
+- `submit` function inside a form can accept additional parameters, that will be transparently passed to your submit callback (onSubmit) after form values.
+
 # 0.6.0 [Breaking Changes]
 - Support for wizzard type forms, that allows form state to be preserved when form element is unmounted, and field state to be preserved when Control is unmounted
 - Introduced `formStore.getForm('formName')` - to get form instance
