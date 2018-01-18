@@ -82,7 +82,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				this.props.formStore.unRegisterForm(formName);
 			}
 
-			public submitForm(event = new Event('submit'), ...rest: any[]): void {
+			public submitForm(event: Event, ...rest: any[]): void {
 
 				try {
 					event.preventDefault();

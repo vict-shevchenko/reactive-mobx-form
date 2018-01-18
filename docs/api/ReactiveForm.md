@@ -46,11 +46,11 @@ class Page extends React.Component {
 - schema
 
 ### onSubmit
-A function that will be called when form is submitted. Is called with one parameter `form.values` object. This callback is executed **asynchronously** as a part of `reactiveMobXForm` submission mechanism. `form.isSubmitting` flag is raised.
+A function that will be called when form is submitted. Is called with first parameter `form.values` object. And rest parameters that may be optionally passed to `<form onSubmit>` method inside your form. This callback is executed **asynchronously** as a part of `reactiveMobXForm` submission mechanism. `form.isSubmitting` flag is raised.
 
 And can return:
-- value, meaning submissin is successfull
-- Promise. Resolve cases reset of Form(drop all fiels to initial values). Reject - raises `form.submitError` flag and no reset of Form happens.
+- value, meaning submission is successful
+- Promise. Resolve cases reset of Form(drop all fields to initial values). Reject - raises `form.submitError` flag and no reset of Form happens.
 
 ### schema
 The place where you can define fields initial values and validation rules during render stage.

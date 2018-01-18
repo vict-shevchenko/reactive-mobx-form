@@ -26,8 +26,25 @@ const ReactiveForm = reactiveMobxForm('myForm')(Form);
 export default ReactiveForm;
 ```
 
-**`submit` : function**
+**`submit(Event[, parameters])` : function**
 Function to execute when form needs to be submitted. Will call **`onSubmit`** passed to **`ReactiveForm`** component.
+Accept 1 obligatory parameter `Event`. That is automatically passed as React Synthetic Event when you call it form `form` `onSubmit` method, like `<form onSubmit={this.props.submit}>`;
+In case you have your custom `onSubmit` handler - follow such pattern
+```javascript
+class ContactForm extends Component {
+    myCustomSubmit(event) {
+        // event is bypassed
+        this.props.submit(event, {p: 'My additional parameter to submit function'});
+    }
+
+    render() {
+        const { submit, reset, submitting, submitError, valid, dirty } = this.props;
+        return (
+            <form onSubmit={this.myCustomSubmit.bind(this)}>
+...
+```
+
+Optional parameters that you pass to submit function after event will be transparently passed to you submit callback.
 
 **`reset` : function**
 Function to return form to initial state. Input fiels are returned to their initial values. Control Arrays are returned to initial amount if were added.
