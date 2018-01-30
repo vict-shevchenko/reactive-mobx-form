@@ -1,3 +1,7 @@
+#0.7.0  [Breaking Changes]
+- Mark all fields as 'touched' when form submit button is clicked
+- No reset form happens in case of successful submission. Developer needs to manually reset form, if required.
+
 #0.6.2
 - Fix reset form on submit promise resolve. And keep form state in case of rejection
 
