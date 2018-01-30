@@ -82,7 +82,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				this.props.formStore.unRegisterForm(formName);
 			}
 
-			public submitForm(event: Event, ...rest: any[]): void {
+			public submitForm(event: Event, ...rest: any[]): Promise<any> {
 
 				try {
 					event.preventDefault();
@@ -97,17 +97,25 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 					`);
 				}
 
+				this.form.setTouched();
+
+				if (!this.form.isValid) {
+					this.form.submitError = this.form.errors.all();
+					return Promise.reject(this.form.submitError);
+				}
+
 				this.form.submitting = true;
 
-				Promise.all([this.props.onSubmit(this.form.values, ...rest)])
+				return Promise.all([this.props.onSubmit(this.form.values, ...rest)])
 					.then(result => {
-						this.resetForm();
-					}, error => {
-						this.form.submitError = error;
-					})
-					.then(() => {
-						this.form.submitting = false;
-					});
+							this.form.submitting = false;
+							return result[0];
+						}, error => {
+							this.form.submitting = false;
+							this.form.submitError = error;
+							return Promise.reject(this.form.submitError);
+						});
+						// todo: move into finally when it is part of standard
 			}
 
 			public resetForm(): void {

@@ -125,8 +125,12 @@ export default Page extends Component {
 }
 ```
 
-## How form submition is happening. 
-When you call `submit` function form `props` passed to your form - submition is started. Your `submit` function (those you have passed into `onSubmit` parameter) will be called inside of promise(so it may be async). If your `submit` function returns a `resolved Promise` - `form.reset` will be called to drop form state to initial one. If your `submit` function returns `rejectedPromise` than `form.submitionError` flag is raised and form keeps its state untouched.
+## How form submission is happening. 
+When you call `props.submit` function that is passed to your form - submission is started. Inside it calls your `submit` function (those you have passed into `onSubmit` parameter) will be called inside of promise(so it may be async).
+props.submit` is also async function, that returns a promise, so you can add any required callbacks in `.then` and `.catch` methods.
+If your `submit` function returns a `resolved Promise` - `result will be passed to `props.submit.then` method. 
+If your `submit` function returns `rejectedPromise` than `form.submitionError` flag is raised and error will be passed to `props.submit.catch` method. 
+
 
 ## Language Support
 By default error messages are in English. But you can change them. `reactive-mobx-form` provides you with interface for this. Under the hood it uses [Validatorjs Language Support](https://github.com/skaterdav85/validatorjs#language-support)

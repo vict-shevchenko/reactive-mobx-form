@@ -27,14 +27,20 @@ export default ReactiveForm;
 ```
 
 **`submit(Event[, parameters])` : function**
-Function to execute when form needs to be submitted. Will call **`onSubmit`** passed to **`ReactiveForm`** component.
+Function to execute when form needs to be submitted. Will asynchronously call **`onSubmit`** passed to **`ReactiveForm`** component.
 Accept 1 obligatory parameter `Event`. That is automatically passed as React Synthetic Event when you call it form `form` `onSubmit` method, like `<form onSubmit={this.props.submit}>`;
 In case you have your custom `onSubmit` handler - follow such pattern
 ```javascript
 class ContactForm extends Component {
     myCustomSubmit(event) {
         // event is bypassed
-        this.props.submit(event, {p: 'My additional parameter to submit function'});
+        this.props.submit(event, {p: 'My additional parameter to submit function'}).then(
+          (result) => {
+            console.log(`Result: ${result}`);
+            this.form.reset();
+          }, 
+          (error) => console.log(`Error: ${error}`));
+        );
     }
 
     render() {
@@ -47,7 +53,7 @@ class ContactForm extends Component {
 Optional parameters that you pass to submit function after event will be transparently passed to you submit callback.
 
 **`reset` : function**
-Function to return form to initial state. Input fiels are returned to their initial values. Control Arrays are returned to initial amount if were added.
+Function to return form to initial state. Input fields are returned to their initial values. Control Arrays are returned to initial amount if were added.
 
 **`destroy` : function**
 Function to manually unregister form in `formStore`.
@@ -56,7 +62,7 @@ Function to manually unregister form in `formStore`.
 Flag that is raised when form is submitting, useful if your submission function is async
 
 **`submitError` : any**
-If your `onSumit` function returned an rejected promise, the value with what it was rejected will be pushed to `submitError` property
+If your `onSubmit` function returned an rejected promise, the value with what it was rejected will be pushed to `submitError` property
 
 **`valid` : boolean**
 Flag that represents the validity of the form. **`true`** if all field are valid, **`false`** if any field is invalid

@@ -60,6 +60,10 @@ export class Field {
 		this.isTouched = false;
 	}
 
+	@action public setTouched() {
+		this.isTouched = false;
+	}
+
 	public setAutoRemove(): void  {
 		this.autoRemove = true;
 	}

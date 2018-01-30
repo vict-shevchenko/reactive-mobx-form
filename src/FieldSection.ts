@@ -31,6 +31,10 @@ export class FieldSection {
 		this.subFields.values().forEach(subField => subField.reset());
 	}
 
+	@action public setTouched() {
+		this.subFields.forEach(subField => subField.setTouched());
+	}
+
 	@action public removeField(index: string) {
 		this.subFields.delete(index);
 	}

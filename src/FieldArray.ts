@@ -47,6 +47,10 @@ export class FieldArray {
 		this.subFields.clear();
 	}
 
+	@action public setTouched() {
+		this.subFields.forEach(subField => subField.setTouched());
+	}
+
 	@action public removeField(index: string) {
 		this.subFields.splice(parseInt(index, 10), 1);
 	}

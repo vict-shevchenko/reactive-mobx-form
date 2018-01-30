@@ -63,6 +63,10 @@ export class Form {
 		this.fields.forEach(field => field.reset());
 	}
 
+	@action public setTouched() {
+		this.fields.forEach(field => field.setTouched());
+	}
+
 	@action public registerField(field: formField): void {
 		const fieldPath = objectPath(field.name);
 
