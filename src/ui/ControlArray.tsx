@@ -7,7 +7,7 @@ import ProxyFieldArray from '../ProxyFieldArray';
 import { FieldArray } from '../FieldArray';
 import { omit } from '../utils';
 import BaseControl from './BaseControl';
-import { IFieldDefinition, INormalizesdFieldDefinition } from '../interfaces/Form';
+import { IFieldDefinition } from '../interfaces/Form';
 import { IControlArrayProps, IGroupControlContext } from '../interfaces/Control';
 
 @observer

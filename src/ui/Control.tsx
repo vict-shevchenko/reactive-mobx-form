@@ -4,7 +4,7 @@ import { observer, Observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field';
 
-import { INormalizesdFieldDefinition, IFieldDefinition, fieldValue } from '../interfaces/Form';
+import { INormalizedFieldDefinition, IFieldDefinition, fieldValue } from '../interfaces/Form';
 import { omit, objectPath } from '../utils';
 import BaseControl from './BaseControl';
 import { IControlProps } from '../interfaces/Control';
@@ -41,7 +41,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		rules: ''
 	};
 
-	public static normalizeFieldDefinition(fieldDefinition: IFieldDefinition): INormalizesdFieldDefinition {
+	public static normalizeFieldDefinition(fieldDefinition: IFieldDefinition): INormalizedFieldDefinition {
 		if (Array.isArray(fieldDefinition)) {
 			return (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
 		}
@@ -83,7 +83,7 @@ export class Control extends BaseControl<IControlProps, any> {
 	}
 
 	private createField(): void {
-		const fieldDefinition: INormalizesdFieldDefinition = this.form.formSchema[this.name] ?
+		const fieldDefinition: INormalizedFieldDefinition = this.form.formSchema[this.name] ?
 			// normalize field definition from initial form schema
 			Control.normalizeFieldDefinition(this.form.formSchema[this.name]) :
 			[this.isCheckbox ? false : '', this.props.rules];
@@ -104,7 +104,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
 
 		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
-			const fieldDefinition: INormalizesdFieldDefinition = this.form.formSchema[nextName] ?
+			const fieldDefinition: INormalizedFieldDefinition = this.form.formSchema[nextName] ?
 			// normalize field definition from initial form schema
 			Control.normalizeFieldDefinition(this.form.formSchema[nextName]) :
 			[this.isCheckbox ? false : '', nextProps.rules];
@@ -114,7 +114,7 @@ export class Control extends BaseControl<IControlProps, any> {
 		}
 	}
 
-	private warnOnIncorrectInitialValues(fieldDefinition: INormalizesdFieldDefinition): void {
+	private warnOnIncorrectInitialValues(fieldDefinition: INormalizedFieldDefinition): void {
 		const inititlaValue = fieldDefinition[0];
 		const initialValueType = typeof inititlaValue; // initial value
 

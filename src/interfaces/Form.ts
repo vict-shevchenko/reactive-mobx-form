@@ -1,6 +1,6 @@
 export type fieldValue = string | number | boolean;
-export type INormalizesdFieldDefinition = [(fieldValue), string];
-export type IFieldDefinition = (fieldValue) | [fieldValue] | INormalizesdFieldDefinition;
+export type INormalizedFieldDefinition = [(fieldValue), string];
+export type IFieldDefinition = (fieldValue) | [fieldValue] | INormalizedFieldDefinition;
 
 export interface IFormSchema {
 	[propType: string]: IFieldDefinition;

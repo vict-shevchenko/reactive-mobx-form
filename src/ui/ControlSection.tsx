@@ -5,7 +5,7 @@ import { Form } from '../Form';
 import { FieldSection } from '../FieldSection';
 import { omit } from '../utils';
 import BaseControl from './BaseControl';
-import { IFieldDefinition, INormalizesdFieldDefinition } from '../interfaces/Form';
+import { IFieldDefinition } from '../interfaces/Form';
 import { IControlSectionProps, IGroupControlContext } from '../interfaces/Control';
 
 @observer

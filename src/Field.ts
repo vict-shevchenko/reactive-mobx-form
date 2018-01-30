@@ -1,6 +1,6 @@
 import React, { Component, createElement } from 'react';
 import { observable, action, computed, autorun } from 'mobx';
-import { fieldValue, INormalizesdFieldDefinition } from './interfaces/Form';
+import { fieldValue, INormalizedFieldDefinition } from './interfaces/Form';
 import { Form } from './Form';
 
 export class Field {
@@ -17,11 +17,11 @@ export class Field {
 	@observable private _rules: string; // rules are updated on FieldArray remove item
 	/* tslint:enable: typedef-whitespace */
 
-	constructor(name: string, fieldDefinition: INormalizesdFieldDefinition) {
+	constructor(name: string, fieldDefinition: INormalizedFieldDefinition) {
 		this.update(name, fieldDefinition);
 	}
 
-	public update(name: string, fieldDefinition: INormalizesdFieldDefinition): void {
+	public update(name: string, fieldDefinition: INormalizedFieldDefinition): void {
 		this.name = name;
 		this.initialValue = fieldDefinition[0];
 		this.value = this.value || this.initialValue;
