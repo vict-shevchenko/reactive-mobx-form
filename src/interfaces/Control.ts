@@ -5,6 +5,7 @@ export interface IControlProps {
 	type?: string;
 	children?: any;
 	value?: string;
+	className?: string;
 	onFocus?(event: Event): void;
 	onBlur?(event: Event): void;
 	onChange?(event: Event): void;

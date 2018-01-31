@@ -28,10 +28,10 @@ export default class BaseControl<P extends IBaseControlProps, S> extends React.C
 	}
 
 	private static verifyRequiredProps(required, props, context) {
-		required.forEach(reqiredPropName => {
-			if (props[reqiredPropName] === undefined) {
-				throw new Error(`You forgot to specify '${reqiredPropName}' property for <Field /> component.
-				Cehck '${context._ReactiveMobxForm.component.name}' component`);
+		required.forEach(requiredPropName => {
+			if (props[requiredPropName] === undefined) {
+				throw new Error(`You forgot to specify '${requiredPropName}' property
+					for <Control name="${context._ReactiveMobxForm.component.name}" /> component.`);
 			}
 		});
 	}
