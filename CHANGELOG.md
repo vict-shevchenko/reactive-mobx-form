@@ -1,3 +1,8 @@
+#0.7.1
+- Control type checkbox support `value` attribute. That is passed to `field.value` when checkbox is checked
+- Fix bug 'className should extend rmf class names #7'
+- Minor fixes
+
 #0.7.0  [Breaking Changes]
 - Mark all fields as 'touched' when form submit button is clicked
 - No reset form happens in case of successful submission. Developer needs to manually reset form, if required.
