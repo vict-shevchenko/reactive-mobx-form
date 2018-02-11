@@ -1,3 +1,6 @@
+#0.7.2
+- Fix for setTouched method that marks field as 'touched'
+
 #0.7.1
 - Control type checkbox support `value` attribute. That is passed to `field.value` when checkbox is checked
 - Fix bug 'className should extend rmf class names #7'
