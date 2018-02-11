@@ -61,7 +61,7 @@ export class Field {
 	}
 
 	@action public setTouched() {
-		this.isTouched = false;
+		this.isTouched = true;
 	}
 
 	public setAutoRemove(): void  {

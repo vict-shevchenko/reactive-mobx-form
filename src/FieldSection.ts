@@ -27,12 +27,13 @@ export class FieldSection {
 		this.subFields.set(lastPathNode, field);
 	}
 
+	// todo: probably we dont need values()
 	@action public reset() {
 		this.subFields.values().forEach(subField => subField.reset());
 	}
 
 	@action public setTouched() {
-		this.subFields.forEach(subField => subField.setTouched());
+		this.subFields.values().forEach(subField => subField.setTouched());
 	}
 
 	@action public removeField(index: string) {
