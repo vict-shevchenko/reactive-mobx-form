@@ -18,7 +18,7 @@ function validateConfigParams(formName: string, params: any) {
 	}
 
 	if (!formName || typeof formName !== 'string') {
-		throw new Error('Form name shoud be non empty string');
+		throw new Error('Form name should be non empty string');
 	}
 }
 
@@ -38,7 +38,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 		@observer
 		class FormUI extends Component<{
 			formStore: FormStore,
-			onSubmit?: (values: IFormValues) => Promise<any>,
+			onSubmit?: (values: IFormValues, ...rest: any[]) => Promise<any>,
 			schema?: IFormSchema
 		}, any> {
 			public static childContextTypes = {
@@ -128,7 +128,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 					reset: this.resetForm.bind(this),
 					destroy: this.destroyForm.bind(this),
 					// todo: when submit change - full form render method is executed.
-					// Thing on more performat approach. May be Submitting component
+					// Thing on more performant approach. May be Submitting component
 					submitting: this.form.submitting,
 					submitError: this.form.submitError,
 					// todo - this case render been called when any field change
