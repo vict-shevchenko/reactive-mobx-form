@@ -1,3 +1,6 @@
+#0.7.4
+- Update of dependencies versions
+
 #0.7.2
 - Fix for setTouched method that marks field as 'touched'
 
