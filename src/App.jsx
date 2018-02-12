@@ -37,9 +37,9 @@ class App extends Component {
 
 	handleSubmit(form) {
 		return new Promise((resolve, reject) => {
+			console.log(JSON.stringify(form));
 			setTimeout(() => {
-				console.log(JSON.stringify(form));
-				resolve('error');
+				resolve('success');
 			}, 1500)
 		})
 	}

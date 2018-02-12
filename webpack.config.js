@@ -17,12 +17,12 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ],
-	resolve: { extensions: ['', '.js', '.jsx'], fallback: path.join(__dirname, "node_modules") },
-	resolveLoader: { fallback: path.join(__dirname, "node_modules") },
+	resolve: { extensions: ['.js', '.jsx'], symlinks: false },
+	resolveLoader: { symlinks: false },
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      loaders: ['babel'],
+      loaders: ['babel-loader'],
       include: path.join(__dirname, 'src')
     }]
   }

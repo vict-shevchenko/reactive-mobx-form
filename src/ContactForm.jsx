@@ -74,7 +74,9 @@ const Hobbies = ({fields}) => (
 
 class ContactForm extends Component {
 	myCustomSubmit(event) {
-		this.props.submit(event);
+		this.props.submit(event).then(
+			(result) => console.log(`Result: ${result}`), 
+			(error) => console.log(`Error: ${error}`));
 	}
 
 	render() {
@@ -138,9 +140,14 @@ class ContactForm extends Component {
 					</div>
 				</div>
 
+				<div>
+					<label htmlFor="acceptTerms">Accept terms</label>
+					<Control name="acceptTerms" component="input" type="checkbox" className="my-checkbox-class"/>
+				</div>
+
 				Form Dirty --- {`${dirty}`} <br/>
 				Form Valid - - {`${valid}`} <br/>
-				Submit Error  - - {`${submitError}`} <br/>
+				Submit Error  - - {`${JSON.stringify(submitError)}`} <br/>
 				<button type="submit">Submit</button>  is Submitting - {`${submitting}`} <br/>
 				<button onClick={reset} type="button">Reset</button>
 			</form>
