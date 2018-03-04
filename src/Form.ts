@@ -107,15 +107,6 @@ export class Form {
 		this.fields.set(field.name, field);
 	}
 
-	@action public getField(fieldPath: string | string[]): formField {
-		try {
-			return this.findFieldInHierarchy(Array.isArray(fieldPath) ? fieldPath : objectPath(fieldPath));
-		}
-		catch (e) {
-			console.warn(`Field can't be selected. Check name hierarchy. Probably some field on the chain does not exist`, e); // tslint:disable-line
-		}
-	}
-
 	@action public removeField(fieldName: string): void {
 		(this.fields.get(fieldName) as formField).setAutoRemove();
 		this.fields.delete(fieldName);
@@ -136,6 +127,21 @@ export class Form {
 				this.errors = this.validation.errors;
 			}
 		);
+	}
+
+	public extendConfiguration(schema: IFormSchema = {}, errorMsg: IFormErrorMessages, attributeNames: IFormAttributeNames): void { // tslint:disable-line
+		Object.assign(this.formSchema, schema);
+		this.errorMessages ? Object.assign(this.errorMessages, errorMsg) : this.errorMessages = errorMsg;
+		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;
+	}
+
+	public getField(fieldPath: string | string[]): formField {
+		try {
+			return this.findFieldInHierarchy(Array.isArray(fieldPath) ? fieldPath : objectPath(fieldPath));
+		}
+		catch (e) {
+			console.warn(`Field can't be selected. Check name hierarchy. Probably some field on the chain does not exist`, e); // tslint:disable-line
+		}
 	}
 
 	private getFieldParent(path: string[]): Form | FieldArray | FieldSection {

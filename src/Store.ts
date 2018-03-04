@@ -6,11 +6,11 @@ export class FormStore {
 	@observable public forms: ObservableMap<Form> = observable.map();
 
 	public registerForm(name: string, schema: IFormSchema, errorMessages: IFormErrorMessages, attributeNames: IFormAttributeNames): Form { // tslint:disable-line
-		let form;
+		let form: Form;
 
 		if (this.hasForm(name)) {
 			form = this.getForm(name);
-			// update form with data of new form part
+			form.extendConfiguration(schema, errorMessages, attributeNames);
 		}
 		else {
 			form = new Form(schema, errorMessages, attributeNames);
