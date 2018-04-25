@@ -1,3 +1,6 @@
+#0.7.5
+- Extend form parameters (schema, errorMessages, attributeNames) when form with same name is mounted. Useful for adding default values and rules for dynamically inserted forms(form parts, wizard type forms). 
+
 #0.7.4
 - Update of dependencies versions
 
