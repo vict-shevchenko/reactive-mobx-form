@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Form } from '../Form';
 import ProxyFieldArray from '../ProxyFieldArray';
 import { FieldArray } from '../FieldArray';
 import { omit } from '../utils';
@@ -10,22 +9,11 @@ import { ParentNameContext, withParentName, withForm } from '../context';
 import { IControlArrayProps } from '../interfaces/Control';
 
 @observer
-class ControlArray extends BaseControl<IControlArrayProps, any> {
-	public name: string;
-	public form: Form;
+class ControlArray extends BaseControl<IControlArrayProps> {
 	public field: FieldArray;
 
 	private proxiedFieldsProp: ProxyFieldArray;
 	private fieldsProp = observable<string>([]);
-
-	/* public static contextTypes = {
-		_ReactiveMobxForm: PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string
-	};
-
-	public static childContextTypes = {
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string.isRequired
-	}; */
 
 	private static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules'];
@@ -33,19 +21,7 @@ class ControlArray extends BaseControl<IControlArrayProps, any> {
 	constructor(props) {
 		super(props, ControlArray.requiredProps);
 
-		this.state = {
-			name: this.name
-		};
-	}
-
-	/* public getChildContext(): IGroupControlContext {
-		return {
-			_ReactiveMobxFormFieldNamePrefix: this.name
-		};
-	} */
-
-	public componentWillMount(): void {
-		this.field = new FieldArray(this.name);
+		this.field = new FieldArray(this.state.name);
 		this.form.registerField(this.field);
 		this.proxiedFieldsProp = new ProxyFieldArray(this.fieldsProp, this.field.subFields);
 	}
@@ -53,17 +29,16 @@ class ControlArray extends BaseControl<IControlArrayProps, any> {
 	public componentWillUnmount(): void {
 		if (!this.field.autoRemove || this.props.__formContext.destroyControlStateOnUnmount) {
 			this.field.setAutoRemove();
-			this.form.unregisterField(this.name);
+			this.form.unregisterField(this.state.name);
 		}
 	}
 
 	public componentWillReceiveProps(nextProps: IControlArrayProps): void {
 		const nextName = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
 
-		if (this.name !== nextName) {
+		if (this.state.name !== nextName) {
 			this.field.update(nextName);
-			this.name = nextName;
-			this.setState({ name: this.name }); // component Rerender -> gerChildContext -> contextUpdate
+			this.setState({ name: nextName }); // component Rerender -> gerChildContext -> contextUpdate
 		}
 	}
 

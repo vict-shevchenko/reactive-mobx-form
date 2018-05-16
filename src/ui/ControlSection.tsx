@@ -8,19 +8,8 @@ import { IControlSectionProps } from '../interfaces/Control';
 import { ParentNameContext, withParentName, withForm} from '../context';
 
 @observer
-class ControlSection extends BaseControl<IControlSectionProps, any> {
-	public name: string;
-	public form: Form;
+class ControlSection extends BaseControl<IControlSectionProps> {
 	public field: FieldSection;
-
-	/* public static contextTypes = {
-		_ReactiveMobxForm: PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string
-	};
-
-	public static childContextTypes = {
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string.isRequired
-	}; */
 
 	// todo: should be possible to use with children
 	private static requiredProps: string[] = ['component', 'name'];
@@ -29,41 +18,28 @@ class ControlSection extends BaseControl<IControlSectionProps, any> {
 	constructor(props) {
 		super(props, ControlSection.requiredProps);
 
-		this.state = {
-			name: this.name
-		};
-	}
-
-	/* 	public getChildContext(): IGroupControlContext  {
-			return {
-				_ReactiveMobxFormFieldNamePrefix: this.name
-			};
-		} */
-
-	public componentWillMount(): void {
 		// As ControlSection is an aggregation unit it should not present in schema
-		if (this.form.formSchema[this.name]) {
-			throw (new Error(`Control Section with name ${this.name} should not be in schema`));
+		if (this.form.formSchema[this.state.name]) {
+			throw (new Error(`Control Section with name ${this.state.name} should not be in schema`));
 		}
 
-		this.field = new FieldSection(this.name);
+		this.field = new FieldSection(this.state.name);
 		this.form.registerField(this.field);
 	}
 
 	public componentWillUnmount(): void {
 		if (!this.field.autoRemove || this.props.__formContext.destroyControlStateOnUnmount) {
 			this.field.setAutoRemove();
-			this.form.unregisterField(this.name);
+			this.form.unregisterField(this.state.name);
 		}
 	}
 
 	public componentWillReceiveProps(nextProps: IControlSectionProps): void {
-		const name = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
+		const nextName = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
 
-		if (this.name !== name) {
-			this.name = name;
-			this.field.update(name);
-			this.setState({ name: this.name });
+		if (this.state.name !== nextName) {
+			this.field.update(nextName);
+			this.setState({ name: nextName });
 		}
 	}
 

@@ -7,8 +7,7 @@ interface IBaseControlProps extends IControlContext {
 	rules?: string;
 }
 
-export default class BaseControl<P extends IBaseControlProps, S> extends React.Component<P, S> {
-	public name: string;
+export default class BaseControl<P extends IBaseControlProps> extends React.Component<P, { name: string }> {
 	public form: Form;
 
 	public static constructName(parentName: string, name: string | number): string {
@@ -42,6 +41,8 @@ export default class BaseControl<P extends IBaseControlProps, S> extends React.C
 
 		BaseControl.verifyRequiredProps(requiredProps, props);
 		this.form = props.__formContext.form;
-		this.name = BaseControl.constructName(props.__parentNameContext, props.name);
+		this.state = {
+			name: BaseControl.constructName(props.__parentNameContext, props.name)
+		};
 	}
 }

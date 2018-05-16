@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Form } from '../Form';
 import { Field } from '../Field';
 
 import { INormalizedFieldDefinition, IFieldDefinition, fieldValue } from '../interfaces/Form';
@@ -19,9 +18,7 @@ import { IControlProps } from '../interfaces/Control';
 // todo: add value property to make field a controlled component
 
 @observer
-class Control extends BaseControl<IControlProps, any> {
-	public name: string;
-	public form: Form;
+class Control extends BaseControl<IControlProps> {
 	public field: Field;
 
 	private isNumber: boolean;
@@ -30,12 +27,6 @@ class Control extends BaseControl<IControlProps, any> {
 	private isFile: boolean;
 	private isRadio: boolean;
 	private isCheckbox: boolean;
-
-/* 	public static contextTypes = {
-		_ReactiveMobxForm: PropTypes.object.isRequired,
-		_ReactiveMobxFormFieldNamePrefix: PropTypes.string,
-		_destroyControlStateOnUnmount: PropTypes.bool
-	}; */
 
 	public static defaultProps = {
 		rules: ''
@@ -64,48 +55,43 @@ class Control extends BaseControl<IControlProps, any> {
 		this.isCheckable = this.isCheckbox || this.isRadio;
 
 		this.onChange = this.onChange.bind(this);
-		this.onFocus  = this.onFocus.bind(this);
-		this.onBlur   = this.onBlur.bind(this);
-	}
+		this.onFocus = this.onFocus.bind(this);
+		this.onBlur = this.onBlur.bind(this);
 
-	public componentWillMount() {
-		// Radio buttons have several controls which all should point to the same field in a form
-		// if (this.isRadio) {
-		this.field = this.form.getField(this.name) as Field;
+		// we assume, that there can be several controls in form connected with on field instance in form
+		// so before field creation - we check for existance of field with this name
+		// this is useful in radiobutton case
+		this.field = this.form.getField(this.state.name) as Field;
 
 		if (!this.field) {
 			this.createField();
 			this.field.subscribeToFormValidation(this.form);
 		}
-	/* } else {
-			this.createField();
-		}
- 	*/
 	}
 
 	private createField(): void {
-		const fieldDefinition = this.prepareFieldDefinition(this.name, this.props.rules);
+		const fieldDefinition = this.prepareFieldDefinition(this.state.name, this.props.rules);
 
 		this.warnOnIncorrectInitialValues(fieldDefinition[0]);
 
-		this.field = new Field(this.name, fieldDefinition);
+		this.field = new Field(this.state.name, fieldDefinition);
 		this.form.registerField(this.field);
 	}
 
 	public componentWillUnmount(): void {
 		if (!this.field.autoRemove && this.props.__formContext.destroyControlStateOnUnmount) {
-			this.form.unregisterField(this.name);
+			this.form.unregisterField(this.state.name);
 		}
 	}
 
 	public componentWillReceiveProps(nextProps: IControlProps): void {
 		const nextName = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
 
-		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
+		if (this.state.name !== nextName || this.props.rules !== nextProps.rules) {
 			const fieldDefinition = this.prepareFieldDefinition(nextName, nextProps.rules);
 
 			this.field.update(nextName, fieldDefinition);
-			this.name = nextName;
+			this.setState({ name: nextName });
 		}
 	}
 
@@ -131,7 +117,7 @@ class Control extends BaseControl<IControlProps, any> {
 			(!this.isCheckbox && !this.isNumber && initialValueType !== 'string')
 		) {
 			// tslint:disable-next-line
-			console.warn(`Incorrect initial value provided to field '${this.name}'. Got '${initialValueType}'`)
+			console.warn(`Incorrect initial value provided to field '${this.state.name}'. Got '${initialValueType}'`)
 		}
 	}
 
