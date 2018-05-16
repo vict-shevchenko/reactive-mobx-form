@@ -1,4 +1,3 @@
-import React, { Component, createElement } from 'react';
 import { observable, action, computed, autorun } from 'mobx';
 import { fieldValue, INormalizedFieldDefinition } from './interfaces/Form';
 import { Form } from './Form';

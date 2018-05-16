@@ -1,17 +1,15 @@
-import React, { Component, createElement } from 'react';
-import { observable, action, computed, reaction, ObservableMap, isObservableMap } from 'mobx';
+import { observable, action, computed, reaction } from 'mobx';
 import * as Validator from 'validatorjs';
-import { IFieldDefinition, IFormSchema, IFormErrorMessages, IFormAttributeNames } from './interfaces/Form';
+import { IFormSchema, IFormErrorMessages, IFormAttributeNames } from './interfaces/Form';
 import { formField } from './types';
-import { Field } from './Field';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
-import { objectPath, isNumeric } from './utils';
+import { objectPath } from './utils';
 
 export class Form {
 	public component: any;
 
-	@observable public fields = new ObservableMap<formField>();
+	@observable public fields = new Map<string, formField>();
 	@observable public errors: Validator.Errors; // todo: initial value
 	@observable public isValid: boolean | void; // todo: initial value
 
@@ -40,7 +38,7 @@ export class Form {
 	}
 
 	@computed get isDirty(): boolean {
-		return this.fields.values().some(field => field.isDirty);
+		return Array.from(this.fields.values()).some(field => field.isDirty);
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
@@ -52,11 +50,11 @@ export class Form {
 	@computed get values() {
 		// return this.fields.entries().map(entry =>
 		// ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
-		return this.fields.entries().reduce((values, [name, field]) => (values[name] = field.value, values), {});
+		return Array.from(this.fields.entries()).reduce((values, [name, field]) => (values[name] = field.value, values), {});
 	}
 
 	@computed get rules(): {[propName: string]: string} { // todo: check if rule is computed on new field add
-		return this.fields.values().reduce((rules, field) => Object.assign(rules, field.rules), {});
+		return Array.from(this.fields.values()).reduce((rules, field) => Object.assign(rules, field.rules), {});
 	}
 
 	@action public reset() {

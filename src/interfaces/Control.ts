@@ -1,4 +1,15 @@
-export interface IControlProps {
+import { Form } from '../Form';
+
+interface IFormContext {
+	form: Form;
+	destroyControlStateOnUnmount: boolean;
+}
+export interface IControlContext {
+	__formContext: IFormContext;
+	__parentNameContext: string;
+}
+
+export interface IControlProps extends IControlContext {
 	name: string;
 	component: React.Component<any, any> | React.SFC<any> | string;
 	rules: string;
@@ -11,14 +22,10 @@ export interface IControlProps {
 	onChange?(event: Event): void;
 }
 
-interface IGroupControlProps {
+interface IGroupControlProps extends IControlContext {
 	name: string;
 	component: React.Component<any, any> | React.SFC<any> | string;
 }
 
-export interface IGroupControlContext {
-	_ReactiveMobxFormFieldNamePrefix: string;
-}
-
-export interface IControlArrayProps extends IGroupControlProps {}
-export interface IControlSectionProps extends IGroupControlProps {}
+export interface IControlArrayProps extends IGroupControlProps {} // tslint:disable-line:  no-empty-interface
+export interface IControlSectionProps extends IGroupControlProps {} // tslint:disable-line:  no-empty-interface

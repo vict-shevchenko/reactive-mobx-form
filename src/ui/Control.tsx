@@ -1,25 +1,25 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import { observer, Observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { Form } from '../Form';
 import { Field } from '../Field';
 
 import { INormalizedFieldDefinition, IFieldDefinition, fieldValue } from '../interfaces/Form';
-import { omit, objectPath } from '../utils';
+import { omit } from '../utils';
 import BaseControl from './BaseControl';
+import { withForm, withParentName } from '../context';
 import { IControlProps } from '../interfaces/Control';
 
-// todo: probabbly may be used when implementing withRef
+// todo: probably may be used when implementing withRef
 /*const isClassComponent = Component => Boolean(
   Component &&
   Component.prototype &&
   typeof Component.prototype.isReactComponent === 'object'
 )*/
 
-// todo: add value property to make field a controled component
+// todo: add value property to make field a controlled component
 
 @observer
-export class Control extends BaseControl<IControlProps, any> {
+class Control extends BaseControl<IControlProps, any> {
 	public name: string;
 	public form: Form;
 	public field: Field;
@@ -31,11 +31,11 @@ export class Control extends BaseControl<IControlProps, any> {
 	private isRadio: boolean;
 	private isCheckbox: boolean;
 
-	public static contextTypes = {
+/* 	public static contextTypes = {
 		_ReactiveMobxForm: PropTypes.object.isRequired,
 		_ReactiveMobxFormFieldNamePrefix: PropTypes.string,
 		_destroyControlStateOnUnmount: PropTypes.bool
-	};
+	}; */
 
 	public static defaultProps = {
 		rules: ''
@@ -50,11 +50,11 @@ export class Control extends BaseControl<IControlProps, any> {
 	}
 
 	private static requiredProps: string[] = ['component', 'name'];
-	private static propNamesToOmitWhenByPass: string[] = ['component', 'rules', 'className'];
+	public static skipProp: string[] = ['component', 'rules', 'className'];
 
-	constructor(props, context) {
+	constructor(props) {
 		const isRadio = props.type === 'radio';
-		super(props, context, [...Control.requiredProps, ...(isRadio ? ['value'] : [])]);
+		super(props, [...Control.requiredProps, ...(isRadio ? ['value'] : [])]);
 
 		this.isRadio     = isRadio;
 		this.isCheckbox  = props.type      === 'checkbox';
@@ -93,13 +93,13 @@ export class Control extends BaseControl<IControlProps, any> {
 	}
 
 	public componentWillUnmount(): void {
-		if (!this.field.autoRemove && this.context._destroyControlStateOnUnmount) {
+		if (!this.field.autoRemove && this.props.__formContext.destroyControlStateOnUnmount) {
 			this.form.unregisterField(this.name);
 		}
 	}
 
-	public componentWillReceiveProps(nextProps: IControlProps, nextContext: any): void {
-		const nextName = BaseControl.constructName(nextContext._ReactiveMobxFormFieldNamePrefix, nextProps.name);
+	public componentWillReceiveProps(nextProps: IControlProps): void {
+		const nextName = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
 
 		if (this.name !== nextName || this.props.rules !== nextProps.rules) {
 			const fieldDefinition = this.prepareFieldDefinition(nextName, nextProps.rules);
@@ -219,7 +219,7 @@ export class Control extends BaseControl<IControlProps, any> {
 			(this.isCheckable ? inputChecked : {})
 		);
 
-		const propsToPass = omit(this.props, Control.propNamesToOmitWhenByPass);
+		const propsToPass = omit(this.props, [...BaseControl.skipProp, ...Control.skipProp]);
 
 		if (typeof this.props.component === 'function') {
 			return React.createElement(this.props.component, Object.assign({}, { input }, { meta }, propsToPass));
@@ -233,3 +233,6 @@ export class Control extends BaseControl<IControlProps, any> {
 		return React.createElement(this.props.component as string, Object.assign({}, input, propsToPass));
 	}
 }
+
+// tslint:disable-next-line: variable-name
+export const ControlWithContext = withParentName(withForm(Control));

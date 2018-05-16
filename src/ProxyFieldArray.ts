@@ -1,4 +1,4 @@
-import { observable, autorun, reaction, IObservableArray } from 'mobx';
+import { reaction, IObservableArray } from 'mobx';
 
 export default class ProxyFieldArray {
 	public forEach: any;

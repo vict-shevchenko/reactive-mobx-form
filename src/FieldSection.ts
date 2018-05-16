@@ -1,6 +1,4 @@
-import React, { Component, createElement } from 'react';
-import { observable, action, computed, ObservableMap } from 'mobx';
-import { fieldValue, IFormValues } from './interfaces/Form';
+import { observable, action, computed } from 'mobx';
 import { formField } from './types';
 import { objectPath } from './utils';
 
@@ -8,7 +6,7 @@ export class FieldSection {
 	public name: string;
 	public autoRemove: boolean = false;
 
-	@observable public subFields = new ObservableMap<formField>();
+	@observable public subFields = new Map<string, formField>();
 
 	constructor(name: string) {
 		this.update(name);
@@ -29,11 +27,11 @@ export class FieldSection {
 
 	// todo: probably we dont need values()
 	@action public reset() {
-		this.subFields.values().forEach(subField => subField.reset());
+		this.subFields.forEach(subField => subField.reset());
 	}
 
 	@action public setTouched() {
-		this.subFields.values().forEach(subField => subField.setTouched());
+		this.subFields.forEach(subField => subField.setTouched());
 	}
 
 	@action public removeField(index: string) {
@@ -41,23 +39,26 @@ export class FieldSection {
 	}
 
 	public selectField(index: string) {
-		return (this.subFields as ObservableMap<formField>).get(index);
+		return (this.subFields as Map<string, formField>).get(index);
 	}
 
 	public setAutoRemove(): void {
 		this.autoRemove = true;
-		this.subFields.values().forEach(subField => subField.setAutoRemove());
+		this.subFields.forEach(subField => subField.setAutoRemove());
 	}
 
 	@computed get value() {
-		return this.subFields.entries().reduce((values, [name, field]) => (values[name] = field.value, values), {});
+		// tslint:disable-next-line: max-line-length
+		return Array.from(this.subFields.entries()).reduce((values, [name, field]) => (values[name] = field.value, values), {});
 	}
 
 	@computed get rules() {
-		return this.subFields.values().reduce((rules, field) => Object.assign(rules, field.rules), {});
+		// tslint:disable-next-line: max-line-length
+		return Array.from(this.subFields.values()).reduce((rules, field) => Object.assign(rules, field.rules), {});
 	}
 
 	@computed get isDirty() {
-		return this.subFields.values().some(subField => subField.isDirty);
+		// tslint:disable-next-line: max-line-length
+		return Array.from(this.subFields.values()).some(subField => subField.isDirty);
 	}
 }

@@ -1,12 +1,11 @@
-import React, { Component, createElement } from 'react';
-import * as PropTypes from 'prop-types';
-import { action, computed, observable } from 'mobx';
+import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
 import { IFormDefinition, IFormSchema, IValidatorjsConfiguration, IFormValues } from './interfaces/Form';
 import { FormStore } from './Store';
+import { FormContext } from './context';
 
 function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
@@ -36,20 +35,16 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 	return wrappedForm => {
 		@inject('formStore')
 		@observer
-		class FormUI extends Component<{
+		class FormUI extends React.Component<{
 			formStore: FormStore,
 			onSubmit?: (values: IFormValues, ...rest: any[]) => Promise<any>,
 			schema?: IFormSchema
 		}, any> {
-			public static childContextTypes = {
-				_ReactiveMobxForm: PropTypes.object.isRequired,
-				_destroyControlStateOnUnmount: PropTypes.bool.isRequired
-			};
 
 			public form: Form;
 
-			constructor(props, context) {
-				super(props, context);
+			constructor(props) {
+				super(props);
 
 				if (props.schema && !isConfigParamValid(props.schema)) {
 					throw new Error('attribute "schema" provided to Form has incorrect format. Object expected');
@@ -58,12 +53,12 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				const schema = Object.assign(schemaDefinition, this.props.schema || {});
 
 				this.form = this.props.formStore.registerForm(formName, schema, errorMessages, attributeNames);
-			}
 
-			private getChildContext() {
-				return {
-					_ReactiveMobxForm: this.form,
-					_destroyControlStateOnUnmount: destroyControlStateOnUnmount
+				this.state = {
+					formContext: {
+						form: this.form,
+						destroyControlStateOnUnmount
+					}
 				};
 			}
 
@@ -123,21 +118,27 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public render() {
-				return createElement(wrappedForm, {
-					submit: this.submitForm.bind(this),
-					reset: this.resetForm.bind(this),
-					destroy: this.destroyForm.bind(this),
-					// todo: when submit change - full form render method is executed.
-					// Thing on more performant approach. May be Submitting component
-					submitting: this.form.submitting,
-					submitError: this.form.submitError,
-					// todo - this case render been called when any field change
-					/* validation: form.validation, */
-					valid: this.form.isValid,
-					dirty: this.form.isDirty
-					// todo - this case render been called when any field change
-					/* errors: this.form.errors */
-				});
+				return (
+					<FormContext.Provider value={this.state.formContext}>
+						{
+							React.createElement(wrappedForm, {
+								submit: this.submitForm.bind(this),
+								reset: this.resetForm.bind(this),
+								destroy: this.destroyForm.bind(this),
+								// todo: when submit change - full form render method is executed.
+								// Thing on more performant approach. May be Submitting component
+								submitting: this.form.submitting,
+								submitError: this.form.submitError,
+								// todo - this case render been called when any field change
+								/* validation: form.validation, */
+								valid: this.form.isValid,
+								dirty: this.form.isDirty
+								// todo - this case render been called when any field change
+								/* errors: this.form.errors */
+							})
+						}
+					</FormContext.Provider>
+				);
 			}
 		}
 

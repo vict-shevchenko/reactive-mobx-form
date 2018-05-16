@@ -1,10 +1,7 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { Form } from '../Form';
-import { Field } from '../Field';
-import { omit, objectPath } from '../utils';
-
-interface IBaseControlProps {
+import { IControlContext } from '../interfaces/Control';
+interface IBaseControlProps extends IControlContext {
 	name: string;
 	component: React.Component<any, any> | React.SFC<any> | string;
 	rules?: string;
@@ -14,33 +11,37 @@ export default class BaseControl<P extends IBaseControlProps, S> extends React.C
 	public name: string;
 	public form: Form;
 
-	public static constructName(prefix: string, name: string | number): string {
+	public static constructName(parentName: string, name: string | number): string {
 		if (typeof name === 'number') {
-			if (!prefix) {
+			if (!parentName) {
 				throw new Error('Field with numeric name can not be a root field.');
 			}
 
-			return `${prefix}[${name}]`;
+			return `${parentName}[${name}]`;
 		}
 		else {
-			return prefix ? `${prefix}.${name}` : name;
+			return parentName ? `${parentName}.${name}` : name;
 		}
 	}
 
-	private static verifyRequiredProps(required, props, context) {
+	private static verifyRequiredProps(required, props) {
 		required.forEach(requiredPropName => {
 			if (props[requiredPropName] === undefined) {
+				// todo: revisit this error message
 				throw new Error(`You forgot to specify '${requiredPropName}' property
-					for <Control name="${context._ReactiveMobxForm.component.name}" /> component.`);
+					for <Control name="${props._reactiveMobxForm.component.name}" /> component.`);
 			}
 		});
 	}
 
-	constructor(props: P, context, requiredProps) {
-		super(props, context);
+	// tslint:disable-next-line: max-line-length
+	public static skipProp: string[] = ['__formContext', '__parentNameContext'];
 
-		BaseControl.verifyRequiredProps(requiredProps, props, context);
-		this.form = context._ReactiveMobxForm;
-		this.name = BaseControl.constructName(context._ReactiveMobxFormFieldNamePrefix, props.name);
+	constructor(props: P, requiredProps) {
+		super(props);
+
+		BaseControl.verifyRequiredProps(requiredProps, props);
+		this.form = props.__formContext.form;
+		this.name = BaseControl.constructName(props.__parentNameContext, props.name);
 	}
 }
