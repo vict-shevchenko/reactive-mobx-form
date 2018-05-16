@@ -29,7 +29,7 @@ export default class BaseControl<P extends IBaseControlProps, S> extends React.C
 			if (props[requiredPropName] === undefined) {
 				// todo: revisit this error message
 				throw new Error(`You forgot to specify '${requiredPropName}' property
-					for <Control name="${props._reactiveMobxForm.component.name}" /> component.`);
+					for <Control name="${props.__formContext.form.component.name}" /> component.`);
 			}
 		});
 	}
