@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Form } from '../Form';
 import { FieldSection } from '../FieldSection';
 import { omit } from '../utils';
 import BaseControl from './BaseControl';
@@ -34,12 +33,9 @@ class ControlSection extends BaseControl<IControlSectionProps> {
 		}
 	}
 
-	public componentWillReceiveProps(nextProps: IControlSectionProps): void {
-		const nextName = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
-
-		if (this.state.name !== nextName) {
-			this.field.update(nextName);
-			this.setState({ name: nextName });
+	public componentDidUpdate() {
+		if (this.field.name !== this.state.name) {
+			this.field.update(this.state.name);
 		}
 	}
 

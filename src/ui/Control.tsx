@@ -84,14 +84,11 @@ class Control extends BaseControl<IControlProps> {
 		}
 	}
 
-	public componentWillReceiveProps(nextProps: IControlProps): void {
-		const nextName = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
+ public componentDidUpdate(prevProps: IControlProps) {
+		if (this.field.name !== this.state.name || prevProps.rules !== this.props.rules) {
+			const fieldDefinition = this.prepareFieldDefinition(this.state.name, this.props.rules);
 
-		if (this.state.name !== nextName || this.props.rules !== nextProps.rules) {
-			const fieldDefinition = this.prepareFieldDefinition(nextName, nextProps.rules);
-
-			this.field.update(nextName, fieldDefinition);
-			this.setState({ name: nextName });
+			this.field.update(this.state.name, fieldDefinition);
 		}
 	}
 
@@ -159,6 +156,7 @@ class Control extends BaseControl<IControlProps> {
 	}
 
 	public render() {
+		console.log(`render ${this.props.name}`);
 		// todo: implement withRef today
 		const handlers = {
 			onChange: this.onChange,

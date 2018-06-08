@@ -33,12 +33,9 @@ class ControlArray extends BaseControl<IControlArrayProps> {
 		}
 	}
 
-	public componentWillReceiveProps(nextProps: IControlArrayProps): void {
-		const nextName = BaseControl.constructName(nextProps.__parentNameContext, nextProps.name);
-
-		if (this.state.name !== nextName) {
-			this.field.update(nextName);
-			this.setState({ name: nextName }); // component Rerender -> gerChildContext -> contextUpdate
+	public componentDidUpdate() {
+		if (this.field.name !== this.state.name) {
+			this.field.update(this.state.name);
 		}
 	}
 
