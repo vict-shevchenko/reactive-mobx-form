@@ -77,7 +77,7 @@ render(
 Create a form
 
 ```javascript
-import {reactivMobxForm, Control} from 'reactive-mobx-form';
+import { reactiveMobxForm, Control } from 'reactive-mobx-form';
 
 class ContactForm extends Component {
   render() {
