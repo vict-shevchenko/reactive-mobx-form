@@ -11,7 +11,7 @@
         "noUnusedParameters": true,
         "sourceMap": true,
         "jsx": "react",
-        "strictNullChecks": false,
+        "strictNullChecks": true,
         "outDir": "lib",
         "rootDir": "src",
         "noEmitOnError": false,

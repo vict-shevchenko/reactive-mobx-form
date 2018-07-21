@@ -53,7 +53,7 @@ export class FieldArray {
 		this.subFields.splice(parseInt(index, 10), 1);
 	}
 
-	public selectField(index: string): formField | undefined {
+	public getField(index: string): formField | undefined {
 		// Avoid mobx.js:1905 [mobx.array] Attempt to read an array index (0) that is out of bounds (0).
 		// Please check length first. Out of bound indices will not be tracked by MobX
 		return (this.subFields.length > parseInt(index, 10)) ? this.subFields[index] : undefined;

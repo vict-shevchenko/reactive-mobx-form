@@ -38,8 +38,8 @@ export class FieldSection {
 		this.subFields.delete(index);
 	}
 
-	public selectField(index: string) {
-		return (this.subFields as Map<string, formField>).get(index);
+	public getField(index: string): formField | undefined {
+		return this.subFields.get(index);
 	}
 
 	public setAutoRemove(): void {

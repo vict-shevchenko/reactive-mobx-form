@@ -3,10 +3,12 @@ import { observer } from 'mobx-react';
 import { Field } from '../Field';
 
 import { INormalizedFieldDefinition, IFieldDefinition, fieldValue } from '../interfaces/Form';
-import { omit } from '../utils';
+import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { withForm, withParentName } from '../context';
 import { IControlProps } from '../interfaces/Control';
+import { withField, constructName } from './WithFieldHoc';
+import { formField } from '../types';
 
 // todo: probably may be used when implementing withRef
 /*const isClassComponent = Component => Boolean(
@@ -18,9 +20,7 @@ import { IControlProps } from '../interfaces/Control';
 // todo: add value property to make field a controlled component
 
 @observer
-class Control extends BaseControl<IControlProps> {
-	public field: Field;
-
+class Control extends React.Component<IControlProps> {
 	private isNumber: boolean;
 	private isSelect: boolean;
 	private isCheckable: boolean;
@@ -40,14 +40,13 @@ class Control extends BaseControl<IControlProps> {
 		return [fieldDefinition, ''];
 	}
 
-	private static requiredProps: string[] = ['component', 'name'];
+	public static requiredProps: string[] = ['component', 'name', 'type'];
 	public static skipProp: string[] = ['component', 'rules', 'className'];
 
 	constructor(props) {
-		const isRadio = props.type === 'radio';
-		super(props, [...Control.requiredProps, ...(isRadio ? ['value'] : [])]);
+		super(props);
 
-		this.isRadio     = isRadio;
+		this.isRadio     = props.type      === 'radio';
 		this.isCheckbox  = props.type      === 'checkbox';
 		this.isFile      = props.type      === 'file';
 		this.isNumber    = props.type      === 'number';
@@ -55,66 +54,49 @@ class Control extends BaseControl<IControlProps> {
 		this.isCheckable = this.isCheckbox || this.isRadio;
 
 		this.onChange = this.onChange.bind(this);
-		this.onFocus = this.onFocus.bind(this);
-		this.onBlur = this.onBlur.bind(this);
+		this.onFocus  = this.onFocus.bind(this);
+		this.onBlur   = this.onBlur.bind(this);
+
+		verifyRequiredProps([...Control.requiredProps, ...(this.isRadio ? ['value'] : [])], this.props, this);
 
 		// we assume, that there can be several controls in form connected with on field instance in form
 		// so before field creation - we check for existance of field with this name
 		// this is useful in radiobutton case
-		this.field = this.form.getField(this.state.name) as Field;
+		/* this.field = this.form.getField(this.state.name) as Field;
 
 		if (!this.field) {
 			this.createField();
 			this.field.subscribeToFormValidation(this.form);
-		}
+		} */
 	}
 
-	private createField(): void {
+/* 	private createField(): void {
 		const fieldDefinition = this.prepareFieldDefinition(this.state.name, this.props.rules);
 
 		this.warnOnIncorrectInitialValues(fieldDefinition[0]);
 
 		this.field = new Field(this.state.name, fieldDefinition);
 		this.form.registerField(this.field);
-	}
+	} */
 
 	public componentWillUnmount(): void {
-		if (!this.field.autoRemove && this.props.__formContext.destroyControlStateOnUnmount) {
-			this.form.unregisterField(this.state.name);
+		const { __formContext: { form, destroyControlStateOnUnmount }, field} = this.props;
+
+		if (!field.autoRemove && destroyControlStateOnUnmount) {
+			form.unregisterField(field.name);
 		}
 	}
 
  public componentDidUpdate(prevProps: IControlProps) {
-		if (this.field.name !== this.state.name || prevProps.rules !== this.props.rules) {
-			const fieldDefinition = this.prepareFieldDefinition(this.state.name, this.props.rules);
-
-			this.field.update(this.state.name, fieldDefinition);
-		}
-	}
-
-	private prepareFieldDefinition(name: string, rules: string): INormalizedFieldDefinition {
-		if (this.form.formSchema[name]) {
-			// normalize field definition from initial form schema
-			return Control.normalizeFieldDefinition(this.form.formSchema[name]);
-		}
-
-		return [this.isCheckbox ? false : '', rules];
-	}
-
-	private warnOnIncorrectInitialValues(initialValue: fieldValue): void {
-		const initialValueType = typeof initialValue; // initial value
-
-		if (this.isSelect) {
-			// todo: verify options to match select value
-		}
-
 		if (
-			(this.isCheckbox && initialValueType !== 'boolean') ||
-			(this.isNumber && initialValueType !== 'number') ||
-			(!this.isCheckbox && !this.isNumber && initialValueType !== 'string')
+			this.props.__parentNameContext !== prevProps.__parentNameContext ||
+			this.props.name !== prevProps.name ||
+			this.props.rules  !==  prevProps.rules
 		) {
-			// tslint:disable-next-line
-			console.warn(`Incorrect initial value provided to field '${this.state.name}'. Got '${initialValueType}'`)
+			const newName = constructName(this.props.__parentNameContext, this.props.name);
+			const newFieldDefinition = prepareFieldDefinition(newName, this.props);
+
+			this.props.field.update(newName, newFieldDefinition);
 		}
 	}
 
@@ -132,7 +114,7 @@ class Control extends BaseControl<IControlProps> {
 			value = event.target.value;
 		}
 
-		this.field.onChange(value);
+		this.props.field.onChange(value);
 
 		if (this.props.onChange) {
 			this.props.onChange(event);
@@ -140,7 +122,7 @@ class Control extends BaseControl<IControlProps> {
 	}
 
 	private onFocus(event): void {
-		this.field.onFocus();
+		this.props.field.onFocus();
 
 		if (this.props.onFocus) {
 			this.props.onFocus(event);
@@ -148,7 +130,7 @@ class Control extends BaseControl<IControlProps> {
 	}
 
 	private onBlur(event): void {
-		this.field.onBlur();
+		this.props.field.onBlur();
 
 		if (this.props.onBlur) {
 			this.props.onBlur(event);
@@ -156,8 +138,11 @@ class Control extends BaseControl<IControlProps> {
 	}
 
 	public render() {
+		// tslint:disable-next-line:no-console
 		console.log(`render ${this.props.name}`);
 		// todo: implement withRef today
+		const { field } = this.props;
+
 		const handlers = {
 			onChange: this.onChange,
 			onFocus: this.onFocus,
@@ -165,7 +150,7 @@ class Control extends BaseControl<IControlProps> {
 		};
 
 		const inputValue = {
-			value: (this.isCheckable && this.props.value) ? this.props.value : (this.field.value as string)
+			value: (this.isCheckable && this.props.value) ? this.props.value : (field.value as string)
 		};
 
 		const inputChecked = {
@@ -173,18 +158,18 @@ class Control extends BaseControl<IControlProps> {
 		};
 
 		if (this.isCheckbox) {
-			inputChecked.checked = !!this.field.value;
+			inputChecked.checked = !!field.value;
 		}
 		else if (this.isRadio) {
-			inputChecked.checked = this.field.value === this.props.value;
+			inputChecked.checked = field.value === this.props.value;
 		}
 
 		const meta = {
-			focused: this.field.isFocused,
-			touched: this.field.isTouched,
-			dirty  : this.field.isDirty,
-			valid  : this.field.isValid,
-			errors : this.field.errors
+			focused: field.isFocused,
+			touched: field.isTouched,
+			dirty  : field.isDirty,
+			valid  : field.isValid,
+			errors : field.errors
 		};
 
 		const className = [
@@ -219,4 +204,47 @@ class Control extends BaseControl<IControlProps> {
 }
 
 // tslint:disable-next-line: variable-name
-export const ControlWithContext = withParentName(withForm(Control));
+const ControlWithField = withField(Control, (name: string, props: IControlProps) => {
+	const { __formContext : { form }} = props;
+	const fieldDefinition: INormalizedFieldDefinition = prepareFieldDefinition(name, props);
+	let field: formField;
+
+	// this.warnOnIncorrectInitialValues(fieldDefinition[0]);
+	field = new Field(name, fieldDefinition);
+
+	field.subscribeToFormValidation(form);
+
+	return field;
+});
+
+// tslint:disable-next-line: variable-name
+export const ControlWithContext = withParentName(withForm(ControlWithField));
+
+/*
+	private warnOnIncorrectInitialValues(initialValue: fieldValue): void {
+		const initialValueType = typeof initialValue; // initial value
+
+		if (this.isSelect) {
+			// todo: verify options to match select value
+		}
+
+		if (
+			(this.isCheckbox && initialValueType !== 'boolean') ||
+			(this.isNumber && initialValueType !== 'number') ||
+			(!this.isCheckbox && !this.isNumber && initialValueType !== 'string')
+		) {
+			// tslint:disable-next-line
+			console.warn(`Incorrect initial value provided to field '${this.state.name}'. Got '${initialValueType}'`)
+		}
+	}
+*/
+function prepareFieldDefinition(name: string, props: IControlProps): INormalizedFieldDefinition {
+	const { __formContext: { form }, rules } = props;
+
+	if (form.formSchema[name]) {
+		// normalize field definition from initial form schema
+		return Control.normalizeFieldDefinition(form.formSchema[name]);
+	} else {
+		return  [props.type === 'checkbox' ? false : '', rules];
+	}
+}

@@ -53,7 +53,7 @@ export class Form {
 		return Array.from(this.fields.entries()).reduce((values, [name, field]) => (values[name] = field.value, values), {});
 	}
 
-	@computed get rules(): {[propName: string]: string} { // todo: check if rule is computed on new field add
+	@computed get rules(): { [propName: string]: string } { // todo: check if rule is computed on new field add
 		return Array.from(this.fields.values()).reduce((rules, field) => Object.assign(rules, field.rules), {});
 	}
 
@@ -65,42 +65,6 @@ export class Form {
 		this.fields.forEach(field => field.setTouched());
 	}
 
-	@action public registerField(field: formField): void {
-		const fieldPath = objectPath(field.name);
-
-		try {
-			const existField  = this.getField(fieldPath);
-			const fieldParent = this.getFieldParent(fieldPath);
-
-			if (existField) {
-				throw (new Error(`Field with name ${(existField as formField).name} already exist in Form. `));
-			}
-			else {
-				(fieldParent as FieldArray | FieldSection | Form).addField(field);
-			}
-
-		}
-		catch (e) {
-			console.warn(`Field ${field.name} can't be registered. Check name hierarchy.`, e); // tslint:disable-line
-		}
-	}
-
-	// in React ComponentWillUnmount is fired from parent to child, so if no parent exist -> it was already unmounted.
-	// No need to clean-up children
-	@action public unregisterField(fieldName: string) {
-		const fieldPath   = objectPath(fieldName),
-		      lastIndex   = fieldPath.length - 1,
-		      lastNode    = fieldPath[lastIndex],
-		      fieldParent = this.getFieldParent(fieldPath);
-
-		if (fieldParent) {
-			(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
-		}
-		else {
-			console.log('Attempt to remove field on already removed parent field', fieldName) // tslint:disable-line
-		}
-	}
-
 	@action public addField(field: formField): void {
 		this.fields.set(field.name, field);
 	}
@@ -110,7 +74,7 @@ export class Form {
 		this.fields.delete(fieldName);
 	}
 
-	public selectField(fieldName: string): formField {
+	public getField(fieldName: string): (undefined | formField) {
 		return this.fields.get(fieldName);
 	}
 
@@ -133,21 +97,51 @@ export class Form {
 		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;
 	}
 
-	public getField(fieldPath: string | string[]): formField {
+	// Field Manipulation
+	public registerField(name: string, creationFn: () => formField): formField {
+		const fieldPath = objectPath(name);
+		const lastPathNode = fieldPath[fieldPath.length - 1];
+		const fieldParent = this.getFieldParent(fieldPath);
+		let field: formField | undefined;
+
+		if (fieldParent) {
+			field = fieldParent.getField(lastPathNode);
+
+			if (!field) {
+				field = creationFn();
+				(fieldParent as Form | FieldArray | FieldSection).addField(field);
+			}
+		}
+
+		return field as formField;
+	}
+
+	public unregisterField(fieldName: string) {
+		const fieldPath = objectPath(fieldName),
+			lastIndex = fieldPath.length - 1,
+			lastNode = fieldPath[lastIndex],
+			fieldParent = this.getFieldParent(fieldPath);
+
+		if (fieldParent) {
+			(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
+		}
+		else {
+			console.log('Attempt to remove field on already removed parent field', fieldName) // tslint:disable-line
+		}
+	}
+
+	private findFieldInHierarchy(path: string[]): formField | undefined {
 		try {
-			return this.findFieldInHierarchy(Array.isArray(fieldPath) ? fieldPath : objectPath(fieldPath));
+			// f is Form initially, and formField after, can`t handle type error
+			return path.reduce((f: any, node) => (f as Form | FieldArray | FieldSection).getField(node), this);
 		}
 		catch (e) {
-			console.warn(`Field can't be selected. Check name hierarchy. Probably some field on the chain does not exist`, e); // tslint:disable-line
+			console.error(`Field can't be selected. Check name hierarchy. Probably some field on the chain does not exist`, e); // tslint:disable-line
 		}
 	}
 
-	private getFieldParent(path: string[]): Form | FieldArray | FieldSection {
-		return path.length === 1 ? this : (this.getField(path.slice(0, path.length - 1)) as FieldArray | FieldSection);
-	}
-
-	private findFieldInHierarchy(path: string[]): formField {
-		// f is Form initially, and formField after, can`t handle type error
-		return path.reduce((f: any, node) => (f as Form | FieldArray | FieldSection).selectField(node), this);
+	private getFieldParent(path: string[]): Form | FieldArray | FieldSection | undefined {
+		const pathToParent = path.slice(0, path.length - 1);
+		return path.length === 1 ? this : (this.findFieldInHierarchy(pathToParent) as FieldArray | FieldSection | undefined); // tslint:disable-line
 	}
 }

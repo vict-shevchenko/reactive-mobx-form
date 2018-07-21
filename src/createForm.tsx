@@ -130,11 +130,11 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 								submitting: this.form.submitting,
 								submitError: this.form.submitError,
 								// todo - this case render been called when any field change
-								/* validation: form.validation, */
+								// validation: form.validation,
 								valid: this.form.isValid,
 								dirty: this.form.isDirty
 								// todo - this case render been called when any field change
-								/* errors: this.form.errors */
+								// errors: this.form.errors
 							})
 						}
 					</FormContext.Provider>

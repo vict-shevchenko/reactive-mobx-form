@@ -3,13 +3,13 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import ProxyFieldArray from '../ProxyFieldArray';
 import { FieldArray } from '../FieldArray';
-import { omit } from '../utils';
+import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { ParentNameContext, withParentName, withForm } from '../context';
 import { IControlArrayProps } from '../interfaces/Control';
 
 @observer
-class ControlArray extends BaseControl<IControlArrayProps> {
+class ControlArray extends React.Component<IControlArrayProps> {
 	public field: FieldArray;
 
 	private proxiedFieldsProp: ProxyFieldArray;
@@ -19,7 +19,9 @@ class ControlArray extends BaseControl<IControlArrayProps> {
 	public static skipProp: string[] = ['component', 'rules'];
 
 	constructor(props) {
-		super(props, ControlArray.requiredProps);
+		super(props);
+
+		verifyRequiredProps([...ControlArray.requiredProps], this.props, this);
 
 		this.field = new FieldArray(this.state.name);
 		this.form.registerField(this.field);

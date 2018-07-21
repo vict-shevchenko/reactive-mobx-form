@@ -34,7 +34,7 @@ export default class BaseControl<P extends IBaseControlProps> extends React.Comp
 	}
 
 	// tslint:disable-next-line: max-line-length
-	public static skipProp: string[] = ['__formContext', '__parentNameContext'];
+	public static skipProp: string[] = ['__formContext', '__parentNameContext', 'field'];
 
 	public static getDerivedStateFromProps(props: IBaseControlProps, state) {
 		const nextName = BaseControl.constructName(props.__parentNameContext, props.name);

@@ -9,7 +9,7 @@ export class FormStore {
 		let form: Form;
 
 		if (this.hasForm(name)) {
-			form = this.getForm(name);
+			form = this.getForm(name) as Form;
 			form.extendConfiguration(schema, errorMessages, attributeNames);
 		}
 		else {
@@ -31,7 +31,7 @@ export class FormStore {
 		return this.forms.has(name);
 	}
 
-	public getForm(name: string): Form {
+	public getForm(name: string): Form | undefined {
 		return this.forms.get(name);
 	}
 }

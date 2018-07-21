@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FieldSection } from '../FieldSection';
-import { omit } from '../utils';
+import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { IControlSectionProps } from '../interfaces/Control';
 import { ParentNameContext, withParentName, withForm} from '../context';
 
 @observer
-class ControlSection extends BaseControl<IControlSectionProps> {
+class ControlSection extends React.Component<IControlSectionProps> {
 	public field: FieldSection;
 
 	// todo: should be possible to use with children
@@ -15,7 +15,9 @@ class ControlSection extends BaseControl<IControlSectionProps> {
 	public static skipProp: string[] = ['component', 'rules'];
 
 	constructor(props) {
-		super(props, ControlSection.requiredProps);
+		super(props);
+
+		verifyRequiredProps([...ControlSection.requiredProps], this.props, this);
 
 		// As ControlSection is an aggregation unit it should not present in schema
 		if (this.form.formSchema[this.state.name]) {

@@ -15,7 +15,7 @@ export function objectPath(str: string): string[] {
 		throw new TypeError('Field name must be passed a string');
 	}
 
-	const parts = [];
+	const parts: string[] = [];
 	let i = 0, d, b, q, c;
 
 	while (i < str.length) {
@@ -65,6 +65,27 @@ export function objectPath(str: string): string[] {
 	return parts;
 }
 
+function objectMissProps(propNames: string[], obj: any): string[] | null {
+	const missingProps: string[] = [];
+
+	for (const propName of propNames) {
+		if (!obj.hasOwnProperty(propName)) {
+			missingProps.push(propName);
+		}
+	}
+
+	return missingProps.length ? missingProps : null;
+}
+
 export function isNumeric(str: string): boolean {
 	return parseInt(str, 10).toString() === str;
+}
+
+export function verifyRequiredProps(required, props, component): void {
+	const missingProps = objectMissProps(required, props);
+
+	if (missingProps) {
+		throw (new Error(`You forgot to specify '${missingProps.join(', ')}' propert${missingProps.length > 1 ? 'ies' : 'y'}
+				for <${Object.getPrototypeOf(component).constructor.name} name="${this.props.name}" /> component.`));
+	}
 }
