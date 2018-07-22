@@ -1,5 +1,4 @@
 import { Form } from '../Form';
-import { formField } from '../types';
 import { Field } from '../Field';
 import { FieldArray } from '../FieldArray';
 import { FieldSection } from '../FieldSection';

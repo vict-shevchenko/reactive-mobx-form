@@ -5,7 +5,12 @@ import { IFormSchema, IFormErrorMessages, IFormAttributeNames } from './interfac
 export class FormStore {
 	@observable public forms: Map<string, Form> = observable.map();
 
-	public registerForm(name: string, schema: IFormSchema, errorMessages: IFormErrorMessages, attributeNames: IFormAttributeNames): Form { // tslint:disable-line
+	public registerForm(
+			name: string,
+			schema: IFormSchema,
+			errorMessages: IFormErrorMessages | undefined,
+			attributeNames: IFormAttributeNames | undefined): Form
+		{ // tslint:disable-line
 		let form: Form;
 
 		if (this.hasForm(name)) {

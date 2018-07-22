@@ -5,6 +5,7 @@ import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { IControlSectionProps } from '../interfaces/Control';
 import { ParentNameContext, withParentName, withForm} from '../context';
+import { constructName } from './WithFieldHoc';
 
 @observer
 class ControlSection extends React.Component<IControlSectionProps> {
@@ -18,33 +19,30 @@ class ControlSection extends React.Component<IControlSectionProps> {
 		super(props);
 
 		verifyRequiredProps([...ControlSection.requiredProps], this.props, this);
-
-		// As ControlSection is an aggregation unit it should not present in schema
-		if (this.form.formSchema[this.state.name]) {
-			throw (new Error(`Control Section with name ${this.state.name} should not be in schema`));
-		}
-
-		this.field = new FieldSection(this.state.name);
-		this.form.registerField(this.field);
 	}
 
 	public componentWillUnmount(): void {
-		if (!this.field.autoRemove || this.props.__formContext.destroyControlStateOnUnmount) {
-			this.field.setAutoRemove();
-			this.form.unregisterField(this.state.name);
+		const {__formContext: { destroyControlStateOnUnmount, form }, field} = this.props;
+		if (!field.autoRemove || destroyControlStateOnUnmount) {
+			field.setAutoRemove();
+			form.unregisterField(field.name);
 		}
 	}
 
-	public componentDidUpdate() {
-		if (this.field.name !== this.state.name) {
-			this.field.update(this.state.name);
+	public componentDidUpdate(prevProps: IControlSectionProps) {
+		if (
+			this.props.__parentNameContext !== prevProps.__parentNameContext ||
+			this.props.name !== prevProps.name
+		) {
+				const newName = constructName(this.props.__parentNameContext, this.props.name);
+				this.props.field.update(newName);
 		}
 	}
 
 	public render() {
 		const propsToPass = omit(this.props, [...BaseControl.skipProp, ...ControlSection.skipProp]);
 		return (
-			<ParentNameContext.Provider value={this.state.name}>
+			<ParentNameContext.Provider value={this.props.field.name}>
 				{
 					React.createElement((this.props.component as any),
 						Object.assign({}, { fields: this.field.subFields }, propsToPass)

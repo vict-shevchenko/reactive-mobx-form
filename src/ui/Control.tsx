@@ -23,6 +23,7 @@ import { formField } from '../types';
 class Control extends React.Component<IControlProps> {
 	private isNumber: boolean;
 	private isSelect: boolean;
+	private isTextarea: boolean;
 	private isCheckable: boolean;
 	private isFile: boolean;
 	private isRadio: boolean;
@@ -40,24 +41,35 @@ class Control extends React.Component<IControlProps> {
 		return [fieldDefinition, ''];
 	}
 
-	public static requiredProps: string[] = ['component', 'name', 'type'];
+	public static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules', 'className'];
 
 	constructor(props) {
 		super(props);
+
+		const requiredProps = [...Control.requiredProps];
 
 		this.isRadio     = props.type      === 'radio';
 		this.isCheckbox  = props.type      === 'checkbox';
 		this.isFile      = props.type      === 'file';
 		this.isNumber    = props.type      === 'number';
 		this.isSelect    = props.component === 'select';
+		this.isTextarea  = props.component === 'textarea';
 		this.isCheckable = this.isCheckbox || this.isRadio;
 
 		this.onChange = this.onChange.bind(this);
 		this.onFocus  = this.onFocus.bind(this);
 		this.onBlur   = this.onBlur.bind(this);
 
-		verifyRequiredProps([...Control.requiredProps, ...(this.isRadio ? ['value'] : [])], this.props, this);
+		if (this.isRadio) {
+			requiredProps.push('value');
+		}
+
+		if (!(this.isSelect || this.isTextarea)) {
+			requiredProps.push('type');
+		}
+
+		verifyRequiredProps(requiredProps, this.props, this);
 
 		// we assume, that there can be several controls in form connected with on field instance in form
 		// so before field creation - we check for existance of field with this name

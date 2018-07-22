@@ -33,8 +33,8 @@ export class Form {
 
 	constructor(
 		public formSchema: IFormSchema,
-		private errorMessages: IFormErrorMessages,
-		private attributeNames: IFormAttributeNames) {
+		private errorMessages: IFormErrorMessages | undefined,
+		private attributeNames: IFormAttributeNames | undefined) {
 	}
 
 	@computed get isDirty(): boolean {
@@ -91,7 +91,7 @@ export class Form {
 		);
 	}
 
-	public extendConfiguration(schema: IFormSchema = {}, errorMsg: IFormErrorMessages, attributeNames: IFormAttributeNames): void { // tslint:disable-line
+	public extendConfiguration(schema: IFormSchema = {}, errorMsg: IFormErrorMessages | undefined, attributeNames: IFormAttributeNames | undefined): void { // tslint:disable-line
 		Object.assign(this.formSchema, schema);
 		this.errorMessages ? Object.assign(this.errorMessages, errorMsg) : this.errorMessages = errorMsg;
 		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;

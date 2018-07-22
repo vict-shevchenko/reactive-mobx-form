@@ -37,7 +37,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 		@observer
 		class FormUI extends React.Component<{
 			formStore: FormStore,
-			onSubmit?: (values: IFormValues, ...rest: any[]) => Promise<any>,
+			onSubmit: (values: IFormValues, ...rest: any[]) => Promise<any>,
 			schema?: IFormSchema
 		}, any> {
 

@@ -7,6 +7,7 @@ import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { ParentNameContext, withParentName, withForm } from '../context';
 import { IControlArrayProps } from '../interfaces/Control';
+import { constructName } from './WithFieldHoc';
 
 @observer
 class ControlArray extends React.Component<IControlArrayProps> {
@@ -22,22 +23,24 @@ class ControlArray extends React.Component<IControlArrayProps> {
 		super(props);
 
 		verifyRequiredProps([...ControlArray.requiredProps], this.props, this);
-
-		this.field = new FieldArray(this.state.name);
-		this.form.registerField(this.field);
 		this.proxiedFieldsProp = new ProxyFieldArray(this.fieldsProp, this.field.subFields);
 	}
 
 	public componentWillUnmount(): void {
-		if (!this.field.autoRemove || this.props.__formContext.destroyControlStateOnUnmount) {
-			this.field.setAutoRemove();
-			this.form.unregisterField(this.state.name);
+		const {__formContext: { destroyControlStateOnUnmount, form }, field} = this.props;
+		if (!field.autoRemove || destroyControlStateOnUnmount) {
+			field.setAutoRemove();
+			form.unregisterField(field.name);
 		}
 	}
 
-	public componentDidUpdate() {
-		if (this.field.name !== this.state.name) {
-			this.field.update(this.state.name);
+	public componentDidUpdate(prevProps: IControlArrayProps) {
+		if (
+			this.props.__parentNameContext !== prevProps.__parentNameContext ||
+			this.props.name !== prevProps.name
+		) {
+				const newName = constructName(this.props.__parentNameContext, this.props.name);
+				this.props.field.update(newName);
 		}
 	}
 
@@ -47,7 +50,7 @@ class ControlArray extends React.Component<IControlArrayProps> {
 		const length = this.fieldsProp.length; // todo: why we need this to rerender?
 
 		return (
-			<ParentNameContext.Provider value={this.state.name}>
+			<ParentNameContext.Provider value={this.props.field.name}>
 				{
 					React.createElement((this.props.component as any),
 						Object.assign({}, { fields: this.proxiedFieldsProp }, propsToPass)
