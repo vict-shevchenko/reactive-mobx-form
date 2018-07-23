@@ -6,6 +6,10 @@ export interface IFormSchema {
 	[propType: string]: IFieldDefinition;
 }
 
+export interface IFormNormalizedSchema {
+	[propType: string]: INormalizedFieldDefinition;
+}
+
 export interface IFormErrorMessages {
 	[propType: string]: string;
 }

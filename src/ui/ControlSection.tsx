@@ -5,7 +5,7 @@ import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { IControlSectionProps } from '../interfaces/Control';
 import { ParentNameContext, withParentName, withForm} from '../context';
-import { constructName } from './WithFieldHoc';
+import { constructName, withField } from './WithFieldHoc';
 
 @observer
 class ControlSection extends React.Component<IControlSectionProps> {
@@ -45,7 +45,7 @@ class ControlSection extends React.Component<IControlSectionProps> {
 			<ParentNameContext.Provider value={this.props.field.name}>
 				{
 					React.createElement((this.props.component as any),
-						Object.assign({}, { fields: this.field.subFields }, propsToPass)
+						Object.assign({}, { fields: this.props.field.subFields }, propsToPass)
 					)
 				}
 			</ParentNameContext.Provider>
@@ -53,5 +53,10 @@ class ControlSection extends React.Component<IControlSectionProps> {
 	}
 }
 
+// tslint:disable-next-line:variable-name
+const ControlSectionWithField = withField(ControlSection, (name: string) => {
+	return new FieldSection(name);
+});
+
 // tslint:disable-next-line: variable-name
-export const ControlSectionWithContext = withParentName(withForm(ControlSection));
+export const ControlSectionWithContext = withParentName(withForm(ControlSectionWithField));

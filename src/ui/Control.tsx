@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Field } from '../Field';
 
-import { INormalizedFieldDefinition, IFieldDefinition, fieldValue } from '../interfaces/Form';
+import { INormalizedFieldDefinition } from '../interfaces/Form';
 import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { withForm, withParentName } from '../context';
@@ -18,6 +18,17 @@ import { formField } from '../types';
 )*/
 
 // todo: add value property to make field a controlled component
+function prepareFieldDefinition(name: string, props: IControlProps): INormalizedFieldDefinition {
+	const { __formContext: { form }, rules = '' } = props;
+	const fieldDefinition: INormalizedFieldDefinition | undefined = form.formSchema[name];
+
+	if (fieldDefinition) {
+		// normalize field definition from initial form schema
+		return [fieldDefinition[0], rules ? rules : fieldDefinition[1]];
+	} else {
+		return  [props.type === 'checkbox' ? false : '', rules];
+	}
+}
 
 @observer
 class Control extends React.Component<IControlProps> {
@@ -28,18 +39,6 @@ class Control extends React.Component<IControlProps> {
 	private isFile: boolean;
 	private isRadio: boolean;
 	private isCheckbox: boolean;
-
-	public static defaultProps = {
-		rules: ''
-	};
-
-	public static normalizeFieldDefinition(fieldDefinition: IFieldDefinition): INormalizedFieldDefinition {
-		if (Array.isArray(fieldDefinition)) {
-			return (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
-		}
-
-		return [fieldDefinition, ''];
-	}
 
 	public static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules', 'className'];
@@ -250,13 +249,3 @@ export const ControlWithContext = withParentName(withForm(ControlWithField));
 		}
 	}
 */
-function prepareFieldDefinition(name: string, props: IControlProps): INormalizedFieldDefinition {
-	const { __formContext: { form }, rules } = props;
-
-	if (form.formSchema[name]) {
-		// normalize field definition from initial form schema
-		return Control.normalizeFieldDefinition(form.formSchema[name]);
-	} else {
-		return  [props.type === 'checkbox' ? false : '', rules];
-	}
-}

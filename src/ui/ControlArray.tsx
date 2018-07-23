@@ -7,7 +7,7 @@ import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
 import { ParentNameContext, withParentName, withForm } from '../context';
 import { IControlArrayProps } from '../interfaces/Control';
-import { constructName } from './WithFieldHoc';
+import { constructName, withField } from './WithFieldHoc';
 
 @observer
 class ControlArray extends React.Component<IControlArrayProps> {
@@ -61,5 +61,10 @@ class ControlArray extends React.Component<IControlArrayProps> {
 	}
 }
 
+// tslint:disable-next-line:variable-name
+const ControlArrayWithField = withField(ControlArray, (name: string) => {
+	return new FieldArray(name);
+});
+
 // tslint:disable-next-line: variable-name
-export const ControlArrayWithContext = withParentName(withForm(ControlArray));
+export const ControlArrayWithContext = withParentName(withForm(ControlArrayWithField));

@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { IControlProps } from '../interfaces/Control';
+import { IControlProps, IControlArrayProps, IControlSectionProps } from '../interfaces/Control';
 import { formField } from '../types';
 
 // tslint:disable-next-line:variable-name
-export function withField(WrappedControl, fieldCreationFunction ) {
-	return class extends React.Component<IControlProps> {
+export function withField(WrappedControl, fieldCreationFunction: (string, any) => formField ) {
+	return class extends React.Component<IControlProps | IControlArrayProps | IControlSectionProps> {
 		private field: formField;
 
-		constructor(props: IControlProps) {
+		constructor(props: IControlProps | IControlArrayProps | IControlSectionProps) {
 			super(props);
 			const {__formContext: {form}, __parentNameContext, name } = props;
 			const fieldName = constructName(__parentNameContext, name);

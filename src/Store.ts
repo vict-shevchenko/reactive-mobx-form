@@ -1,13 +1,13 @@
 import { observable } from 'mobx';
 import { Form } from './Form';
-import { IFormSchema, IFormErrorMessages, IFormAttributeNames } from './interfaces/Form';
+import { IFormNormalizedSchema, IFormErrorMessages, IFormAttributeNames } from './interfaces/Form';
 
 export class FormStore {
 	@observable public forms: Map<string, Form> = observable.map();
 
 	public registerForm(
 			name: string,
-			schema: IFormSchema,
+			schema: IFormNormalizedSchema,
 			errorMessages: IFormErrorMessages | undefined,
 			attributeNames: IFormAttributeNames | undefined): Form
 		{ // tslint:disable-line

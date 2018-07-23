@@ -1,6 +1,6 @@
 import { observable, action, computed, reaction } from 'mobx';
 import * as Validator from 'validatorjs';
-import { IFormSchema, IFormErrorMessages, IFormAttributeNames } from './interfaces/Form';
+import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema } from './interfaces/Form';
 import { formField } from './types';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
@@ -32,7 +32,7 @@ export class Form {
 	*/
 
 	constructor(
-		public formSchema: IFormSchema,
+		public formSchema: IFormNormalizedSchema,
 		private errorMessages: IFormErrorMessages | undefined,
 		private attributeNames: IFormAttributeNames | undefined) {
 	}
@@ -91,7 +91,7 @@ export class Form {
 		);
 	}
 
-	public extendConfiguration(schema: IFormSchema = {}, errorMsg: IFormErrorMessages | undefined, attributeNames: IFormAttributeNames | undefined): void { // tslint:disable-line
+	public extendConfiguration(schema: IFormNormalizedSchema = {}, errorMsg: IFormErrorMessages | undefined, attributeNames: IFormAttributeNames | undefined): void { // tslint:disable-line
 		Object.assign(this.formSchema, schema);
 		this.errorMessages ? Object.assign(this.errorMessages, errorMsg) : this.errorMessages = errorMsg;
 		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;

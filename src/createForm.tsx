@@ -3,7 +3,14 @@ import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration, IFormValues } from './interfaces/Form';
+import { IFormDefinition,
+	IFormSchema,
+	IValidatorjsConfiguration,
+	IFormValues,
+	INormalizedFieldDefinition,
+	IFormNormalizedSchema,
+	IFieldDefinition,
+	fieldValue } from './interfaces/Form';
 import { FormStore } from './Store';
 import { FormContext } from './context';
 
@@ -19,6 +26,24 @@ function validateConfigParams(formName: string, params: any) {
 	if (!formName || typeof formName !== 'string') {
 		throw new Error('Form name should be non empty string');
 	}
+}
+
+function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema {
+	return Object.keys(draftSchema).reduce((schema: IFormNormalizedSchema, fieldName: string): IFormNormalizedSchema => {
+		const fieldDefinition: IFieldDefinition = draftSchema[fieldName];
+		let normalizedFieldDefinition: INormalizedFieldDefinition;
+
+		if (Array.isArray(fieldDefinition)) {
+			// tslint:disable-next-line:max-line-length
+			normalizedFieldDefinition =  (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
+		} else {
+			normalizedFieldDefinition = [fieldDefinition as fieldValue, ''];
+		}
+
+		schema[fieldName] = normalizedFieldDefinition;
+
+		return schema;
+	}, {});
 }
 
 export function createForm(formName: string, formDefinition: IFormDefinition = {}) {
@@ -51,8 +76,9 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				}
 
 				const schema = Object.assign(schemaDefinition, this.props.schema || {});
+				const normalizedSchema = normalizeSchema(schema);
 
-				this.form = this.props.formStore.registerForm(formName, schema, errorMessages, attributeNames);
+				this.form = this.props.formStore.registerForm(formName, normalizedSchema, errorMessages, attributeNames);
 
 				this.state = {
 					formContext: {
