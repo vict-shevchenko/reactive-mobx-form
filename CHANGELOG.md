@@ -1,3 +1,10 @@
+#0.9.0 [Possible Breaking Changes MobX > 4 and React > 16.3]
+- Support for MobX > 4 and React > 16.3
+- Use of new React context API
+- Deprecate componentWillMount, componentWillReceiveProps
+- fix number of small errors
+- code refactoring
+
 #0.7.5
 - Extend form parameters (schema, errorMessages, attributeNames) when form with same name is mounted. Useful for adding default values and rules for dynamically inserted forms(form parts, wizard type forms). 
 
