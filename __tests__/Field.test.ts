@@ -1,6 +1,7 @@
 declare var jest, describe, it, expect, beforeAll;
 import { Field } from '../src/Field';
 import { Form } from '../src/Form';
+import { formField } from '../src/types';
 
 describe('Testing of Field class', () => {
 	test('Creation of field instance should work correctly', () => {
@@ -103,11 +104,14 @@ describe('Testing of Field class', () => {
 	});
 
 	test('Verify fetching errors for field from Form', () => {
-		const field = new Field('name', ['Viktor', 'required']);
 		const form = new Form({}, {}, {});
 
+		function createField(): formField {
+			return new Field('name', ['Viktor', 'required']);
+		}
+
 		form.registerValidation();
-		form.registerField(field);
+		const field = form.registerField('name', createField) as Field;
 
 		field.subscribeToFormValidation(form);
 
