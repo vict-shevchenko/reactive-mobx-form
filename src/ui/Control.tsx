@@ -8,7 +8,6 @@ import BaseControl from './BaseControl';
 import { withForm, withParentName } from '../context';
 import { IControlProps } from '../interfaces/Control';
 import { withField, constructName } from './WithFieldHoc';
-import { formField } from '../types';
 import { IReactionDisposer } from 'mobx';
 
 // todo: probably may be used when implementing withRef
