@@ -67,8 +67,8 @@ export class Field {
 		this.autoRemove = true;
 	}
 
-	public subscribeToFormValidation(form: Form): void {
-		autorun(() => {
+	public subscribeToFormValidation(form: Form) {
+		return autorun(() => {
 			const errors: string[] = form.errors.get(this.name);
 
 			if (this.errors.join() !== errors.join()) {

@@ -11,8 +11,6 @@ import { constructName, withField } from './WithFieldHoc';
 
 @observer
 class ControlArray extends React.Component<IControlArrayProps> {
-	public field: FieldArray;
-
 	private proxiedFieldsProp: ProxyFieldArray;
 	private fieldsProp = observable<string>([]);
 
@@ -23,7 +21,7 @@ class ControlArray extends React.Component<IControlArrayProps> {
 		super(props);
 
 		verifyRequiredProps([...ControlArray.requiredProps], this.props, this);
-		this.proxiedFieldsProp = new ProxyFieldArray(this.fieldsProp, this.field.subFields);
+		this.proxiedFieldsProp = new ProxyFieldArray(this.fieldsProp, this.props.field.subFields);
 	}
 
 	public componentWillUnmount(): void {

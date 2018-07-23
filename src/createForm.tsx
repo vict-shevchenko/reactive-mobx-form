@@ -104,6 +104,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public submitForm(event: Event, ...rest: any[]): Promise<any> {
+				this.form.submitError = undefined;
 
 				try {
 					event.preventDefault();

@@ -9,6 +9,7 @@ import { withForm, withParentName } from '../context';
 import { IControlProps } from '../interfaces/Control';
 import { withField, constructName } from './WithFieldHoc';
 import { formField } from '../types';
+import { IReactionDisposer } from 'mobx';
 
 // todo: probably may be used when implementing withRef
 /*const isClassComponent = Component => Boolean(
@@ -39,6 +40,8 @@ class Control extends React.Component<IControlProps> {
 	private isFile: boolean;
 	private isRadio: boolean;
 	private isCheckbox: boolean;
+
+	private formErrorUnsubscribe: IReactionDisposer;
 
 	public static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules', 'className'];
@@ -81,6 +84,11 @@ class Control extends React.Component<IControlProps> {
 		} */
 	}
 
+	public componentDidMount() {
+		const { __formContext: { form }, field } = this.props;
+		this.formErrorUnsubscribe = field.subscribeToFormValidation(form);
+	}
+
 /* 	private createField(): void {
 		const fieldDefinition = this.prepareFieldDefinition(this.state.name, this.props.rules);
 
@@ -92,6 +100,8 @@ class Control extends React.Component<IControlProps> {
 
 	public componentWillUnmount(): void {
 		const { __formContext: { form, destroyControlStateOnUnmount }, field} = this.props;
+
+		this.formErrorUnsubscribe();
 
 		if (!field.autoRemove && destroyControlStateOnUnmount) {
 			form.unregisterField(field.name);
@@ -149,8 +159,6 @@ class Control extends React.Component<IControlProps> {
 	}
 
 	public render() {
-		// tslint:disable-next-line:no-console
-		console.log(`render ${this.props.name}`);
 		// todo: implement withRef today
 		const { field } = this.props;
 
@@ -216,16 +224,9 @@ class Control extends React.Component<IControlProps> {
 
 // tslint:disable-next-line: variable-name
 const ControlWithField = withField(Control, (name: string, props: IControlProps) => {
-	const { __formContext : { form }} = props;
 	const fieldDefinition: INormalizedFieldDefinition = prepareFieldDefinition(name, props);
-	let field: formField;
 
-	// this.warnOnIncorrectInitialValues(fieldDefinition[0]);
-	field = new Field(name, fieldDefinition);
-
-	field.subscribeToFormValidation(form);
-
-	return field;
+	return new Field(name, fieldDefinition);
 });
 
 // tslint:disable-next-line: variable-name

@@ -9,8 +9,6 @@ import { constructName, withField } from './WithFieldHoc';
 
 @observer
 class ControlSection extends React.Component<IControlSectionProps> {
-	public field: FieldSection;
-
 	// todo: should be possible to use with children
 	private static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules'];
