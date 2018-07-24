@@ -86,11 +86,9 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 						destroyControlStateOnUnmount
 					}
 				};
-			}
 
-			public componentWillMount() {
-				// for debugging/error handling purposes, todo: not useful for multi-component-form
-				this.form.component = wrappedForm;
+				// old stuff, probably remove, not useful in multi component form
+				// this.form.component = wrappedForm;
 			}
 
 			public componentWillUnmount() {
