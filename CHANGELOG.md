@@ -1,32 +1,37 @@
-#0.9.0 [Possible Breaking Changes MobX > 4 and React > 16.3]
+# 0.9.1
+- removed componentWillMount from FormUI component
+- mostly docs update
+
+# 0.9.0 [Breaking Changes MobX > 4 and React > 16.3]
 - Support for MobX > 4 and React > 16.3
-- Use of new React context API
-- Deprecate componentWillMount, componentWillReceiveProps
+- Relay and use of new React context API (*v < 0.9.0 will fail with React < 16.3*)
+- Deprecate componentWillMount, componentWillReceiveProps lifecycle hooks
 - fix number of small errors
 - code refactoring
+- some errors from typescript still can appear, but do not affect functionality and will be fixed soon
 
-#0.7.5
+# 0.7.5
 - Extend form parameters (schema, errorMessages, attributeNames) when form with same name is mounted. Useful for adding default values and rules for dynamically inserted forms(form parts, wizard type forms). 
 
-#0.7.4
+# 0.7.4
 - Update of dependencies versions
 
-#0.7.2
+# 0.7.2
 - Fix for setTouched method that marks field as 'touched'
 
-#0.7.1
+# 0.7.1
 - Control type checkbox support `value` attribute. That is passed to `field.value` when checkbox is checked
 - Fix bug 'className should extend rmf class names #7'
 - Minor fixes
 
-#0.7.0  [Breaking Changes]
+# 0.7.0  [Breaking Changes]
 - Mark all fields as 'touched' when form submit button is clicked
 - No reset form happens in case of successful submission. Developer needs to manually reset form, if required.
 
-#0.6.2
+# 0.6.2
 - Fix reset form on submit promise resolve. And keep form state in case of rejection
 
-#0.6.1
+# 0.6.1
 - `submit` function inside a form can accept additional parameters, that will be transparently passed to your submit callback (onSubmit) after form values.
 
 # 0.6.0 [Breaking Changes]

@@ -1,7 +1,11 @@
 # reactive-mobx-form  [![npm version](https://badge.fury.io/js/reactive-mobx-form.svg)](https://badge.fury.io/js/reactive-mobx-form)
 Forms library for React+MobX application. Under the hood it uses efficient MobX observable mechanizm, that allows tracking changes in form fields and rerender only things that have changed. This makes developer a feeling of working with 2-way databinding and reduces much boilerplate code needed to handle input events in 1-way data flow environment. 
 
-The library is inspired by [Angular Reactive Forms](https://angular.io/guide/reactive-forms) and [Redux Form](http://redux-form.com). It has simalar syntax to Redux Form, because of concept that are neutural to React world. So if you previously had experience with it, it will be easy for you to start using `reactive-mobx-form`. But still one of the goals of this library is to be simple in usage for everyone.
+The library is inspired by [Angular Reactive Forms](https://angular.io/guide/reactive-forms) and [Redux Form](http://redux-form.com). It has similar syntax to Redux Form, because of concept that are natural to React world. So if you previously had experience with it, it will be easy for you to start using `reactive-mobx-form`. But still one of the goals of this library is to be simple in usage for everyone.
+
+## Note on versions
+0.7.5 - is a stable version for usage in environments with any version of React but MobX < 4. ([Map in MobX](https://github.com/mobxjs/mobx/blob/e17c47833d1812eee6d77914be890aa41e4b7908/CHANGELOG.md#breaking-changes-1))
+0.9.0 - is a stable version for React > 16.3, and MobX > 4(5) (mobx-react > 5.2.0). [See changelog for updates](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/CHANGELOG.md) This version will be mainly developed
 
 ## Documentation
 [Examples](https://vict-shevchenko.github.io/reactive-mobx-form) can be found here. Documentation is under development, but you already can see some code and usage
@@ -14,7 +18,7 @@ If considering a software development as next steps:
 2. Make it right <-- we are here
 3. Make it fast
 
-Starting of version `0.2.10` library contains all basic functionallity for handling simple and complex(nested) forms. For now I will focus on its documentation and differnt improvements(performace and code organization). API should left stable for some time. If you are using a library and require any help, please create an issue.
+Starting of version `0.2.10` library contains all basic functionality for handling simple and complex(nested) forms. For now I will focus on its documentation and different improvements(performance and code organization). API should left stable for some time. If you are using a library and require any help, please create an issue.
 
 ## Motivation
  Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
@@ -159,7 +163,7 @@ configureValidator({
 });
 ```
 
-`setAttributeFormatter` property should be a function, that accepts 1 parmenter field name, processes and returns it. In this example if we had a field name like 'user.name' it will be 'user name' in error message.
+`setAttributeFormatter` property should be a function, that accepts 1 paramenter field name, processes and returns it. In this example if we had a field name like 'user.name' it will be 'user name' in error message.
 
 ### Change custom attribute names per form instance
 Here we will benefit from other optional parameter to `reactiveMobxForm` creation function called `validator` .In place where you initialize form
