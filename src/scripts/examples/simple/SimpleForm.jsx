@@ -66,6 +66,6 @@ class ContactForm extends React.Component {
 	}
 }
 
-const ContactFormReactive = reactiveMobxForm('contacts')(ContactForm);
+const ContactFormReactive = reactiveMobxForm('SimpleForm')(ContactForm);
 
 export default ContactFormReactive;

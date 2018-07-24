@@ -65,7 +65,7 @@ class ContactForm extends React.Component {
 	}
 }
 
-const ContactFormReactive = reactiveMobxForm('contacts', {
+const ContactFormReactive = reactiveMobxForm('SyncFieldValidation', {
   schema: {
     firstName: ['', 'required'],
     lastName : ['', 'required'],

@@ -12,10 +12,10 @@ import ControlSectionForm from '../../examples/control-section/ControlSection';
 import ControlArrayForm from '../../examples/control-array/ControlArray';
 
 
-const FormView = inject('formStore')(observer(({formStore}:{formStore?: FormStore}) => {
+const FormView = inject('formStore')(observer(({ formStore, name }:{ formStore?: FormStore, name?: string }) => {
 	console.log('render form view');
 
-	const form = formStore.forms.get('contacts');
+	const form = formStore.forms.get(name);
 
 	if (!form) {
 		return <span />;
@@ -67,7 +67,7 @@ class ExampleOverview extends React.Component<any, any>{
 
 				<div>Values</div>
 				<div>
-					<FormView />
+					<FormView name={formName}/>
 				</div>
 				<div>
 					<Code path={`${dir}/${formName}`} />
