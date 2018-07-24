@@ -10,8 +10,8 @@ The library is inspired by [Angular Reactive Forms](https://angular.io/guide/rea
 Library is on its initial development stage, is unstable and may contain bugs. Most of all API will change.
 
 If considering a software development as next steps:
-1. Make it work <-- we are here
-2. Make it right
+1. Make it work 
+2. Make it right <-- we are here
 3. Make it fast
 
 Starting of version `0.2.10` library contains all basic functionallity for handling simple and complex(nested) forms. For now I will focus on its documentation and differnt improvements(performace and code organization). API should left stable for some time. If you are using a library and require any help, please create an issue.
@@ -43,10 +43,7 @@ reactive-mobx-forms peer dependencies are:
 3. [mobx-react](https://github.com/mobxjs/mobx-react)
 
 ## Know Issues
-1. There is a problem when using [preact](https://github.com/developit/preact). For some reason, if inside of componentWillMount any state change is executed(form.refisterField => changes form.values => changes form.validation => changes form.errors, that are observed by Control Component), all lifecicle methods of Component are executed twice. Which then tries to register filed twice. Possible ways of solving can be:
-  1. Register field in componentDidMount 
-  2. Get rid of componentWillMount and do stuff in constructor
-This requires more investigation....
+1. When replacing `<A />` with `<B />`, `B.componentWillMount` now always happens before `A.componentWillUnmount`. Previously, `A.componentWillUnmount` could fire first in some cases. - Based on this. If you replace one `reactiveMobXForm` with another **having the same name**. This will cause new form extend previous, and then form destroy. So just give your forms different names.
 
 ## Installation
 
