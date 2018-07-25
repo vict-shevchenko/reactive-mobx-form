@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form } from './Form';
 
-interface IFormContext {
+export interface IFormContext {
 	form: Form;
 	destroyControlStateOnUnmount: boolean;
 }
