@@ -1,5 +1,4 @@
-src/*.*
-src/ui/*.*
+src/**/*.*
 __test__/**/*.*
 __mocks__/**/*.*
 lib/**/*.js.map
