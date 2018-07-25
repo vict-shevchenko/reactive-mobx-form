@@ -21,13 +21,15 @@
         ],
         "typeRoots": [
             "node_modules/@types"
-        ]
+        ],
+        "declaration": true
     },
     "exclude": [
         "node_modules",
         "build",
         "lib",
         "__tests__",
-        "__mocks__"
+        "__mocks__",
+        "index.d.ts"
     ]
 }

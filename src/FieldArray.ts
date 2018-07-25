@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, IObservableArray } from 'mobx';
 import { formField } from './types';
 import { objectPath, isNumeric } from './utils';
 
@@ -6,7 +6,7 @@ export class FieldArray {
 	public name: string;
 	public autoRemove: boolean = false;
 
-	public subFields = observable<formField>([]);
+	public subFields: IObservableArray<formField> = observable<formField>([]);
 	@observable public errors: string[] = [];
 
 	constructor(name: string) {

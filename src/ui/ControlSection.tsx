@@ -3,12 +3,17 @@ import { observer } from 'mobx-react';
 import { FieldSection } from '../FieldSection';
 import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
-import { IControlSectionProps } from '../interfaces/Control';
-import { ParentNameContext, withParentName, withForm} from '../context';
+import { ParentNameContext, withParentName, withForm, IControlContext} from '../context';
 import { constructName, withField } from './WithFieldHoc';
 
+export interface IControlSectionProps extends IControlContext {
+	field: FieldSection;
+	name: string;
+	component: React.Component<any, any> | React.SFC<any>;
+}
+
 @observer
-class ControlSection extends React.Component<IControlSectionProps> {
+export class ControlSection extends React.Component<IControlSectionProps> {
 	// todo: should be possible to use with children
 	private static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules'];

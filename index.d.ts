@@ -16,56 +16,33 @@
 
 /*~ If this module has methods, declare them as functions like so.
  */
-import React = require("react");
+import * as React from "react";
 import { ObservableMap } from "mobx";
 
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./src/interfaces/Form";
-import { IControlProps, IControlArrayProps, IControlSectionProps } from "./src/interfaces/Control";
+import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./lib/interfaces/Form";
+export { Control } from "./lib/ui/Control";
+export { ControlArray } from "./lib/ui/ControlArray";
+export { ControlSection } from "./lib/ui/ControlSection";
+export { FormStore } from "./lib/Store";
 
-declare class Form {
-    values: () => any;
-}
+type IReactComponent<P = any> =
+    | React.StatelessComponent<P>
+    | React.ComponentClass<P>
+    | React.ClassicComponentClass<P>;
 
-declare class FormStore {
-    forms: ObservableMap<Form>
-    registerForm(): void;
-    unRegisterForm(): void;
-}
-
-type IReactComponent = React.StatelessComponent | React.ComponentClass | React.ClassicComponentClass;
-
-declare function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition):
+/* export function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition):
     (wrappedForm: IReactComponent) => React.ClassicComponentClass<{onSubmit?: any, schema?: IFormSchema }>
-;
-
-declare function configureValidator(configParameters: IValidatorjsConfiguration): void;
-
-declare class Control extends React.Component<IControlProps, any> {}
-declare class ControlArray extends React.Component<IControlArrayProps, any> {}
-declare class ControlSection extends React.Component<IControlSectionProps, any> {}
-
-
-
-/*~ You can declare types that are available via importing the module */
-/* export interface someType {
-    name: string;
-    length: number;
-    extras?: string[];
-} */
-
-/*~ You can declare properties of the module using const, let, or var */
-// export const myField: number;
-
-/*~ If there are types, properties, or methods inside dotted names
- *~ of the module, declare them inside a 'namespace'.
+; 
  */
-//export namespace subProp {
-    /*~ For example, given this definition, someone could write:
-     *~   import { subProp } from 'yourModule';
-     *~   subProp.foo();
-     *~ or
-     *~   import * as yourMod from 'yourModule';
-     *~   yourMod.subProp.foo();
-     */
-//    export function foo(): void;
-//}
+
+interface IFormProps {
+    onSubmit: any;
+    schema?: IFormSchema;
+}
+
+export function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition): (wrappedForm: IReactComponent) => IReactComponent<IFormProps>
+
+// todo: Think over this
+//declare function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition): <T extends IReactComponent>(wrappedForm: T) => T & {onSubmit: any, schema?: IFormSchema }
+
+export function configureValidator(configParameters: IValidatorjsConfiguration): void;

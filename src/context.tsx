@@ -1,4 +1,14 @@
 import * as React from 'react';
+import { Form } from './Form';
+
+interface IFormContext {
+	form: Form;
+	destroyControlStateOnUnmount: boolean;
+}
+export interface IControlContext {
+	__formContext: IFormContext;
+	__parentNameContext: string;
+}
 
 // tslint:disable-next-line: variable-name
 export const FormContext = React.createContext({ form: {}, destroyControlStateOnUnmount: true });

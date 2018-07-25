@@ -3,14 +3,16 @@ import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
 import { Form } from './Form';
-import { IFormDefinition,
+import {
+	IFormDefinition,
 	IFormSchema,
 	IValidatorjsConfiguration,
 	IFormValues,
 	INormalizedFieldDefinition,
 	IFormNormalizedSchema,
 	IFieldDefinition,
-	fieldValue } from './interfaces/Form';
+	fieldValue
+} from './interfaces/Form';
 import { FormStore } from './Store';
 import { FormContext } from './context';
 
@@ -35,7 +37,7 @@ function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema {
 
 		if (Array.isArray(fieldDefinition)) {
 			// tslint:disable-next-line:max-line-length
-			normalizedFieldDefinition =  (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
+			normalizedFieldDefinition = (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
 		} else {
 			normalizedFieldDefinition = [fieldDefinition as fieldValue, ''];
 		}
@@ -46,7 +48,14 @@ function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema {
 	}, {});
 }
 
-export function createForm(formName: string, formDefinition: IFormDefinition = {}) {
+export interface IFormProps {
+	formStore: FormStore;
+	onSubmit: (values: IFormValues, ...rest: any[]) => Promise<any>;
+	schema?: IFormSchema;
+}
+
+// todo: fix typings
+export function createForm(formName: string, formDefinition: IFormDefinition = {}): any {
 	const {
 		validator: validatorDefinition = {},
 		schema: schemaDefinition = {},
@@ -60,11 +69,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 	return wrappedForm => {
 		@inject('formStore')
 		@observer
-		class FormUI extends React.Component<{
-			formStore: FormStore,
-			onSubmit: (values: IFormValues, ...rest: any[]) => Promise<any>,
-			schema?: IFormSchema
-		}, any> {
+		class FormUI extends React.Component<IFormProps, any> {
 
 			public form: Form;
 
@@ -128,14 +133,14 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 				return Promise.all([this.props.onSubmit(this.form.values, ...rest)])
 					.then(result => {
-							this.form.submitting = false;
-							return result[0];
-						}, error => {
-							this.form.submitting = false;
-							this.form.submitError = error;
-							return Promise.reject(this.form.submitError);
-						});
-						// todo: move into finally when it is part of standard
+						this.form.submitting = false;
+						return result[0];
+					}, error => {
+						this.form.submitting = false;
+						this.form.submitError = error;
+						return Promise.reject(this.form.submitError);
+					});
+				// todo: move into finally when it is part of standard
 			}
 
 			public resetForm(): void {
@@ -171,7 +176,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 	};
 }
 
-export function configureValidatorjs(configParameters: IValidatorjsConfiguration) {
+export function configureValidatorjs(configParameters: IValidatorjsConfiguration): void {
 	if (configParameters.language) {
 		Validator.useLang(configParameters.language);
 	}

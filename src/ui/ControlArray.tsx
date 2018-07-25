@@ -5,12 +5,16 @@ import ProxyFieldArray from '../ProxyFieldArray';
 import { FieldArray } from '../FieldArray';
 import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
-import { ParentNameContext, withParentName, withForm } from '../context';
-import { IControlArrayProps } from '../interfaces/Control';
+import { ParentNameContext, withParentName, withForm, IControlContext } from '../context';
 import { constructName, withField } from './WithFieldHoc';
 
+export interface IControlArrayProps extends IControlContext {
+	field: FieldArray;
+	name: string;
+	component: React.Component<any, any> | React.SFC<any> | string;
+}
 @observer
-class ControlArray extends React.Component<IControlArrayProps> {
+export class ControlArray extends React.Component<IControlArrayProps> {
 	private proxiedFieldsProp: ProxyFieldArray;
 	private fieldsProp = observable<string>([]);
 

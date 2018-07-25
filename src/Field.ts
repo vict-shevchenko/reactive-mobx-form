@@ -1,4 +1,4 @@
-import { observable, action, computed, autorun } from 'mobx';
+import { observable, action, computed, autorun, IReactionDisposer } from 'mobx';
 import { fieldValue, INormalizedFieldDefinition } from './interfaces/Form';
 import { Form } from './Form';
 
@@ -67,7 +67,7 @@ export class Field {
 		this.autoRemove = true;
 	}
 
-	public subscribeToFormValidation(form: Form) {
+	public subscribeToFormValidation(form: Form): IReactionDisposer {
 		return autorun(() => {
 			const errors: string[] = form.errors.get(this.name);
 

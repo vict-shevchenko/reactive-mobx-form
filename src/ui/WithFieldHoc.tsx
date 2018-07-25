@@ -1,13 +1,22 @@
 import * as React from 'react';
-import { IControlProps, IControlArrayProps, IControlSectionProps } from '../interfaces/Control';
 import { formField } from '../types';
+import { IControlProps } from './Control';
+import { IControlArrayProps } from './ControlArray';
+import { IControlSectionProps } from './ControlSection';
 
-// tslint:disable-next-line:variable-name
-export function withField(WrappedControl, fieldCreationFunction: (string, any) => formField ) {
-	return class extends React.Component<IControlProps | IControlArrayProps | IControlSectionProps> {
-		private field: formField;
+type IControlWithFieldProps = IControlProps | IControlArrayProps | IControlSectionProps;
 
-		constructor(props: IControlProps | IControlArrayProps | IControlSectionProps) {
+/* export type IReactComponent<P = any> =
+    | React.StatelessComponent<P>
+    | React.ComponentClass<P>
+    | React.ClassicComponentClass<P>; */
+
+// tslint:disable-next-line
+export function withField(WrappedControl/* : IReactComponent<IControlWithFieldProps> */, fieldCreationFunction: (string, any) => formField ) {
+	return class extends React.Component<IControlWithFieldProps> {
+		public field: formField;
+
+		constructor(props: IControlWithFieldProps) {
 			super(props);
 			const {__formContext: {form}, __parentNameContext, name } = props;
 			const fieldName = constructName(__parentNameContext, name);

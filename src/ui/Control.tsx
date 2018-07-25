@@ -5,8 +5,7 @@ import { Field } from '../Field';
 import { INormalizedFieldDefinition } from '../interfaces/Form';
 import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
-import { withForm, withParentName } from '../context';
-import { IControlProps } from '../interfaces/Control';
+import { withForm, withParentName, IControlContext } from '../context';
 import { withField, constructName } from './WithFieldHoc';
 import { IReactionDisposer } from 'mobx';
 
@@ -16,6 +15,20 @@ import { IReactionDisposer } from 'mobx';
   Component.prototype &&
   typeof Component.prototype.isReactComponent === 'object'
 )*/
+
+export interface IControlProps extends IControlContext {
+	field: Field;
+	name: string;
+	component: React.Component<any, any> | React.SFC<any> | string;
+	type: string;
+	rules?: string;
+	children?: any;
+	value?: string;
+	className?: string;
+	onFocus?(event: Event): void;
+	onBlur?(event: Event): void;
+	onChange?(event: Event): void;
+}
 
 // todo: add value property to make field a controlled component
 function prepareFieldDefinition(name: string, props: IControlProps): INormalizedFieldDefinition {
@@ -31,7 +44,7 @@ function prepareFieldDefinition(name: string, props: IControlProps): INormalized
 }
 
 @observer
-class Control extends React.Component<IControlProps> {
+export class Control extends React.Component<IControlProps> {
 	private isNumber: boolean;
 	private isSelect: boolean;
 	private isTextarea: boolean;
