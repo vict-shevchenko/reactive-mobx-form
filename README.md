@@ -4,8 +4,11 @@ Forms library for React+MobX application. Under the hood it uses efficient MobX 
 The library is inspired by [Angular Reactive Forms](https://angular.io/guide/reactive-forms) and [Redux Form](http://redux-form.com). It has similar syntax to Redux Form, because of concept that are natural to React world. So if you previously had experience with it, it will be easy for you to start using `reactive-mobx-form`. But still one of the goals of this library is to be simple in usage for everyone.
 
 ## Note on versions
-0.7.5 - is a stable version for usage in environments with any version of React but MobX < 4. ([Map in MobX](https://github.com/mobxjs/mobx/blob/e17c47833d1812eee6d77914be890aa41e4b7908/CHANGELOG.md#breaking-changes-1))
-0.9.0 - is a stable version for React > 16.3, and MobX > 4(5) (mobx-react > 5.2.0). [See changelog for updates](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/CHANGELOG.md) This version will be mainly developed
+- 0.7.5 - is a stable version for usage in environments with any version of React but MobX < 4. ([Map in MobX](https://github.com/mobxjs/mobx/blob/e17c47833d1812eee6d77914be890aa41e4b7908/CHANGELOG.md#breaking-changes-1))
+- 0.9.0 - is a stable version for React > 16.3, and MobX > 4(5) (mobx-react > 5.2.0). [See changelog for updates](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/CHANGELOG.md). This version will be mainly developed. 
+
+#### Migration to 0.9.x
+For most users migration will be just updating a version in `package.json`. Make sure you are running React > 16.3.0. Also you can check [commit](https://github.com/vict-shevchenko/reactive-mobx-form/commit/e7fcdeeaf7173de0ef3974c12d10fb1de3a1f31a) for migration for docs site of `reactive-mobx-form`
 
 ## Documentation
 [Examples](https://vict-shevchenko.github.io/reactive-mobx-form) can be found here. Documentation is under development, but you already can see some code and usage
