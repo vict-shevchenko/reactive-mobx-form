@@ -1,4 +1,5 @@
 import { observable, action, computed, reaction } from 'mobx';
+import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema } from './interfaces/Form';
 import { formField } from './types';
@@ -10,7 +11,7 @@ export class Form {
 	public component: any;
 
 	@observable public fields = new Map<string, formField>();
-	@observable public errors: Validator.Errors; // todo: initial value
+	@observable public errors: Errors; // todo: initial value
 	@observable public isValid: boolean | void; // todo: initial value
 
 	@observable public submitting: boolean = false;
@@ -42,7 +43,7 @@ export class Form {
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
-	@computed get validation() {
+	@computed get validation(): IValidator<{[name: string]: boolean | number | string}> {
 		return new Validator(this.values, this.rules, this.errorMessages);
 	}
 
