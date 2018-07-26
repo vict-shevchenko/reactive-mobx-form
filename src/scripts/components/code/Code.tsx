@@ -20,10 +20,6 @@ class Code extends React.Component<iCodeProps, any> {
 
 	static url = 'https://raw.githubusercontent.com/vict-shevchenko/reactive-mobx-form/site/src/scripts/examples';
 
-	constructor(){
-		super();
-	}
-
 	componentDidMount() {
 		this.code = fromPromise(doFetchCall(`${Code.url}/${this.props.path}.jsx`))
 	}

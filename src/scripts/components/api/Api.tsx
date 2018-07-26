@@ -3,10 +3,6 @@ import * as React from 'react';
 import Document from '../document/Document';
 
 class ApiOverview extends React.Component<any, any>{
-	constructor() {
-		super();
-	}
-
 	render() {
 		const name = this.props.match.params.name;
 

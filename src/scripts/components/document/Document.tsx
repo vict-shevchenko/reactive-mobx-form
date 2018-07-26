@@ -17,15 +17,10 @@ const prettify = markdown =>
 
 @observer
 class DocumentOverview extends React.Component<iDocumentProps, any>{
-
 	@observable document: any = {
 		state: 'pending',
 		value: ''
 	};
-
-	constructor(){
-		super();
-	}
 
 	componentDidMount() {
 		this.document = fromPromise(doFetchCall(`https://raw.githubusercontent.com/vict-shevchenko/reactive-mobx-form/master/${this.props.document}.md`))

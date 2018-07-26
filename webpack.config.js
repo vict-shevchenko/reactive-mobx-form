@@ -16,14 +16,14 @@ module.exports = {
 		}
 	},
 	devtool: 'source-map',
-	resolve: {
-		modules: [path.resolve(__dirname, "app"), path.resolve(__dirname, "node_modules")],
-		extensions: [".js", ".ts", ".json", ".jsx", ".tsx", ".css", ".scss"]/*,
-		alias: {
+	 resolve: {
+	/*	modules: [path.resolve(__dirname, "app"), path.resolve(__dirname, "node_modules")], */
+		extensions: [".js", ".ts", ".json", ".jsx", ".tsx", ".css", ".scss"],
+		/* alias: {
 			'react': 'preact-compat',
 			'react-dom': 'preact-compat'
-		}*/
-	},
+		} */
+	}, 
 
 	module: {
 		rules: [

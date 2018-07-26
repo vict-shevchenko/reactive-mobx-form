@@ -47,10 +47,6 @@ function FormRenderer({ formName }: {formName: string}) {
 
 
 class ExampleOverview extends React.Component<any, any>{
-	constructor() {
-		super();
-	}
-
 	render() {
 		const dir = this.props.match.params.dir;
 		const formName = this.props.match.params.name;
