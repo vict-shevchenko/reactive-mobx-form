@@ -3,6 +3,7 @@ import { observable } from 'mobx';
 class AppState {
   @observable timer = 0;
   @observable showStreet = true;
+  @observable simpleRules = true;
 
   constructor() {
     setInterval(() => {

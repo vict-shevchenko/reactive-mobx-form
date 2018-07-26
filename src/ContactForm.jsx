@@ -17,7 +17,6 @@ const Location = (props) => (
 );
 
 
-
 const Address = inject('appState')(observer(({appState}) =>
 	<div>
 		<div>
@@ -72,6 +71,8 @@ const Hobbies = ({fields}) => (
 	</div>
 );
 
+@inject('appState')
+@observer
 class ContactForm extends Component {
 	myCustomSubmit(event) {
 		this.props.submit(event).then(
@@ -83,7 +84,7 @@ class ContactForm extends Component {
 		const { submit, reset, submitting, submitError, valid, dirty } = this.props;
 		return (
 			<form onSubmit={this.myCustomSubmit.bind(this)}>
-				{/*<div>
+			{/* 	<div>
 					<label htmlFor="firstName">First Name</label>
 					<Control name="firstName" component={RenderField} type="text" alt="some text"  label="FN"/>
 				</div>
@@ -91,8 +92,8 @@ class ContactForm extends Component {
 					<label htmlFor="lastName">Last Name</label>
 					<Control name="lastName" component={RenderField} type="text" label="LN"/>
 				</div>
-				<div>
-					<label htmlFor="photo">Last Name</label>
+			 <div>
+					<label htmlFor="photo">Photo</label>
 					<Control name="photo" component="input" type="file"/>
 				</div>
 				<div>
@@ -102,7 +103,7 @@ class ContactForm extends Component {
 				<div>
 					<label htmlFor="age">Age</label>
 					<Control name="age" component={RenderField} type="number"/>
-				</div>
+				</div> 
 				<div>
 					<label htmlFor="email">Email</label>
 					<Control name="email" component={RenderField} type="email" label="Email"/>
@@ -110,7 +111,7 @@ class ContactForm extends Component {
 				<div>
 					<label htmlFor="acceptTerms">Accept terms</label>
 					<Control name="acceptTerms" component="input" type="checkbox"/>
-				</div>
+				</div> 
 				<div>
 					<label htmlFor="Faivorite film">Favourite film</label>
 					<Control name="favoriteFilm" component="select">
@@ -119,18 +120,27 @@ class ContactForm extends Component {
 						<option value="dieHard">Die Hard</option>
 						<option value="Robocop">Robocop</option>
 					</Control>
-				</div>
-				<div>
+				</div> */}
+			{/* 	<div>
 					<label>Sex</label>
 					<div>
 						<label><Control name="sex" component="input" type="radio" value="male"/> Male</label>
 						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
 					</div>
-				</div>*/}
-				<ControlArray name="persons" component={Persons} />
+				</div> */}
+			{/* <ControlArray name="persons" component={Persons} /> */}
 				<hr />
 
-				<ControlSection name="location" component={Location} />
+				{/* <ControlSection name="location" component={Location} /> */}
+
+				<div>
+					<label>Person Age</label>
+					<div>
+						<Control name="age" component="input" type="text" rules={this.props.appState.simpleRules ? 'required' : 'required|numeric|between:10,30'}/>
+
+						<button type="button" onClick={() => this.props.appState.simpleRules = !this.props.appState.simpleRules}> Change rules</button>
+					</div>
+				</div>
 
 				<div>
 					<label>Sex</label>
@@ -159,7 +169,6 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
 		schema: {
 			'lastName': ['shevchenko', 'same:firstName'],
 			'email': ['', 'required|email'],
-			'age': [25, 'numeric|between:10,30'],
 			'acceptTerms': [true],
 			'favoriteFilm': ['dieHardwerwe'],
 			'sex':[''],

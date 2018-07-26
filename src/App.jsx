@@ -8,7 +8,9 @@ import FormExtension from "./FormExtension";
 
 const Button = inject('appState')(observer(({appState}) => <button>{appState.timer} -- {appState.showStreet.toString()}</button>));
 
-const FormView = inject('formStore')(observer(({formStore}) => <pre>{beautify(formStore, null, 2, 100)}</pre>));
+const FormView = inject('formStore')(observer(({formStore}) => <pre>{beautify(formStore.forms, null, 2, 100)}</pre>));
+
+// const FormView = inject('formStore')(({formStore}) => <pre>{JSON.stringify(formStore.forms)}</pre>);
 
 
 class App extends Component {
@@ -16,7 +18,7 @@ class App extends Component {
 		super();
 
 		this.state = {
-			extensionVisible: true
+			extensionVisible: false
 		}
 
 		this.toggleExtension = this.toggleExtension.bind(this);
@@ -69,9 +71,9 @@ class App extends Component {
 				</button>*/}
 
 				<ContactForm onSubmit={this.handleSubmit.bind(this)} schema={{firstName: ['viktor']}}/>
-				{this.state.extensionVisible ? <FormExtension /> : null}
+				{ /* this.state.extensionVisible ? <FormExtension schema={{river: 'Dnipro'}} /> : null */}
 
-				<button type="button" onClick={this.toggleExtension}> HIDE</button>
+				<button type="button" onClick={this.toggleExtension}> SHOW/HIDE</button>
 
 				{/*<pre>{beautify(this.props.formStore.forms, null, 2, 100)}</pre>*/}
 				<FormView />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'mobx-react';
 import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
+// import { AppContainer } from 'react-hot-loader';
 import AppState from './AppState';
 import App from './App';
 
@@ -15,15 +15,13 @@ configureValidator({
 });
 
 render(
-  <AppContainer>
-      <Provider appState={appState} formStore={formStore}>
+      (<Provider appState={appState} formStore={formStore}>
           <App />
-      </Provider>
-  </AppContainer>,
-  document.getElementById('root')
+      </Provider>)
+, document.getElementById('root')
 );
 
-if (module.hot) {
+/* if (module.hot) {
   module.hot.accept('./App', () => {
     const NextApp = require('./App').default;
 
@@ -35,5 +33,5 @@ if (module.hot) {
       </AppContainer>,
       document.getElementById('root')
     );
-  });
-}
+  }); 
+}*/
