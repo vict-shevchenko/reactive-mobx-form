@@ -52,6 +52,6 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-router-dom": "^4.3.1",
-    "reactive-mobx-form": "^0.9.2"
+    "reactive-mobx-form": "^0.9.3"
   }
 }
