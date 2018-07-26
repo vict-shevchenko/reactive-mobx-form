@@ -1,3 +1,11 @@
+# 0.9.3
+- all type errors fixed
+- handle export of proper typings to be used by consumer projects
+- docs updates
+
+# 0.9.2
+- type errors fixes
+
 # 0.9.1
 - removed componentWillMount from FormUI component
 - mostly docs update
