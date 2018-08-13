@@ -25,7 +25,7 @@ someOtherFieldOnBlur(event) {
     const value = event.target.value.trim();
 
     const form = this.props.formStore.getForm('myForm');
-    const computedPropertyField = form.getField(['computedProperty']);
+    const computedPropertyField = form.findField('computedProperty');
     computedPropertyField.onChange(value);
 }
 ```
@@ -38,7 +38,7 @@ componentWillMount() {
             () => this.props.myOtherStore.someComputedValue, // or value may arrive from server
             (someComputedValue) => {
                 const form = this.props.formStore.getForm('myForm');
-                const computedPropertyField = form.getField(['computedProperty']);
+                const computedPropertyField = form.findField('computedProperty');
                 computedPropertyField.onChange(someComputedValue);
             },
         );
