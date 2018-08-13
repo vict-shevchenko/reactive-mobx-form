@@ -131,6 +131,12 @@ export class Form {
 		}
 	}
 
+	public findField(name: string): formField | undefined {
+		const fieldPath = objectPath(name);
+
+		return this.findFieldInHierarchy(fieldPath);
+	}
+
 	private findFieldInHierarchy(path: string[]): formField | undefined {
 		try {
 			// f is Form initially, and formField after, can`t handle type error
