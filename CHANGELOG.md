@@ -1,3 +1,6 @@
+# 0.9.4
+- add public method `form.findField` to make a field look up in all form hierarchy. 
+
 # 0.9.3
 - all type errors fixed
 - handle export of proper typings to be used by consumer projects
