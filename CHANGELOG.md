@@ -1,4 +1,4 @@
-# 0.9.4
+# 0.9.5
 - add public method `form.findField` to make a field look up in all form hierarchy. 
 
 # 0.9.3
