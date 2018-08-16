@@ -1,3 +1,6 @@
+# 0.9.6
+- fix bug that blocked passing of any additional props to RactiveForm. `<MyCustomForm onSubmit={} schema={} anyProp={}>`. `props.anyProp` will be accessible inside MyCustomForm component
+
 # 0.9.5
 - add public method `form.findField` to make a field look up in all form hierarchy. 
 
