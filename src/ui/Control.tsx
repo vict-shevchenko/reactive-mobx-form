@@ -45,7 +45,7 @@ function prepareFieldDefinition(name: string, props: IControlProps): INormalized
 
 @observer
 export class Control extends React.Component<IControlProps> {
-	private isNumber: boolean;
+	// private isNumber: boolean;
 	private isSelect: boolean;
 	private isTextarea: boolean;
 	private isCheckable: boolean;
@@ -66,7 +66,7 @@ export class Control extends React.Component<IControlProps> {
 		this.isRadio     = props.type      === 'radio';
 		this.isCheckbox  = props.type      === 'checkbox';
 		this.isFile      = props.type      === 'file';
-		this.isNumber    = props.type      === 'number';
+		// this.isNumber    = props.type      === 'number';
 		this.isSelect    = props.component === 'select';
 		this.isTextarea  = props.component === 'textarea';
 		this.isCheckable = this.isCheckbox || this.isRadio;

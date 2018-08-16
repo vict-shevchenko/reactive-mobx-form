@@ -15,6 +15,7 @@ import {
 } from './interfaces/Form';
 import { FormStore } from './Store';
 import { FormContext } from './context';
+import { omit } from './utils';
 
 function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
@@ -151,7 +152,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				return (
 					<FormContext.Provider value={this.state.formContext}>
 						{
-							React.createElement(wrappedForm, {
+							React.createElement(wrappedForm, Object.assign( omit(this.props, ['schema', 'onSubmit']), {
 								submit: this.submitForm.bind(this),
 								reset: this.resetForm.bind(this),
 								destroy: this.destroyForm.bind(this),
@@ -165,7 +166,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 								dirty: this.form.isDirty
 								// todo - this case render been called when any field change
 								// errors: this.form.errors
-							})
+							}))
 						}
 					</FormContext.Provider>
 				);
