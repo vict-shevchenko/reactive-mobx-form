@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing verifyRequiredProps utility Should return trow if there are missing props 1`] = `
+"You forgot to specify 'd, e' properties
+				for <TestComponent name=\\"Test\\" /> component."
+`;

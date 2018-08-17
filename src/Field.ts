@@ -50,7 +50,7 @@ export class Field {
 		this.isFocused = false;
 	}
 
-	@action public onChange(value: fieldValue): void  {
+	@action public onChange(value: fieldValue): void {
 		this.value = value;
 	}
 

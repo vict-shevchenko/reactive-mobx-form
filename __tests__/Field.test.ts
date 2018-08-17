@@ -37,6 +37,16 @@ describe('Testing of Field class', () => {
 		expect(fieldWithRules.rules).toEqual({ name: 'required' });
 	});
 
+	test('Verify setTouched method works correctly', () => {
+		const field = new Field('name', ['Viktor', 'required']);
+
+		expect(field.isTouched).toBe(false);
+
+		field.setTouched();
+
+		expect(field.isTouched).toBe(true);
+	});
+
 	test('Verify field methods Focus and Blur work correctly as expected', () => {
 		const field = new Field('name', ['Viktor', 'required']);
 
@@ -51,6 +61,11 @@ describe('Testing of Field class', () => {
 		field.onBlur();
 
 		expect(field.isFocused).toBe(false);
+		expect(field.isTouched).toBe(true);
+
+		field.onFocus();
+
+		expect(field.isFocused).toBe(true);
 		expect(field.isTouched).toBe(true);
 	});
 

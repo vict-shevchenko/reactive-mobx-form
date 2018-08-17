@@ -17,11 +17,11 @@ import { FormStore } from './Store';
 import { FormContext } from './context';
 import { omit } from './utils';
 
-function isConfigParamValid(param) {
+export function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
 }
 
-function validateConfigParams(formName: string, params: any) {
+export function validateConfigParams(formName: string, params: any) {
 	if (!Object.keys(params).every(paramName => isConfigParamValid(params[paramName]))) {
 		throw new Error('Error validating form initialization parameters');
 	}
@@ -31,7 +31,7 @@ function validateConfigParams(formName: string, params: any) {
 	}
 }
 
-function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema {
+export function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema {
 	return Object.keys(draftSchema).reduce((schema: IFormNormalizedSchema, fieldName: string): IFormNormalizedSchema => {
 		const fieldDefinition: IFieldDefinition = draftSchema[fieldName];
 		let normalizedFieldDefinition: INormalizedFieldDefinition;
@@ -55,7 +55,6 @@ export interface IFormProps {
 	schema?: IFormSchema;
 }
 
-// todo: fix typings
 export function createForm(formName: string, formDefinition: IFormDefinition = {}): any {
 	const {
 		validator: validatorDefinition = {},
@@ -78,7 +77,11 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				super(props);
 
 				if (props.schema && !isConfigParamValid(props.schema)) {
-					throw new Error('attribute "schema" provided to Form has incorrect format. Object expected');
+					throw new Error('Attribute "schema" provided to Form has incorrect format. Object expected');
+				}
+
+				if (!props.onSubmit) {
+					throw new Error(`Attribute "onSubmit" is Required for <${wrappedForm.name} /> component`);
 				}
 
 				const schema = Object.assign(schemaDefinition, this.props.schema || {});
@@ -159,10 +162,10 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 								// todo: when submit change - full form render method is executed.
 								// Thing on more performant approach. May be Submitting component
 								submitting: this.form.submitting,
-								submitError: this.form.submitError,
+								submitError: this.form.submitError, // todo: may be should be null by default
 								// todo - this case render been called when any field change
 								// validation: form.validation,
-								valid: this.form.isValid,
+								valid: this.form.isValid, // todo: may be should be false by default
 								dirty: this.form.isDirty
 								// todo - this case render been called when any field change
 								// errors: this.form.errors

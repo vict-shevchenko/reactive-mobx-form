@@ -65,7 +65,7 @@ export function objectPath(str: string): string[] {
 	return parts;
 }
 
-function objectMissProps(propNames: string[], obj: any): string[] | null {
+export function objectMissProps(propNames: string[], obj: any): string[] | null {
 	const missingProps: string[] = [];
 
 	for (const propName of propNames) {
@@ -86,6 +86,6 @@ export function verifyRequiredProps(required, props, component): void {
 
 	if (missingProps) {
 		throw (new Error(`You forgot to specify '${missingProps.join(', ')}' propert${missingProps.length > 1 ? 'ies' : 'y'}
-				for <${Object.getPrototypeOf(component).constructor.name} name="${this.props.name}" /> component.`));
+				for <${Object.getPrototypeOf(component).constructor.name} name="${component.props.name}" /> component.`));
 	}
 }
