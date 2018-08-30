@@ -28,6 +28,7 @@ export interface IControlProps extends IControlContext {
 	onFocus?(event: Event): void;
 	onBlur?(event: Event): void;
 	onChange?(event: Event): void;
+	fieldRef?(f: Field): void;
 }
 
 // todo: add value property to make field a controlled component
@@ -56,7 +57,7 @@ export class Control extends React.Component<IControlProps> {
 	private formErrorUnsubscribe: IReactionDisposer;
 
 	public static requiredProps: string[] = ['component', 'name'];
-	public static skipProp: string[] = ['component', 'rules', 'className'];
+	public static skipProp: string[] = ['component', 'rules', 'className', 'fieldRef'];
 
 	constructor(props) {
 		super(props);
@@ -94,6 +95,10 @@ export class Control extends React.Component<IControlProps> {
 			this.createField();
 			this.field.subscribeToFormValidation(this.form);
 		} */
+
+		if (this.props.fieldRef) {
+			this.props.fieldRef(this.props.field);
+		}
 	}
 
 	public componentDidMount() {
