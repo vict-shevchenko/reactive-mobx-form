@@ -69,3 +69,5 @@ Flag that represents the validity of the form. **`true`** if all field are valid
 
 **`dirty` : boolean**
 **`true`** when any field of form was changed, so its value is different from its initial value
+
+Any other optional properties that you pass to your ReactiveMobxForm will be transparently passed into Form Component
