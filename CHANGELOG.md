@@ -1,3 +1,6 @@
+# 0.9.7
+- add ComputedControl functionality
+
 # 0.9.6
 - fix bug that blocked passing of any additional props to RactiveForm. `<MyCustomForm onSubmit={} schema={} anyProp={}>`. `props.anyProp` will be accessible inside MyCustomForm component
 
