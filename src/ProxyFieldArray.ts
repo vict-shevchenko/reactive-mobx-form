@@ -1,5 +1,9 @@
 import { reaction, IObservableArray } from 'mobx';
 
+function swap(arr: any[], from: number, to: number) {
+  arr.splice(from, 1, arr.splice(to, 1, arr[from])[0]);
+}
+
 export default class ProxyFieldArray {
 	public forEach: any;
 	public clear: any;
@@ -40,10 +44,9 @@ export default class ProxyFieldArray {
 	}
 
 	public swap(fromIndex: number, toIndex: number): void {
-		this.fieldArraySubFields.move(fromIndex, toIndex);
-		this.fieldArraySubFields.move(toIndex - 1, fromIndex);
-		this.observableArray.move(fromIndex, toIndex);
-		this.observableArray.move(toIndex - 1, fromIndex);
+		// tslint:disable-next-line:max-line-length
+		swap(this.fieldArraySubFields, fromIndex, toIndex);
+		swap(this.observableArray, fromIndex, toIndex);
 	}
 
 	public map(callback) {

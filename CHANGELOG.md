@@ -1,3 +1,6 @@
+# 0.9.8
+- fix `.move` method absent on ObservableArray starting from Mobx 4
+
 # 0.9.7
 - add ComputedControl functionality
 
