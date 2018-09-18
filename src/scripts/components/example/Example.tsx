@@ -10,6 +10,7 @@ import SimpleForm from '../../examples/simple/SimpleForm';
 import SyncValidationForm from '../../examples/sync-validation/SyncFieldValidation';
 import ControlSectionForm from '../../examples/control-section/ControlSection';
 import ControlArrayForm from '../../examples/control-array/ControlArray';
+import ComputedControlForm from '../../examples/computed-control/ComputedControl';
 
 
 const FormView = inject('formStore')(observer(({ formStore, name }:{ formStore?: FormStore, name?: string }) => {
@@ -40,6 +41,8 @@ function FormRenderer({ formName }: {formName: string}) {
 			return  <ControlSectionForm onSubmit={handleSubmit}/>;
 		case 'ControlArray':
 			return <ControlArrayForm onSubmit={handleSubmit}/>;
+		case 'ComputedControl':
+			return <ComputedControlForm onSubmit={handleSubmit}/>;
 		default:
 			return <span/>
 	}

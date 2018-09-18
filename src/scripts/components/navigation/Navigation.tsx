@@ -17,6 +17,7 @@ export default function Navigation() {
 			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/sync-validation/SyncFieldValidation">Sync Field Validation</NavLink>
 			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/control-section/ControlSection">ControlSection</NavLink>
 			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/control-array/ControlArray">ControlArray</NavLink>
+			<NavLink className="subNavItem" activeClassName="subNavItem--active" to="/examples/computed-control/ComputedControl">ComputedControl</NavLink>
 			<NavLink className="navItem" activeClassName="navItem--active" to="/donate">DONATE</NavLink>
 		</div>
 	)

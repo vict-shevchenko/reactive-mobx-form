@@ -37,6 +37,10 @@
 			display: block;
 		}
 
+		input[disabled] {
+			background-color: #fafafa;
+		}
+
 		textarea {
 			resize: vertical;
 			height: 80px;
