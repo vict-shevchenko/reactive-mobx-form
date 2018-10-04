@@ -1,3 +1,6 @@
+# 0.9.9
+- fix npm WARN on mobx peer dependency
+
 # 0.9.8
 - fix `.move` method absent on ObservableArray starting from Mobx 4.
 
