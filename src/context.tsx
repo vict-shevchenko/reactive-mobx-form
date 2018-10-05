@@ -12,6 +12,10 @@ export interface IControlFormContext {
 	__formContext: IFormContext;
 }
 
+export interface IControlParentNameContext {
+	__parentNameContext: string;
+}
+
 // tslint:disable-next-line: variable-name
 export const FormContext = React.createContext({ form: {} as Form, destroyControlStateOnUnmount: true });
 // tslint:disable-next-line: variable-name
@@ -29,8 +33,8 @@ export function withForm<P extends IControlFormContext>(Component: React.Compone
 }
 
 // tslint:disable-next-line: variable-name
-export function withParentName(Component) {
-	return function ComponentWithParentNameContext(props) {
+export function withParentName<P extends IControlParentNameContext>(Component: React.ComponentType<P>) {
+	return function ComponentWithParentNameContext(props: Subtract<P, IControlParentNameContext>) {
 		return (
 			<ParentNameContext.Consumer>
 				{parentNameContext => <Component {...props} __parentNameContext={parentNameContext} />}
