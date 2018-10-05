@@ -19,21 +19,12 @@ export const ParentNameContext = React.createContext('');
 
 // tslint:disable-next-line: variable-name
 export function withForm<P extends IControlFormContext>(Component: React.ComponentType<P>) {
-	/* return function ComponentWithFormContext(props: Subtract<P, IFormContext>) {
+	return function ComponentWithFormContext(props: Subtract<P, IFormContext>) {
 		return (
 			<FormContext.Consumer>
 				{formContext => <Component {...props} __formContext={formContext} />}
 			</FormContext.Consumer>
 		);
-	}; */
-	return class ComponentWithFormContext extends React.Component<Subtract<P, IControlFormContext>, any> {
-		public render() {
-			return (
-				<FormContext.Consumer>
-				{(formContext: IFormContext) => <Component {...this.props} __formContext={formContext} />}
-				</FormContext.Consumer>
-			);
-		}
 	};
 }
 
@@ -47,22 +38,3 @@ export function withParentName(Component) {
 		);
 	};
 }
-
-
-
-interface ICounterProps extends IControlFormContext {
-	bla: string;
-}
-
-// tslint:disable-next-line:variable-name
-const Counter = (props: ICounterProps) => (
-  <div>
-    <button onClick={props.onDecrement}> - </button>
-    {props.__formContext}
-    <button onClick={props.onIncrement}> + </button>
-  </div>
-);
-
-// tslint:disable-next-line:variable-name
-const WrappedConuter = withForm(Counter);
-const wc = <WrappedConuter bla="sdfsdfsfd" __formContext={{} as Form}/>;
