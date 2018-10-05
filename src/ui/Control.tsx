@@ -5,7 +5,7 @@ import { Field } from '../Field';
 import { INormalizedFieldDefinition } from '../interfaces/Form';
 import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
-import { withForm, withParentName, IControlContext } from '../context';
+import { withForm, withParentName, IControlFormContext } from '../context';
 import { withField, constructName } from './WithFieldHoc';
 import { IReactionDisposer } from 'mobx';
 
@@ -16,8 +16,7 @@ import { IReactionDisposer } from 'mobx';
   typeof Component.prototype.isReactComponent === 'object'
 )*/
 
-export interface IControlProps extends IControlContext {
-	field: Field;
+export interface IControlProps extends IControlFormContext {
 	name: string;
 	component: React.Component<any, any> | React.SFC<any> | string;
 	type: string;
@@ -239,15 +238,13 @@ export class Control extends React.Component<IControlProps> {
 	}
 }
 
-// tslint:disable-next-line: variable-name
-const ControlWithField = withField(Control, (name: string, props: IControlProps) => {
+function createField(name: string, props: IControlProps) {
 	const fieldDefinition: INormalizedFieldDefinition = prepareFieldDefinition(name, props);
-
 	return new Field(name, fieldDefinition);
-});
+}
 
 // tslint:disable-next-line: variable-name
-export const ControlWithContext = withParentName(withForm(ControlWithField));
+export const ControlWithContext = withField(withParentName(withForm(Control)), createField);
 
 /*
 	private warnOnIncorrectInitialValues(initialValue: fieldValue): void {

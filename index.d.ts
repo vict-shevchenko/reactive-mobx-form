@@ -20,9 +20,9 @@ import * as React from "react";
 import { ObservableMap } from "mobx";
 
 import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./lib/interfaces/Form";
-export { Control } from "./lib/ui/Control";
-export { ControlArray } from "./lib/ui/ControlArray";
-export { ControlSection } from "./lib/ui/ControlSection";
+export { ControlWithContext as Control } from "./lib/ui/Control";
+export { ControlArrayWithContext as ControlArray } from "./lib/ui/ControlArray";
+export { ControlSectionWithContext as ControlSection } from "./lib/ui/ControlSection";
 export { FormStore } from "./lib/Store";
 
 type IReactComponent<P = any> =

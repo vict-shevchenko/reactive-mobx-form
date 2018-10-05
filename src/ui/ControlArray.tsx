@@ -5,10 +5,10 @@ import ProxyFieldArray from '../ProxyFieldArray';
 import { FieldArray } from '../FieldArray';
 import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
-import { ParentNameContext, withParentName, withForm, IControlContext } from '../context';
+import { ParentNameContext, withParentName, withForm, IControlFormContext } from '../context';
 import { constructName, withField } from './WithFieldHoc';
 
-export interface IControlArrayProps extends IControlContext {
+export interface IControlArrayProps extends IControlFormContext {
 	field: FieldArray;
 	name: string;
 	component: React.Component<any, any> | React.SFC<any> | string;

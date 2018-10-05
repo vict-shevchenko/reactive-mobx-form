@@ -3,10 +3,10 @@ import { observer } from 'mobx-react';
 import { FieldSection } from '../FieldSection';
 import { omit, verifyRequiredProps } from '../utils';
 import BaseControl from './BaseControl';
-import { ParentNameContext, withParentName, withForm, IControlContext} from '../context';
+import { ParentNameContext, withParentName, withForm, IControlFormContext} from '../context';
 import { constructName, withField } from './WithFieldHoc';
 
-export interface IControlSectionProps extends IControlContext {
+export interface IControlSectionProps extends IControlFormContext {
 	field: FieldSection;
 	name: string;
 	component: React.Component<any, any> | React.SFC<any>;
