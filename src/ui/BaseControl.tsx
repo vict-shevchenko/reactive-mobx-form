@@ -2,8 +2,8 @@ import * as React from 'react';
 
 export interface IBaseControlProps {
 	name: string;
-	// React.ComponentType<P> ????
-	component: React.Component<any, any> | React.SFC<any> | string;
+	// !IMPORTANT We need a way to type the component we are passing into
+	component: React.ComponentType<any> | string;
 }
 
 export class BaseControl {

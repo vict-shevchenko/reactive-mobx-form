@@ -43,7 +43,7 @@ function prepareFieldDefinition(name: string, props: IControlProps): INormalized
 }
 
 @observer
-export class Control extends React.Component<IControlProps, any> {
+export class Control<P> extends React.Component<P & IControlProps, any> {
 	// private isNumber: boolean;
 	private isSelect: boolean;
 	private isTextarea: boolean;
@@ -57,7 +57,7 @@ export class Control extends React.Component<IControlProps, any> {
 	public static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules', 'className', 'fieldRef'];
 
-	constructor(props: IControlProps) {
+	constructor(props: P & IControlProps) {
 		super(props);
 
 		const requiredProps = [...Control.requiredProps];
