@@ -4,15 +4,14 @@ import { observer } from 'mobx-react';
 import ProxyFieldArray from '../ProxyFieldArray';
 import { FieldArray } from '../FieldArray';
 import { omit, verifyRequiredProps } from '../utils';
-import BaseControl from './BaseControl';
-import { ParentNameContext, withParentName, withForm, IControlFormContext } from '../context';
-import { constructName, withField } from './WithFieldHoc';
+import {BaseControl, IBaseControlProps} from './BaseControl';
+// tslint:disable-next-line:max-line-length
+import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext } from '../context';
+import { constructName, withField, IControlWithFieldContext } from './WithFieldHoc';
 
-export interface IControlArrayProps extends IControlFormContext {
-	field: FieldArray;
-	name: string;
-	component: React.Component<any, any> | React.SFC<any> | string;
-}
+// tslint:disable-next-line:max-line-length
+export interface IControlArrayProps extends IBaseControlProps, IControlFormContext, IControlParentNameContext, IControlWithFieldContext<FieldArray> {}
+
 @observer
 export class ControlArray extends React.Component<IControlArrayProps> {
 	private proxiedFieldsProp: ProxyFieldArray;
@@ -21,7 +20,7 @@ export class ControlArray extends React.Component<IControlArrayProps> {
 	private static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules'];
 
-	constructor(props) {
+	constructor(props: IControlArrayProps) {
 		super(props);
 
 		verifyRequiredProps([...ControlArray.requiredProps], this.props, this);
@@ -64,9 +63,9 @@ export class ControlArray extends React.Component<IControlArrayProps> {
 }
 
 // tslint:disable-next-line:variable-name
-const ControlArrayWithField = withField(ControlArray, (name: string) => {
+function createField(name: string) {
 	return new FieldArray(name);
-});
+}
 
 // tslint:disable-next-line: variable-name
-export const ControlArrayWithContext = withParentName(withForm(ControlArrayWithField));
+export const ControlArrayWithContext = withField(withParentName(withForm(ControlArray)), createField);

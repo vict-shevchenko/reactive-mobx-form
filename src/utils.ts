@@ -1,4 +1,6 @@
-export function omit(obj: any, omitKeys: string[]) {
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+
+export function omit<P, K>(obj: P, omitKeys: string[]): Omit<P, K> {
 	const result = {};
 
 	Object.keys(obj).forEach(key => {
@@ -7,7 +9,7 @@ export function omit(obj: any, omitKeys: string[]) {
 		}
 	});
 
-	return result;
+	return result as Omit<P, K>;
 }
 
 export function objectPath(str: string): string[] {

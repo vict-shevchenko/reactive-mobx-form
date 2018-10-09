@@ -2,15 +2,12 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FieldSection } from '../FieldSection';
 import { omit, verifyRequiredProps } from '../utils';
-import BaseControl from './BaseControl';
-import { ParentNameContext, withParentName, withForm, IControlFormContext} from '../context';
-import { constructName, withField } from './WithFieldHoc';
+import {BaseControl, IBaseControlProps} from './BaseControl';
+import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext} from '../context';
+import { constructName, withField, IControlWithFieldContext } from './WithFieldHoc';
 
-export interface IControlSectionProps extends IControlFormContext {
-	field: FieldSection;
-	name: string;
-	component: React.Component<any, any> | React.SFC<any>;
-}
+// tslint:disable-next-line:max-line-length
+export interface IControlSectionProps extends IBaseControlProps, IControlFormContext, IControlParentNameContext, IControlWithFieldContext<FieldSection> {}
 
 @observer
 export class ControlSection extends React.Component<IControlSectionProps> {
@@ -18,7 +15,7 @@ export class ControlSection extends React.Component<IControlSectionProps> {
 	private static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules'];
 
-	constructor(props) {
+	constructor(props: IControlSectionProps) {
 		super(props);
 
 		verifyRequiredProps([...ControlSection.requiredProps], this.props, this);
@@ -57,9 +54,9 @@ export class ControlSection extends React.Component<IControlSectionProps> {
 }
 
 // tslint:disable-next-line:variable-name
-const ControlSectionWithField = withField(ControlSection, (name: string) => {
+function createField(name: string) {
 	return new FieldSection(name);
-});
+}
 
-// tslint:disable-next-line: variable-name
-export const ControlSectionWithContext = withParentName(withForm(ControlSectionWithField));
+// tslint:disable-next-line
+export const ControlSectionWithContext = withField(withParentName(withForm(ControlSection)), createField);

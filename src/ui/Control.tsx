@@ -4,9 +4,9 @@ import { Field } from '../Field';
 
 import { INormalizedFieldDefinition } from '../interfaces/Form';
 import { omit, verifyRequiredProps } from '../utils';
-import BaseControl from './BaseControl';
-import { withForm, withParentName, IControlFormContext } from '../context';
-import { withField, constructName } from './WithFieldHoc';
+import { IBaseControlProps, BaseControl } from './BaseControl';
+import { withForm, withParentName, IControlFormContext, IControlParentNameContext } from '../context';
+import { withField, constructName, IControlWithFieldContext } from './WithFieldHoc';
 import { IReactionDisposer } from 'mobx';
 
 // todo: probably may be used when implementing withRef
@@ -16,9 +16,8 @@ import { IReactionDisposer } from 'mobx';
   typeof Component.prototype.isReactComponent === 'object'
 )*/
 
-export interface IControlProps extends IControlFormContext {
-	name: string;
-	component: React.Component<any, any> | React.SFC<any> | string;
+// tslint:disable-next-line:max-line-length
+export interface IControlProps extends IBaseControlProps, IControlFormContext, IControlParentNameContext, IControlWithFieldContext<Field> {
 	type: string;
 	rules?: string;
 	children?: any;
@@ -44,7 +43,7 @@ function prepareFieldDefinition(name: string, props: IControlProps): INormalized
 }
 
 @observer
-export class Control extends React.Component<IControlProps> {
+export class Control extends React.Component<IControlProps, any> {
 	// private isNumber: boolean;
 	private isSelect: boolean;
 	private isTextarea: boolean;
@@ -58,7 +57,7 @@ export class Control extends React.Component<IControlProps> {
 	public static requiredProps: string[] = ['component', 'name'];
 	public static skipProp: string[] = ['component', 'rules', 'className', 'fieldRef'];
 
-	constructor(props) {
+	constructor(props: IControlProps) {
 		super(props);
 
 		const requiredProps = [...Control.requiredProps];
@@ -238,7 +237,7 @@ export class Control extends React.Component<IControlProps> {
 	}
 }
 
-function createField(name: string, props: IControlProps) {
+function createField(name: string, props: IControlProps): Field {
 	const fieldDefinition: INormalizedFieldDefinition = prepareFieldDefinition(name, props);
 	return new Field(name, fieldDefinition);
 }

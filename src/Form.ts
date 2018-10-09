@@ -110,7 +110,7 @@ export class Form {
 
 			if (!field) {
 				field = creationFn();
-				(fieldParent as Form | FieldArray | FieldSection).addField(field);
+				(fieldParent as Form | FieldArray | FieldSection).addField(field as formField);
 			}
 		}
 
