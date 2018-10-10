@@ -55,7 +55,8 @@ export interface IFormProps {
 	schema?: IFormSchema;
 }
 
-export function createForm(formName: string, formDefinition: IFormDefinition = {}): any {
+// tslint:disable-next-line:max-line-length
+export function createForm(formName: string, formDefinition: IFormDefinition = {}): (wrappedForm: React.ComponentType<any>) => React.ComponentType<any> {
 	const {
 		validator: validatorDefinition = {},
 		schema: schemaDefinition = {},

@@ -59,4 +59,4 @@ function createField(name: string) {
 }
 
 // tslint:disable-next-line
-export const ControlSectionWithContext = withField(withParentName(withForm(ControlSection)), createField);
+export const ControlSectionWithContext = withParentName(withForm(withField(ControlSection, createField)));

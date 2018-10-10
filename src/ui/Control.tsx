@@ -243,7 +243,7 @@ function createField(name: string, props: IControlProps): Field {
 }
 
 // tslint:disable-next-line: variable-name
-export const ControlWithContext = withField(withParentName(withForm(Control)), createField);
+export const ControlWithContext = withParentName(withForm(withField(Control, createField)));
 
 /*
 	private warnOnIncorrectInitialValues(initialValue: fieldValue): void {

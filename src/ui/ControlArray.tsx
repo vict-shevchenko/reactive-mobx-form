@@ -68,4 +68,4 @@ function createField(name: string) {
 }
 
 // tslint:disable-next-line: variable-name
-export const ControlArrayWithContext = withField(withParentName(withForm(ControlArray)), createField);
+export const ControlArrayWithContext = withParentName(withForm(withField(ControlArray, createField)));
