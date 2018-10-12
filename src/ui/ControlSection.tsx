@@ -23,7 +23,7 @@ export class ControlSection extends React.Component<IControlSectionProps> {
 
 	public componentWillUnmount(): void {
 		const {__formContext: { destroyControlStateOnUnmount, form }, field} = this.props;
-		if (!field.autoRemove || destroyControlStateOnUnmount) {
+		if (!field.autoRemove && destroyControlStateOnUnmount) {
 			field.setAutoRemove();
 			form.unregisterField(field.name);
 		}
