@@ -1,3 +1,6 @@
+# 0.9.10
+- TypeScript improvements
+
 # 0.9.9
 - fix npm WARN on mobx peer dependency
 
