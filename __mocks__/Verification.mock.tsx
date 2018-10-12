@@ -4,6 +4,9 @@ import { IControlFormContext, IControlParentNameContext, withForm, withParentNam
 import { IControlWithFieldContext, withField } from '../lib/ui/WithFieldHoc';
 import { FieldSection } from '../lib/FieldSection';
 import { Form } from '../lib/Form';
+import { Control, reactiveMobxForm } from '../index';
+import { FormStore } from '../lib/Store';
+import { IFormProps, IInjectedFormProps } from '../lib/createForm';
 
 // tslint:disable-next-line:max-line-length
 interface IMyComp extends IBaseControlProps, IControlFormContext, IControlParentNameContext, IControlWithFieldContext<FieldSection> {
@@ -14,7 +17,6 @@ interface IPlace {
 	place: string;
 }
 
-// tslint:disable-next-line:variable-name
 // tslint:disable-next-line:max-classes-per-file
 class MyComp<P> extends React.Component<P & IMyComp, any> {
 	constructor(props: P & IMyComp) {
@@ -70,3 +72,95 @@ const OurCompWithFieldJSX = (<OurCompWithField<IPlace>
 	place="Kyiv"
 />);
 // tslint:disable-next-line
+
+class MyForm extends React.Component<IInjectedFormProps & IAdditionalFormProps> {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+			<div>
+				<label htmlFor="">Name</label>
+				<Control name="firstName" type="text" component="input" />
+			</div>
+		);
+	}
+};
+
+const ReactiveMyForm = reactiveMobxForm('myform')(MyForm);
+
+
+interface IAdditionalFormProps {
+	myAdditionalProp: string;
+}
+
+class MyFormApp extends React.Component {
+	render() {
+		return (
+			<div>
+				<ReactiveMyForm
+					onSubmit={v => v}
+					schema={{}}
+					bla="sdfsadfasdf"
+				/>
+			</div>
+		);
+	}
+}
+
+
+const myFunc = (a) => {
+	return a + 10;
+}
+
+const myFunc2= (a) => {
+	return a + 'hello';
+}
+
+interface IInnerComponent {
+	name: string;
+}
+
+class MyFunc3 extends React.Component<IFormProps> {
+
+	render() {
+		return (
+			<div>test</div>
+		)
+	}
+}
+
+function someFunc(a: number) : (Func: React.ComponentType<IInnerComponent>) => React.ComponentType<IPlace> {
+
+	const b = a + 10;
+
+	return function(Func: React.ComponentType<IInnerComponent>) {
+		return class Bla extends React.Component<IPlace> {
+			render() {
+				return (
+					<Func name="dsfssd" />
+				);
+			}
+		};
+	}
+}
+
+const enhancer = someFunc(20);
+
+const MyAnotherFunction = enhancer(MyFunc3);
+
+
+class MyOtherFormApp extends React.Component {
+	render() {
+		return (
+			<div>
+				<MyAnotherFunction place="sdfs"/>
+				<MyFunc3
+					onSubmit={v => v}
+					bla="sdfasd"
+				/>
+			</div>
+		);
+	}
+}

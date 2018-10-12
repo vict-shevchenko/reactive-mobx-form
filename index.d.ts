@@ -23,24 +23,9 @@ import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./lib/i
 export { ControlWithContext as Control } from "./lib/ui/Control";
 export { ControlArrayWithContext as ControlArray } from "./lib/ui/ControlArray";
 export { ControlSectionWithContext as ControlSection } from "./lib/ui/ControlSection";
+export { createForm as reactiveMobxForm, IInjectedFormProps as IRMFInjectedProps } from './lib/createForm'
 export { FormStore } from "./lib/Store";
 
-type IReactComponent<P = any> =
-    | React.StatelessComponent<P>
-    | React.ComponentClass<P>
-    | React.ClassicComponentClass<P>;
-
-/* export function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition):
-    (wrappedForm: IReactComponent) => React.ClassicComponentClass<{onSubmit?: any, schema?: IFormSchema }>
-; 
- */
-
-interface IFormProps {
-    onSubmit: any;
-    schema?: IFormSchema;
-}
-
-export function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition): (wrappedForm: IReactComponent) => IReactComponent<IFormProps>
 
 // todo: Think over this
 //declare function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition): <T extends IReactComponent>(wrappedForm: T) => T & {onSubmit: any, schema?: IFormSchema }

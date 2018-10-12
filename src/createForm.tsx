@@ -14,7 +14,7 @@ import {
 	fieldValue
 } from './interfaces/Form';
 import { FormStore } from './Store';
-import { FormContext } from './context';
+import { FormContext, IFormContext } from './context';
 import { omit } from './utils';
 
 export function isConfigParamValid(param) {
@@ -49,14 +49,31 @@ export function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema
 	}, {});
 }
 
-export interface IFormProps {
+interface IFormStore {
 	formStore: FormStore;
-	onSubmit: (values: IFormValues, ...rest: any[]) => Promise<any>;
+}
+
+export interface IFormProps extends IFormStore {
+	onSubmit: <T>(values: IFormValues, ...rest: any[]) => Promise<T>;
 	schema?: IFormSchema;
 }
 
+export interface IFormState {
+	formContext: IFormContext;
+}
+
+export interface IInjectedFormProps {
+	submit: (event: Event, ...rest: any[]) => Promise<any>;
+	reset: () => void;
+	destroy: () => void;
+	submitting: boolean;
+	submitError: Error;
+	valid: boolean | void;
+	dirty: boolean;
+}
+
 // tslint:disable-next-line:max-line-length
-export function createForm(formName: string, formDefinition: IFormDefinition = {}): (wrappedForm: React.ComponentType<any>) => React.ComponentType<any> {
+export function createForm(formName: string, formDefinition: IFormDefinition = {}): (wrappedForm: React.ComponentType<IInjectedFormProps>) => React.ComponentType<IFormProps> {
 	const {
 		validator: validatorDefinition = {},
 		schema: schemaDefinition = {},
@@ -67,14 +84,14 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 	validateConfigParams(formName, [validatorDefinition, schemaDefinition]);
 
-	return wrappedForm => {
+	return (wrappedForm: React.ComponentType<IInjectedFormProps>) => {
 		@inject('formStore')
 		@observer
-		class FormUI extends React.Component<IFormProps, any> {
+		class FormUI extends React.Component<IFormProps, IFormState> {
 
 			public form: Form;
 
-			constructor(props) {
+			constructor(props: IFormProps) {
 				super(props);
 
 				if (props.schema && !isConfigParamValid(props.schema)) {
