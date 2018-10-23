@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FormEvent } from 'react';
 import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
@@ -16,6 +17,9 @@ import {
 import { FormStore } from './Store';
 import { FormContext, IFormContext } from './context';
 import { omit } from './utils';
+
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+type Subtract<T, K> = Omit<T, keyof K>;
 
 export function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
@@ -50,11 +54,11 @@ export function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema
 }
 
 interface IFormStore {
-	formStore: FormStore;
+	formStore?: FormStore;
 }
 
-export interface IFormProps extends IFormStore {
-	onSubmit: <T>(values: IFormValues, ...rest: any[]) => Promise<T>;
+export interface IFormProps {
+	onSubmit: <T>(values: IFormValues, ...rest: any[]) => T;
 	schema?: IFormSchema;
 }
 
@@ -63,7 +67,7 @@ export interface IFormState {
 }
 
 export interface IInjectedFormProps {
-	submit: (event: Event, ...rest: any[]) => Promise<any>;
+	submit: (event: FormEvent<HTMLFormElement>, ...rest: any[]) => Promise<any>;
 	reset: () => void;
 	destroy: () => void;
 	submitting: boolean;
@@ -72,8 +76,10 @@ export interface IInjectedFormProps {
 	dirty: boolean;
 }
 
-// tslint:disable-next-line:max-line-length
-export function createForm(formName: string, formDefinition: IFormDefinition = {}): (wrappedForm: React.ComponentType<IInjectedFormProps>) => React.ComponentType<IFormProps> {
+export type ReactiveMobxForm<P = {}> = React.ComponentType<Subtract<P, IInjectedFormProps> & IFormProps & IFormStore>;
+
+// tslint:disable-next-line
+export function createForm(formName: string, formDefinition: IFormDefinition = {}): <P extends IInjectedFormProps>(FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P> {
 	const {
 		validator: validatorDefinition = {},
 		schema: schemaDefinition = {},
@@ -84,14 +90,16 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 	validateConfigParams(formName, [validatorDefinition, schemaDefinition]);
 
-	return (wrappedForm: React.ComponentType<IInjectedFormProps>) => {
+	// tslint:disable-next-line:variable-name
+	return <P extends IInjectedFormProps>(FormComponent: React.ComponentType<P>) => {
 		@inject('formStore')
 		@observer
-		class FormUI extends React.Component<IFormProps, IFormState> {
+		// tslint:disable-next-line:max-line-length
+		class FormUI extends React.Component<(Subtract<P, IInjectedFormProps> & IFormProps & IFormStore), IFormState> {
 
 			public form: Form;
 
-			constructor(props: IFormProps) {
+			constructor(props: P & IFormProps & IFormStore) {
 				super(props);
 
 				if (props.schema && !isConfigParamValid(props.schema)) {
@@ -99,13 +107,13 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				}
 
 				if (!props.onSubmit) {
-					throw new Error(`Attribute "onSubmit" is Required for <${wrappedForm.name} /> component`);
+					throw new Error(`Attribute "onSubmit" is Required for <${FormComponent.name} /> component`);
 				}
 
-				const schema = Object.assign(schemaDefinition, this.props.schema || {});
+				const schema = Object.assign(schemaDefinition, props.schema || {});
 				const normalizedSchema = normalizeSchema(schema);
 
-				this.form = this.props.formStore.registerForm(formName, normalizedSchema, errorMessages, attributeNames);
+				this.form = props.formStore!.registerForm(formName, normalizedSchema, errorMessages, attributeNames);
 
 				this.state = {
 					formContext: {
@@ -125,7 +133,8 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public destroyForm() {
-				this.props.formStore.unRegisterForm(formName);
+				// to avoid this.props.formStore is possibly undefined
+				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
 			public submitForm(event: Event, ...rest: any[]): Promise<any> {
@@ -172,23 +181,16 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			public render() {
 				return (
 					<FormContext.Provider value={this.state.formContext}>
-						{
-							React.createElement(wrappedForm, Object.assign( omit(this.props, ['schema', 'onSubmit']), {
-								submit: this.submitForm.bind(this),
-								reset: this.resetForm.bind(this),
-								destroy: this.destroyForm.bind(this),
-								// todo: when submit change - full form render method is executed.
-								// Thing on more performant approach. May be Submitting component
-								submitting: this.form.submitting,
-								submitError: this.form.submitError, // todo: may be should be null by default
-								// todo - this case render been called when any field change
-								// validation: form.validation,
-								valid: this.form.isValid, // todo: may be should be false by default
-								dirty: this.form.isDirty
-								// todo - this case render been called when any field change
-								// errors: this.form.errors
-							}))
-						}
+						<FormComponent
+							submit={this.submitForm.bind(this)}
+							reset={this.resetForm.bind(this)}
+							destroy={this.destroyForm.bind(this)}
+							submitting={this.form.submitting}
+							submitError={this.form.submitError}
+							valid={this.form.isValid}
+							dirty={this.form.isDirty}
+							{...omit(this.props, ['schema', 'onSubmit', 'formStore'])}
+						/>
 					</FormContext.Provider>
 				);
 			}

@@ -19,15 +19,13 @@
 import * as React from "react";
 import { ObservableMap } from "mobx";
 
-import { IFormDefinition, IFormSchema, IValidatorjsConfiguration } from "./lib/interfaces/Form";
 export { ControlWithContext as Control } from "./lib/ui/Control";
 export { ControlArrayWithContext as ControlArray } from "./lib/ui/ControlArray";
 export { ControlSectionWithContext as ControlSection } from "./lib/ui/ControlSection";
-export { createForm as reactiveMobxForm, IInjectedFormProps as IRMFInjectedProps } from './lib/createForm'
+export {
+	createForm as reactiveMobxForm,
+	IInjectedFormProps,
+	ReactiveMobxForm as ReactiveMobxFormComponent,
+	configureValidatorjs as configureValidator
+} from './lib/createForm'
 export { FormStore } from "./lib/Store";
-
-
-// todo: Think over this
-//declare function reactiveMobxForm(formName: string, formDefinition?: IFormDefinition): <T extends IReactComponent>(wrappedForm: T) => T & {onSubmit: any, schema?: IFormSchema }
-
-export function configureValidator(configParameters: IValidatorjsConfiguration): void;
