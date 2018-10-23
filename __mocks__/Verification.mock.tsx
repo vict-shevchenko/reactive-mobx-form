@@ -73,7 +73,12 @@ const OurCompWithFieldJSX = (<OurCompWithField<IPlace>
 />);
 // tslint:disable-next-line
 
-class MyForm extends React.Component<IInjectedFormProps & IAdditionalFormProps> {
+
+interface IMyForm extends IInjectedFormProps {
+
+}
+
+class MyForm extends React.Component<IMyForm> {
 	constructor(props) {
 		super(props);
 	}
@@ -95,15 +100,15 @@ interface IAdditionalFormProps {
 	myAdditionalProp: string;
 }
 
+function submitHandler(values) {
+	return values;
+}
+
 class MyFormApp extends React.Component {
 	render() {
 		return (
 			<div>
-				<ReactiveMyForm
-					onSubmit={v => v}
-					schema={{}}
-					bla="sdfsadfasdf"
-				/>
+				<ReactiveMyForm onSubmit={submitHandler} schema={{}} formStore={new FormStore()}/>
 			</div>
 		);
 	}
@@ -118,25 +123,33 @@ const myFunc2= (a) => {
 	return a + 'hello';
 }
 
-interface IInnerComponent {
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+type Subtract<T, K> = Omit<T, keyof K>;
+
+interface IName {
 	name: string;
 }
 
-class MyFunc3 extends React.Component<IFormProps> {
+interface IMyFunc3 extends IFormProps, IName {
+
+}
+class MyFunc3 extends React.Component<IMyFunc3> {
 
 	render() {
 		return (
-			<div>test</div>
+			<div>test {this.props}</div>
 		)
 	}
 }
 
-function someFunc(a: number) : (Func: React.ComponentType<IInnerComponent>) => React.ComponentType<IPlace> {
+// tslint:disable-next-line:max-line-length
+// tslint:disable-next-line:max-line-length
+function someFunc(a: number) : <P extends IName>(Func: React.ComponentType<P>) => React.ComponentType<Subtract<P, IName>> {
 
 	const b = a + 10;
 
-	return function(Func: React.ComponentType<IInnerComponent>) {
-		return class Bla extends React.Component<IPlace> {
+	return function<P extends IName>(Func: React.ComponentType<P>) {
+		return class Bla extends React.Component<Subtract<P, IName>> {
 			render() {
 				return (
 					<Func name="dsfssd" />
@@ -155,7 +168,7 @@ class MyOtherFormApp extends React.Component {
 	render() {
 		return (
 			<div>
-				<MyAnotherFunction place="sdfs"/>
+				<MyAnotherFunction onSubmit={submitHandler} name={} vlad={} />
 				<MyFunc3
 					onSubmit={v => v}
 					bla="sdfasd"

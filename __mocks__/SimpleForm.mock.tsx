@@ -1,34 +1,22 @@
-import React from 'react';
+import * as React from 'react';
 import { Control } from '../index';
+import { IInjectedFormProps } from '../index';
 
-interface IMyComponentProps {
-	placehoder: string;
+export interface IToggle {
+	controlVisible: boolean;
 }
 
-export class ToggleControlForm extends React.Component<any> {
-	public state = {
-		controlVisible: true
-	};
-
+export class ToggleControlForm extends React.Component<IInjectedFormProps & IToggle> {
 	public render() {
 		return (
 		<form onSubmit={this.props.submit}>
 			{
-				this.state.controlVisible ?
-				<Control name="hello" component="input" type="text" />
+				this.props.controlVisible ?
+				<Control name="firstName" component="input" type="text" />
 				: null
 			}
-
-			<Control<IMyComponentProps> type="text" name="welcome" component={MyComponent} placehoder='placeholder'/>
 			<button type="submit" id="submit">Submit</button>
 		</form>
 		);
 	}
 }
-
-// tslint:disable-next-line:variable-name
-const MyComponent = () => (
-	<div>
-		<input type="text" />
-	</div>
-);
