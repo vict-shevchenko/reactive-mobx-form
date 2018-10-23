@@ -1,5 +1,8 @@
+# 0.9.11
+- TypeScript improvements. reactiveMobxForm
+
 # 0.9.10
-- TypeScript improvements
+- TypeScript improvements. Control, ControlArray, ControlSection
 
 # 0.9.9
 - fix npm WARN on mobx peer dependency
