@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import {reactiveMobxForm, Control, ControlArray, ControlSection} from 'reactive-mobx-form';
+import {reactiveMobxForm, Control, ControlArray, ControlSection, ComputedControl} from 'reactive-mobx-form';
 
 const RenderField = ({input, meta: {dirty, valid, errors}, label, placeholder, type}) => (
 	<div style={{backgroundColor: (valid ? 'lightgreen' : 'pink')}}>
@@ -71,9 +71,33 @@ const Hobbies = ({fields}) => (
 	</div>
 );
 
+/* class Tags extends React.Component {
+	constructor(props) {
+		super(props);
+
+		console.log('Tags.constructor');
+	}
+
+	componentWillUnmount() {
+		console.log('Tags.componentWillUnmount')
+	}
+
+	render() {
+		console.log('Tags.render')
+		return (
+			<div>
+				<h1>Tags</h1>
+				<Control name={0} component="input" type="text" />
+			</div>
+		)
+	}
+} */
+
+const RenderTags = (p) => <Tags {...p} />
+
 @inject('appState')
 @observer
-class ContactForm extends Component {
+class ContactForm extends React.Component {
 	myCustomSubmit(event) {
 		this.props.submit(event).then(
 			(result) => console.log(`Result: ${result}`), 
@@ -81,7 +105,7 @@ class ContactForm extends Component {
 	}
 
 	render() {
-		const { submit, reset, submitting, submitError, valid, dirty } = this.props;
+		const { submit, reset, submitting, submitError, valid, dirty, paramToForm } = this.props;
 		return (
 			<form onSubmit={this.myCustomSubmit.bind(this)}>
 			{/* 	<div>
@@ -128,25 +152,36 @@ class ContactForm extends Component {
 						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
 					</div>
 				</div> */}
-			{/* <ControlArray name="persons" component={Persons} /> */}
+			<ControlArray name="persons" component={Persons} />
+		{/* 	<div>
+				<h1>Paramter to Form</h1>
+				{paramToForm}
+			</div> */}
 				<hr />
 
-				{/* <ControlSection name="location" component={Location} /> */}
+				<ControlSection name="location" component={Location} />
 
-				<div>
+				{/* <div>
 					<label>Person Age</label>
 					<div>
 						<Control name="age" component="input" type="text" rules={this.props.appState.simpleRules ? 'required' : 'required|numeric|between:10,30'}/>
 
 						<button type="button" onClick={() => this.props.appState.simpleRules = !this.props.appState.simpleRules}> Change rules</button>
 					</div>
-				</div>
+				</div> */}
 
-				<div>
+				{/* <div>
 					<label>Sex</label>
 					<div>
 						<label><Control name="sex" component="input" type="radio" value="male"/> Male</label>
 						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
+					</div>
+				</div> */}
+
+				<div>
+					<label htmlFor="nope">Age</label>
+					<div>
+						<Control name="age" type="number" component="input" />
 					</div>
 				</div>
 
@@ -154,6 +189,13 @@ class ContactForm extends Component {
 					<label htmlFor="acceptTerms">Accept terms</label>
 					<Control name="acceptTerms" component="input" type="checkbox" className="my-checkbox-class"/>
 				</div>
+
+		{/* 		<div>
+					<label htmlFor="acceptTerms">Conclusion</label>
+					<ComputedControl name="conclusion" type="text" component="input" compute={(values) => values.age > 30 ? 'too Old' : 'to Young'}/>
+				</div> */}
+
+				<hr/>
 
 				Form Dirty --- {`${dirty}`} <br/>
 				Form Valid - - {`${valid}`} <br/>
@@ -174,7 +216,8 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
 			'sex':[''],
 			'job': [''],
 			'location.address.city': ['Kyiv', 'required'],
-			'perons': [[], 'array']
+			'perons': [[], 'array'],
+			'age': 1
 		},
 		validator: {
 			errorMessages: {

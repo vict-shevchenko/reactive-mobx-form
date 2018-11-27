@@ -17,7 +17,13 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ],
-	resolve: { extensions: ['.js', '.jsx'], symlinks: false },
+	resolve: { 
+    extensions: ['.js', '.jsx'],
+    symlinks: false,
+    alias: {
+      mobx: path.resolve(__dirname, 'node_modules/mobx')
+    }
+  },
 	resolveLoader: { symlinks: false },
   module: {
     loaders: [{

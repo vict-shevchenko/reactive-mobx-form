@@ -70,7 +70,7 @@ class App extends Component {
 					Seconds passed: {this.props.appState.timer}
 				</button>*/}
 
-				<ContactForm onSubmit={this.handleSubmit.bind(this)} schema={{firstName: ['viktor']}}/>
+				<ContactForm onSubmit={this.handleSubmit.bind(this)} schema={{firstName: ['viktor']}} paramToForm={'My Custom Parameter'}/>
 				{ /* this.state.extensionVisible ? <FormExtension schema={{river: 'Dnipro'}} /> : null */}
 
 				<button type="button" onClick={this.toggleExtension}> SHOW/HIDE</button>
