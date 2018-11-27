@@ -18,16 +18,20 @@ export interface IFormAttributeNames {
 	[propType: string]: string;
 }
 
-export interface IFormValidatiorDefinnition {
-	errorMessages?: IFormErrorMessages;
-	attributeNames?: IFormAttributeNames;
+export interface IFormValidatorDefinition {
+	errorMessages: IFormErrorMessages;
+	attributeNames: IFormAttributeNames;
+}
+
+export interface IFormConfiguration {
+	destroyFormStateOnUnmount: boolean;
+	destroyControlStateOnUnmount: boolean;
 }
 
 export interface IFormDefinition {
-	validator?: IFormValidatiorDefinnition;
+	validator?: Partial<IFormValidatorDefinition>;
 	schema?: IFormSchema;
-	destroyFormStateOnUnmount?: boolean;
-	destroyControlStateOnUnmount?: boolean;
+	config?: Partial<IFormConfiguration>;
 }
 
 export interface IFormValues {

@@ -28,8 +28,8 @@ export class ControlArray extends React.Component<IControlArrayProps> {
 	}
 
 	public componentWillUnmount(): void {
-		const {__formContext: { destroyControlStateOnUnmount, form }, field} = this.props;
-		if (!field.autoRemove && destroyControlStateOnUnmount) {
+		const {__formContext: { form }, field} = this.props;
+		if (!field.autoRemove) {
 			field.setAutoRemove();
 			form.unregisterField(field.name);
 		}

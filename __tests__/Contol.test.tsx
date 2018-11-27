@@ -13,9 +13,9 @@ describe('Testing behavior when removing control from a Form', () => {
 	let wrapper;
 
 	const formStore = new FormStore(),
-	      submitHandler = v => v;
+		submitHandler = v => v;
 
-	class Wrapper extends React.Component<{form: ReactiveMobxFormComponent<IToggle>}> {
+	class Wrapper extends React.Component<{ form: ReactiveMobxFormComponent<IToggle> }> {
 		public state = {
 			controlVisible: true
 		};
@@ -46,14 +46,14 @@ describe('Testing behavior when removing control from a Form', () => {
 
 	test('Control data should be removed from form values', () => {
 		// tslint:disable-next-line:variable-name
-		const ReactiveForm = reactiveMobxForm('toggleControlForm')(ToggleControlForm);
+		const ReactiveForm = reactiveMobxForm('toggleControlForm1')(ToggleControlForm);
 
-		wrapper = mount(<Wrapper form={ReactiveForm}/>);
-		const form = formStore.getForm('toggleControlForm');
+		wrapper = mount(<Wrapper form={ReactiveForm} />);
+		const form = formStore.getForm('toggleControlForm1');
 
 		expect(wrapper.find(Control)).toHaveLength(1);
 		expect(wrapper.find('input')).toHaveLength(1);
-		expect(form.values).toEqual({firstName: ''});
+		expect(form.values).toEqual({ firstName: '' });
 
 		wrapper.find('#changeVis').simulate('click');
 
@@ -62,21 +62,21 @@ describe('Testing behavior when removing control from a Form', () => {
 		expect(form.values).toEqual({});
 	});
 
-	test('Control data should not be removed from form values, if destroyControlStateOnUnmount enabled', () => {
+	test('Control data should not be removed from form values, if destroyControlStateOnUnmount is false', () => {
 		// tslint:disable-next-line
-		const ReactiveForm = reactiveMobxForm('toggleControlForm', { destroyControlStateOnUnmount: false })(ToggleControlForm);
+		const ReactiveForm = reactiveMobxForm('toggleControlForm2', { config: { destroyControlStateOnUnmount: false } })(ToggleControlForm);
 
-		wrapper = mount(<Wrapper form={ReactiveForm}/>);
-		const form = formStore.getForm('toggleControlForm');
+		wrapper = mount(<Wrapper form={ReactiveForm} />);
+		const form = formStore.getForm('toggleControlForm2');
 
 		expect(wrapper.find(Control)).toHaveLength(1);
 		expect(wrapper.find('input')).toHaveLength(1);
-		expect(form.values).toEqual({firstName: ''});
+		expect(form.values).toEqual({ firstName: '' });
 
 		wrapper.find('#changeVis').simulate('click');
 
 		expect(wrapper.find(Control)).toHaveLength(0);
 		expect(wrapper.find('input')).toHaveLength(0);
-		expect(form.values).toEqual({firstName: ''});
+		expect(form.values).toEqual({ firstName: '' });
 	});
 });

@@ -47,8 +47,10 @@ Shape looks like:
     attributeNames: {}
   },
   schema: {},
-  destroyFormStateOnUnmount: true,
-  destroyControlStateOnUnmount: true
+  config: {
+    destroyFormStateOnUnmount: true,
+    destroyControlStateOnUnmount: true
+  }
 }
 ```
 

@@ -4,8 +4,7 @@ import {
 	isConfigParamValid,
 	createForm,
 	configureValidatorjs,
-	validateConfigParams,
-	normalizeSchema
+	validateConfigParams
 } from '../src/createForm';
 import BasicForm from '../__mocks__/BasicForm.mock';
 import { IFormSchema } from '../src/interfaces/Form';
@@ -38,31 +37,6 @@ describe('Testing validateConfigParams', () => {
 		expect(() => validateConfigParams('', [])).toThrow('Form name should be non empty string');
 		expect(() => validateConfigParams('myForm', [[]])).toThrow('Error validating form initialization parameters');
 		expect(() => validateConfigParams('myForm', ['string'])).toThrow('Error validating form initialization parameters');
-	});
-});
-
-describe('Testing normalizeSchema', () => {
-	test('It should return correct schema', () => {
-		const schema = {
-			name: 'Viktor'
-		};
-
-		const arraySchema: IFormSchema = {
-			value: [250]
-		};
-
-		const arraySchemaFull: IFormSchema = {
-			isAccepted: [true, '']
-		};
-
-		const arraySchemaFullRules: IFormSchema = {
-			name: ['Viktor', 'required|min:3']
-		};
-
-		expect(normalizeSchema(schema)).toEqual({ name: ['Viktor', ''] });
-		expect(normalizeSchema(arraySchema)).toEqual({ value: [250, ''] });
-		expect(normalizeSchema(arraySchemaFull)).toEqual({ isAccepted: [true, ''] });
-		expect(normalizeSchema(arraySchemaFullRules)).toEqual({ name: ['Viktor', 'required|min:3'] });
 	});
 });
 
@@ -141,7 +115,7 @@ describe('Testing interaction of Form Component', () => {
 	});
 });
 
-describe('Testing interaction with FormStore', () => {
+/* describe('Testing interaction with FormStore', () => {
 	test('Rendering a form should register it in FormStore', () => {
 
 	});
@@ -171,7 +145,6 @@ describe('Testing interaction with FormStore for Wizard type forms', () => {
 	});
 });
 
-
 describe('Testing configuration of validators', () => {
 
 	test('Setting up the validatoin config should happen without errors', () => {
@@ -179,4 +152,4 @@ describe('Testing configuration of validators', () => {
 	});
 
 	// todo: requires full thesting that validation was correctly set up
-});
+}); */

@@ -1,3 +1,6 @@
+// tslint:disable-next-line:max-line-length
+import { IFormSchema, IFormNormalizedSchema, IFieldDefinition, INormalizedFieldDefinition, fieldValue } from './interfaces/Form';
+
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 export function omit<P, K>(obj: P, omitKeys: string[]): Omit<P, K> {
@@ -90,4 +93,22 @@ export function verifyRequiredProps(required, props, component): void {
 		throw (new Error(`You forgot to specify '${missingProps.join(', ')}' propert${missingProps.length > 1 ? 'ies' : 'y'}
 				for <${Object.getPrototypeOf(component).constructor.name} name="${component.props.name}" /> component.`));
 	}
+}
+
+export function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema {
+	return Object.keys(draftSchema).reduce((schema: IFormNormalizedSchema, fieldName: string): IFormNormalizedSchema => {
+		const fieldDefinition: IFieldDefinition = draftSchema[fieldName];
+		let normalizedFieldDefinition: INormalizedFieldDefinition;
+
+		if (Array.isArray(fieldDefinition)) {
+			// tslint:disable-next-line:max-line-length
+			normalizedFieldDefinition = (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
+		} else {
+			normalizedFieldDefinition = [fieldDefinition as fieldValue, ''];
+		}
+
+		schema[fieldName] = normalizedFieldDefinition;
+
+		return schema;
+	}, {});
 }

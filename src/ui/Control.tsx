@@ -114,11 +114,11 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 	} */
 
 	public componentWillUnmount(): void {
-		const { __formContext: { form, destroyControlStateOnUnmount }, field} = this.props;
+		const { __formContext: { form }, field} = this.props;
 
 		this.formErrorUnsubscribe();
 
-		if (!field.autoRemove && destroyControlStateOnUnmount) {
+		if (!field.autoRemove) {
 			form.unregisterField(field.name);
 		}
 	}

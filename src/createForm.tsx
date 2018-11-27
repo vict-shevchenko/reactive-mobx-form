@@ -25,32 +25,16 @@ export function isConfigParamValid(param) {
 	return param && typeof param === 'object' && !Array.isArray(param);
 }
 
-export function validateConfigParams(formName: string, params: any) {
-	if (!Object.keys(params).every(paramName => isConfigParamValid(params[paramName]))) {
+export function validateConfigParams(formName: string, params: any[]) {
+	const nonUndefinedParams = params.filter(p => p !== undefined);
+
+	if (!nonUndefinedParams.every(param => isConfigParamValid(param))) {
 		throw new Error('Error validating form initialization parameters');
 	}
 
 	if (!formName || typeof formName !== 'string') {
 		throw new Error('Form name should be non empty string');
 	}
-}
-
-export function normalizeSchema(draftSchema: IFormSchema): IFormNormalizedSchema {
-	return Object.keys(draftSchema).reduce((schema: IFormNormalizedSchema, fieldName: string): IFormNormalizedSchema => {
-		const fieldDefinition: IFieldDefinition = draftSchema[fieldName];
-		let normalizedFieldDefinition: INormalizedFieldDefinition;
-
-		if (Array.isArray(fieldDefinition)) {
-			// tslint:disable-next-line:max-line-length
-			normalizedFieldDefinition = (fieldDefinition.length === 2) ? (fieldDefinition as [fieldValue, string]) : [fieldDefinition[0], ''];
-		} else {
-			normalizedFieldDefinition = [fieldDefinition as fieldValue, ''];
-		}
-
-		schema[fieldName] = normalizedFieldDefinition;
-
-		return schema;
-	}, {});
 }
 
 interface IFormStore {
@@ -81,14 +65,13 @@ export type ReactiveMobxForm<P = {}> = React.ComponentType<Subtract<P, IInjected
 // tslint:disable-next-line
 export function createForm(formName: string, formDefinition: IFormDefinition = {}): <P extends IInjectedFormProps>(FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P> {
 	const {
-		validator: validatorDefinition = {},
-		schema: schemaDefinition = {},
-		destroyFormStateOnUnmount = true,
-		destroyControlStateOnUnmount = true
+		validator,
+		schema,
+		config
 	} = formDefinition;
-	const { errorMessages, attributeNames } = validatorDefinition;
 
-	validateConfigParams(formName, [validatorDefinition, schemaDefinition]);
+	// todo, run in dev mode only
+	validateConfigParams(formName, [validator, schema, config]);
 
 	// tslint:disable-next-line:variable-name
 	return <P extends IInjectedFormProps>(FormComponent: React.ComponentType<P>) => {
@@ -96,7 +79,9 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 		@observer
 		// tslint:disable-next-line:max-line-length
 		class FormUI extends React.Component<(Subtract<P, IInjectedFormProps> & IFormProps & IFormStore), IFormState> {
-
+/* 			public static defaultProps: any = {
+				schema: {}
+			}; */
 			public form: Form;
 
 			constructor(props: P & IFormProps & IFormStore) {
@@ -110,24 +95,20 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 					throw new Error(`Attribute "onSubmit" is Required for <${FormComponent.name} /> component`);
 				}
 
-				const schema = Object.assign(schemaDefinition, props.schema || {});
-				const normalizedSchema = normalizeSchema(schema);
+				const fullSchema = (schema || props.schema) && Object.assign({}, schema, props.schema);
 
-				this.form = props.formStore!.registerForm(formName, normalizedSchema, errorMessages, attributeNames);
+				// tslint:disable-next-line:max-line-length
+				this.form = props.formStore!.registerForm(formName, { schema: fullSchema, config, validator});
 
 				this.state = {
 					formContext: {
-						form: this.form,
-						destroyControlStateOnUnmount
+						form: this.form
 					}
 				};
-
-				// old stuff, probably remove, not useful in multi component form
-				// this.form.component = wrappedForm;
 			}
 
 			public componentWillUnmount() {
-				if (destroyFormStateOnUnmount) {
+				if (config && config.destroyFormStateOnUnmount) {
 					this.destroyForm();
 				}
 			}

@@ -36,7 +36,8 @@ const OurComp = <MyComp<IPlace>
 	bla="test"
 	name="test"
 	component="sfds"
-	__formContext={{ form: new Form({}, {}, {}), destroyControlStateOnUnmount: false }}
+	__formContext={{ form: new Form({})}
+	}
 	__parentNameContext="blaa"
 	field={new FieldSection('test')}
 	place="Kyiv"
@@ -73,7 +74,6 @@ const OurCompWithFieldJSX = (<OurCompWithField<IPlace>
 />);
 // tslint:disable-next-line
 
-
 interface IMyForm extends IInjectedFormProps {
 
 }
@@ -94,7 +94,6 @@ class MyForm extends React.Component<IMyForm> {
 };
 
 const ReactiveMyForm = reactiveMobxForm('myform')(MyForm);
-
 
 interface IAdditionalFormProps {
 	myAdditionalProp: string;

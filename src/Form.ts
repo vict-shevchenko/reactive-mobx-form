@@ -1,14 +1,24 @@
 import { observable, action, computed, reaction } from 'mobx';
 import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
-import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema } from './interfaces/Form';
+// tslint:disable-next-line:max-line-length
+import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, IFormConfiguration, IFormDefinition } from './interfaces/Form';
 import { formField } from './types';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
-import { objectPath } from './utils';
+import { objectPath, normalizeSchema } from './utils';
+
+export const DEFAULT_FORM_CONFIG: IFormConfiguration = {
+	destroyFormStateOnUnmount: true,
+	destroyControlStateOnUnmount: true
+};
 
 export class Form {
-	public component: any;
+	public formSchema: IFormNormalizedSchema = {};
+
+	private errorMessages: IFormErrorMessages | undefined = undefined;
+	private attributeNames: IFormAttributeNames | undefined = undefined;
+	private config: IFormConfiguration;
 
 	@observable public fields = new Map<string, formField>();
 	@observable public errors: Errors; // todo: initial value
@@ -32,10 +42,20 @@ export class Form {
 	error
 	*/
 
-	constructor(
-		public formSchema: IFormNormalizedSchema,
-		private errorMessages: IFormErrorMessages | undefined,
-		private attributeNames: IFormAttributeNames | undefined) {
+	constructor(options: IFormDefinition) {
+		this.extendConfiguration(options);
+		this.config = Object.assign({}, DEFAULT_FORM_CONFIG, options.config);
+
+		this.registerValidation();
+	}
+
+	public extendConfiguration(options: IFormDefinition) {
+		const { schema = {}, validator = {}} = options;
+		const { errorMessages, attributeNames } = validator;
+
+		Object.assign(this.formSchema, normalizeSchema(schema));
+		this.errorMessages ? Object.assign(this.errorMessages, errorMessages) : this.errorMessages = errorMessages;
+		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;
 	}
 
 	@computed get isDirty(): boolean {
@@ -43,7 +63,7 @@ export class Form {
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
-	@computed get validation(): IValidator<{[name: string]: boolean | number | string}> {
+	@computed get validation(): IValidator<{ [name: string]: boolean | number | string }> {
 		return new Validator(this.values, this.rules, this.errorMessages);
 	}
 
@@ -80,6 +100,7 @@ export class Form {
 	}
 
 	public registerValidation() {
+		// todo: we need to dispose this reaction
 		reaction(
 			() => this.validation,
 			() => {
@@ -90,12 +111,6 @@ export class Form {
 				this.errors = this.validation.errors;
 			}
 		);
-	}
-
-	public extendConfiguration(schema: IFormNormalizedSchema = {}, errorMsg: IFormErrorMessages | undefined, attributeNames: IFormAttributeNames | undefined): void { // tslint:disable-line
-		Object.assign(this.formSchema, schema);
-		this.errorMessages ? Object.assign(this.errorMessages, errorMsg) : this.errorMessages = errorMsg;
-		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;
 	}
 
 	// Field Manipulation
@@ -118,16 +133,18 @@ export class Form {
 	}
 
 	public unregisterField(fieldName: string) {
-		const fieldPath = objectPath(fieldName),
-			lastIndex = fieldPath.length - 1,
-			lastNode = fieldPath[lastIndex],
-			fieldParent = this.getFieldParent(fieldPath);
+		if (this.config.destroyControlStateOnUnmount) {
+			const fieldPath = objectPath(fieldName),
+				lastIndex = fieldPath.length - 1,
+				lastNode = fieldPath[lastIndex],
+				fieldParent = this.getFieldParent(fieldPath);
 
-		if (fieldParent) {
-			(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
-		}
-		else {
-			console.log('Attempt to remove field on already removed parent field', fieldName) // tslint:disable-line
+			if (fieldParent) {
+				(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
+			}
+			else {
+				console.log('Attempt to remove field on already removed parent field', fieldName) // tslint:disable-line
+			}
 		}
 	}
 

@@ -1,6 +1,7 @@
 declare var jest, describe, it, expect;
 import * as React from 'react';
-import { omit, objectPath, isNumeric, objectMissProps, verifyRequiredProps } from '../src/utils';
+import { omit, objectPath, isNumeric, objectMissProps, verifyRequiredProps, normalizeSchema } from '../lib/utils';
+import { IFormSchema } from '../lib/interfaces/Form';
 
 describe('Testing the omit utility', () => {
 	test('omit function should work well', () => {
@@ -105,5 +106,30 @@ describe('Testing verifyRequiredProps utility', () => {
 
 		// tslint:disable-next-line:max-line-length
 		expect(() => verifyRequiredProps(props, obj, component)).toThrowErrorMatchingSnapshot();
+	});
+});
+
+describe('Testing normalizeSchema', () => {
+	test('It should return correct schema', () => {
+		const schema = {
+			name: 'Viktor'
+		};
+
+		const arraySchema: IFormSchema = {
+			value: [250]
+		};
+
+		const arraySchemaFull: IFormSchema = {
+			isAccepted: [true, '']
+		};
+
+		const arraySchemaFullRules: IFormSchema = {
+			name: ['Viktor', 'required|min:3']
+		};
+
+		expect(normalizeSchema(schema)).toEqual({ name: ['Viktor', ''] });
+		expect(normalizeSchema(arraySchema)).toEqual({ value: [250, ''] });
+		expect(normalizeSchema(arraySchemaFull)).toEqual({ isAccepted: [true, ''] });
+		expect(normalizeSchema(arraySchemaFullRules)).toEqual({ name: ['Viktor', 'required|min:3'] });
 	});
 });

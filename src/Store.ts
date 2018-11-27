@@ -1,25 +1,22 @@
 import { observable } from 'mobx';
 import { Form } from './Form';
-import { IFormNormalizedSchema, IFormErrorMessages, IFormAttributeNames } from './interfaces/Form';
+import { IFormDefinition } from './interfaces/Form';
 
 export class FormStore {
 	@observable public forms: Map<string, Form> = observable.map();
 
 	public registerForm(
 			name: string,
-			schema: IFormNormalizedSchema,
-			errorMessages: IFormErrorMessages | undefined,
-			attributeNames: IFormAttributeNames | undefined): Form
+			options: IFormDefinition): Form
 		{ // tslint:disable-line
 		let form: Form;
 
 		if (this.hasForm(name)) {
 			form = this.getForm(name) as Form;
-			form.extendConfiguration(schema, errorMessages, attributeNames);
+			form.extendConfiguration(options);
 		}
 		else {
-			form = new Form(schema, errorMessages, attributeNames);
-			form.registerValidation();
+			form = new Form(options);
 			this.forms.set(name, form);
 		}
 

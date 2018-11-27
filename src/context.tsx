@@ -6,7 +6,6 @@ type Subtract<T, K> = Omit<T, keyof K>;
 
 export interface IFormContext {
 	form: Form;
-	destroyControlStateOnUnmount: boolean;
 }
 export interface IControlFormContext {
 	__formContext: IFormContext;
@@ -17,7 +16,7 @@ export interface IControlParentNameContext {
 }
 
 // tslint:disable-next-line: variable-name
-export const FormContext = React.createContext({ form: {} as Form, destroyControlStateOnUnmount: true });
+export const FormContext = React.createContext({ form: {} as Form });
 // tslint:disable-next-line: variable-name
 export const ParentNameContext = React.createContext('');
 
