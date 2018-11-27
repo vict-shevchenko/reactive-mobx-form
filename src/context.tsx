@@ -19,7 +19,7 @@ export const ParentNameContext = React.createContext('');
 
 // tslint:disable-next-line: variable-name
 export function withForm<P extends IControlFormContext>(Component: React.ComponentType<P>) {
-	return class ComponentWithFormContext<PP> extends React.Component<Subtract<P, IControlFormContext> & PP> {
+	return class ComponentWithFormContext extends React.Component<Subtract<P, IControlFormContext>> {
 		public render() {
 			return (
 				<FormContext.Consumer>
@@ -33,7 +33,7 @@ export function withForm<P extends IControlFormContext>(Component: React.Compone
 // tslint:disable-next-line: variable-name
 export function withParentName<P extends IControlParentNameContext>(Component: React.ComponentType<P>) {
 	// tslint:disable-next-line:max-classes-per-file
-	return class ComponentWithParentNameContext<PP> extends React.Component<Subtract<P, IControlParentNameContext> & PP> {
+	return class ComponentWithParentNameContext extends React.Component<Subtract<P, IControlParentNameContext>> {
 		public render() {
 			return (
 				<ParentNameContext.Consumer>

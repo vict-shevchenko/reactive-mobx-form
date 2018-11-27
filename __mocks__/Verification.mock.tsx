@@ -1,3 +1,6 @@
+// tslint:disable:variable-name
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
 import { IBaseControlProps } from '../lib/ui/BaseControl';
 import { IControlFormContext, IControlParentNameContext, withForm, withParentName } from '../lib/context';
@@ -44,23 +47,21 @@ const OurComp = <MyComp<IPlace>
 
 const OurCompWithForm = withForm(MyComp);
 
-const OurCompWithFormJSX = <OurCompWithForm<IPlace>
+const OurCompWithFormJSX = <OurCompWithForm
 	bla="test"
 	name="test"
 	component="sfds"
 	parentName="blaa"
 	field={new FieldSection('test')}
-	place="Kyiv"
 />;
 
 const OurCompWithParentName = withParentName(OurCompWithForm);
 
-const OurCompWithParentNameJSX = <OurCompWithParentName<IPlace>
+const OurCompWithParentNameJSX = <OurCompWithParentName
 	bla="test"
 	name="test"
 	component="sfds"
 	field={new FieldSection('test')}
-	place="Kyiv"
 />;
 
 const OurCompWithField = withField(OurCompWithParentName, () => new FieldSection('test'));
@@ -73,6 +74,7 @@ const OurCompWithFieldJSX = (<OurCompWithField<IPlace>
 />);
 // tslint:disable-next-line
 
+// tslint:disable-next-line:no-empty-interface
 interface IMyForm extends IInjectedFormProps {
 
 }
@@ -82,7 +84,7 @@ class MyForm extends React.Component<IMyForm> {
 		super(props);
 	}
 
-	render() {
+	public render() {
 		return (
 			<div>
 				<label htmlFor="">Name</label>
@@ -90,7 +92,7 @@ class MyForm extends React.Component<IMyForm> {
 			</div>
 		);
 	}
-};
+}
 
 const ReactiveMyForm = reactiveMobxForm('myform')(MyForm);
 
