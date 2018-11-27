@@ -91,7 +91,7 @@ export class Form {
 	}
 
 	@action public removeField(fieldName: string): void {
-		(this.fields.get(fieldName) as formField).setAutoRemove();
+		(this.fields.get(fieldName) as formField).setDetached();
 		this.fields.delete(fieldName);
 	}
 

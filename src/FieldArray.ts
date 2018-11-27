@@ -4,7 +4,7 @@ import { objectPath, isNumeric } from './utils';
 
 export class FieldArray {
 	public name: string;
-	public autoRemove: boolean = false;
+	public detached: boolean = false;
 
 	public subFields: IObservableArray<formField> = observable<formField>([]);
 	@observable public errors: string[] = [];
@@ -41,7 +41,7 @@ export class FieldArray {
 	}
 
 	@action public reset() {
-		this.subFields.forEach(subField => subField.setAutoRemove());
+		this.subFields.forEach(subField => subField.setDetached());
 		this.subFields.clear();
 	}
 
@@ -59,9 +59,9 @@ export class FieldArray {
 		return (this.subFields.length > parseInt(index, 10)) ? this.subFields[index] : undefined;
 	}
 
-	public setAutoRemove() {
-		this.autoRemove = true;
-		this.subFields.forEach(subField => subField.setAutoRemove());
+	public setDetached() {
+		this.detached = true;
+		this.subFields.forEach(subField => subField.setDetached());
 	}
 
 	@computed get realSubFields(): formField[] {

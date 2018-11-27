@@ -19,7 +19,7 @@ describe('Testing of Field class', () => {
 
 		expect(field.name).toBe('name');
 		expect(field.value).toBe('');
-		expect(field.autoRemove).toBe(false);
+		expect(field.detached).toBe(false);
 		expect(field.errors).toBeInstanceOf(Array);
 		expect(field.errors.length).toBe(0);
 		expect(field.isFocused).toBe(false);
@@ -92,12 +92,12 @@ describe('Testing of Field class', () => {
 		expect(field.isTouched).toBe(false);
 	});
 
-	test('Verify field method setAutoRemove works correctly as expected', () => {
+	test('Verify field method setDetached works correctly as expected', () => {
 		const field = new Field('name', ['Viktor', 'required']);
 
 		field.onChange('Olena');
-		field.setAutoRemove();
-		expect(field.autoRemove).toBe(true);
+		field.setDetached();
+		expect(field.detached).toBe(true);
 	});
 
 	test('Verify field method update works correctly as expected', () => {

@@ -3,7 +3,7 @@ import { fieldValue, INormalizedFieldDefinition } from './interfaces/Form';
 import { Form } from './Form';
 
 export class Field {
-	public autoRemove: boolean = false;
+	public detached: boolean = false;
 	private initialValue: fieldValue;
 
 	/* tslint:disable: typedef-whitespace */
@@ -63,8 +63,8 @@ export class Field {
 		this.isTouched = true;
 	}
 
-	public setAutoRemove(): void  {
-		this.autoRemove = true;
+	public setDetached(): void  {
+		this.detached = true;
 	}
 
 	public subscribeToFormValidation(form: Form): IReactionDisposer {

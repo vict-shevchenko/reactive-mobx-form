@@ -8,11 +8,7 @@ import {
 	IFormDefinition,
 	IFormSchema,
 	IValidatorjsConfiguration,
-	IFormValues,
-	INormalizedFieldDefinition,
-	IFormNormalizedSchema,
-	IFieldDefinition,
-	fieldValue
+	IFormValues
 } from './interfaces/Form';
 import { FormStore } from './Store';
 import { FormContext, IFormContext } from './context';

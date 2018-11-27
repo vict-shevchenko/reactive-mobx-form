@@ -4,7 +4,7 @@ import { objectPath } from './utils';
 
 export class FieldSection {
 	public name: string;
-	public autoRemove: boolean = false;
+	public detached: boolean = false;
 
 	@observable public subFields = new Map<string, formField>();
 
@@ -42,9 +42,9 @@ export class FieldSection {
 		return this.subFields.get(index);
 	}
 
-	public setAutoRemove(): void {
-		this.autoRemove = true;
-		this.subFields.forEach(subField => subField.setAutoRemove());
+	public setDetached(): void {
+		this.detached = true;
+		this.subFields.forEach(subField => subField.setDetached());
 	}
 
 	@computed get value() {
