@@ -25,6 +25,8 @@ export class FormStore {
 
 	public unRegisterForm(name: string): void {
 		if (this.forms.has(name)) {
+			const form = this.getForm(name) as Form;
+			form.cleanup();
 			this.forms.delete(name);
 		}
 	}

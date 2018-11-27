@@ -83,17 +83,6 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 		}
 
 		verifyRequiredProps(requiredProps, this.props, this);
-
-		// we assume, that there can be several controls in form connected with on field instance in form
-		// so before field creation - we check for existance of field with this name
-		// this is useful in radiobutton case
-		/* this.field = this.form.getField(this.state.name) as Field;
-
-		if (!this.field) {
-			this.createField();
-			this.field.subscribeToFormValidation(this.form);
-		} */
-
 		if (this.props.fieldRef) {
 			this.props.fieldRef(this.props.field);
 		}
@@ -103,15 +92,6 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 		const { __formContext: { form }, field } = this.props;
 		this.formErrorUnsubscribe = field.subscribeToFormValidation(form);
 	}
-
-/* 	private createField(): void {
-		const fieldDefinition = this.prepareFieldDefinition(this.state.name, this.props.rules);
-
-		this.warnOnIncorrectInitialValues(fieldDefinition[0]);
-
-		this.field = new Field(this.state.name, fieldDefinition);
-		this.form.registerField(this.field);
-	} */
 
 	public componentWillUnmount(): void {
 		const { __formContext: { form }, field} = this.props;

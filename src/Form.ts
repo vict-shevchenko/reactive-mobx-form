@@ -1,4 +1,4 @@
-import { observable, action, computed, reaction } from 'mobx';
+import { observable, action, computed, reaction, IReactionDisposer } from 'mobx';
 import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 // tslint:disable-next-line:max-line-length
@@ -19,6 +19,7 @@ export class Form {
 	private errorMessages: IFormErrorMessages | undefined = undefined;
 	private attributeNames: IFormAttributeNames | undefined = undefined;
 	private config: IFormConfiguration;
+	private validationReactionDisposer: IReactionDisposer;
 
 	@observable public fields = new Map<string, formField>();
 	@observable public errors: Errors; // todo: initial value
@@ -101,7 +102,7 @@ export class Form {
 
 	public registerValidation() {
 		// todo: we need to dispose this reaction
-		reaction(
+		this.validationReactionDisposer = reaction(
 			() => this.validation,
 			() => {
 				if (this.attributeNames) {
@@ -111,6 +112,10 @@ export class Form {
 				this.errors = this.validation.errors;
 			}
 		);
+	}
+
+	public cleanup() {
+		this.validationReactionDisposer();
 	}
 
 	// Field Manipulation
