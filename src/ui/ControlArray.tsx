@@ -28,7 +28,7 @@ export class ControlArray extends React.Component<IControlArrayProps> {
 	}
 
 	public componentWillUnmount(): void {
-		const {__formContext: { form }, field} = this.props;
+		const { form, field} = this.props;
 		if (!field.detached) {
 			field.setDetached();
 			form.unregisterField(field.name);
@@ -37,10 +37,10 @@ export class ControlArray extends React.Component<IControlArrayProps> {
 
 	public componentDidUpdate(prevProps: IControlArrayProps) {
 		if (
-			this.props.__parentNameContext !== prevProps.__parentNameContext ||
+			this.props.parentName !== prevProps.parentName ||
 			this.props.name !== prevProps.name
 		) {
-				const newName = constructName(this.props.__parentNameContext, this.props.name);
+				const newName = constructName(this.props.parentName, this.props.name);
 				this.props.field.update(newName);
 		}
 	}

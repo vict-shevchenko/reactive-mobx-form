@@ -4,19 +4,16 @@ import { Form } from './Form';
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
 
-export interface IFormContext {
-	form: Form;
-}
 export interface IControlFormContext {
-	__formContext: IFormContext;
+	form: Form;
 }
 
 export interface IControlParentNameContext {
-	__parentNameContext: string;
+	parentName: string;
 }
 
 // tslint:disable-next-line: variable-name
-export const FormContext = React.createContext({ form: {} as Form });
+export const FormContext = React.createContext({} as Form);
 // tslint:disable-next-line: variable-name
 export const ParentNameContext = React.createContext('');
 
@@ -26,7 +23,7 @@ export function withForm<P extends IControlFormContext>(Component: React.Compone
 		public render() {
 			return (
 				<FormContext.Consumer>
-					{(formContext: IFormContext) => <Component {...this.props} __formContext={formContext} />}
+					{(form: Form) => <Component {...this.props} form={form} />}
 				</FormContext.Consumer>
 			);
 		}
@@ -40,7 +37,7 @@ export function withParentName<P extends IControlParentNameContext>(Component: R
 		public render() {
 			return (
 				<ParentNameContext.Consumer>
-					{(parentName: string)  => <Component {...this.props} __parentNameContext={parentName} />}
+					{(parentName: string)  => <Component {...this.props} parentName={parentName} />}
 				</ParentNameContext.Consumer>
 			);
 		}

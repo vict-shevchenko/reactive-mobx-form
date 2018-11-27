@@ -30,8 +30,8 @@ export function withField<P extends IControlWithFieldContext<formField>>(Wrapped
 		// tslint:disable-next-line:max-line-length
 		constructor(props: Subtract<P, IControlWithFieldContext<formField>> & IBaseControlProps & IControlFormContext & IControlParentNameContext & PP) {
 			super(props);
-			const { __formContext: { form }, __parentNameContext, name } = props;
-			const fieldName = constructName(__parentNameContext, name);
+			const { form, parentName, name } = props;
+			const fieldName = constructName(parentName, name);
 
 			this.field = form.registerField(fieldName, () => fieldCreationFunction(fieldName, props));
 		}

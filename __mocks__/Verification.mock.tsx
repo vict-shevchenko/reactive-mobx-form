@@ -36,7 +36,7 @@ const OurComp = <MyComp<IPlace>
 	bla="test"
 	name="test"
 	component="sfds"
-	__formContext={{ form: new Form({})}
+	form={{ form: new Form({})}
 	}
 	__parentNameContext="blaa"
 	field={new FieldSection('test')}

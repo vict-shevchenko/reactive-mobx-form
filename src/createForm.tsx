@@ -11,7 +11,7 @@ import {
 	IFormValues
 } from './interfaces/Form';
 import { FormStore } from './Store';
-import { FormContext, IFormContext } from './context';
+import { FormContext } from './context';
 import { omit } from './utils';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
@@ -42,10 +42,6 @@ export interface IFormProps {
 	schema?: IFormSchema;
 }
 
-export interface IFormState {
-	formContext: IFormContext;
-}
-
 export interface IInjectedFormProps {
 	submit: (event: FormEvent<HTMLFormElement>, ...rest: any[]) => Promise<any>;
 	reset: () => void;
@@ -74,7 +70,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 		@inject('formStore')
 		@observer
 		// tslint:disable-next-line:max-line-length
-		class FormUI extends React.Component<(Subtract<P, IInjectedFormProps> & IFormProps & IFormStore), IFormState> {
+		class FormUI extends React.Component<(Subtract<P, IInjectedFormProps> & IFormProps & IFormStore)> {
 /* 			public static defaultProps: any = {
 				schema: {}
 			}; */
@@ -95,12 +91,6 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 				// tslint:disable-next-line:max-line-length
 				this.form = props.formStore!.registerForm(formName, { schema: fullSchema, config, validator});
-
-				this.state = {
-					formContext: {
-						form: this.form
-					}
-				};
 			}
 
 			public componentWillUnmount() {
@@ -157,7 +147,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 			public render() {
 				return (
-					<FormContext.Provider value={this.state.formContext}>
+					<FormContext.Provider value={this.form}>
 						<FormComponent
 							submit={this.submitForm.bind(this)}
 							reset={this.resetForm.bind(this)}

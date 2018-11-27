@@ -7,5 +7,5 @@ export interface IBaseControlProps {
 }
 
 export class BaseControl {
-	public static skipProp: string[] = ['__formContext', '__parentNameContext', 'field'];
+	public static skipProp: string[] = ['form', 'parentName', 'field'];
 }

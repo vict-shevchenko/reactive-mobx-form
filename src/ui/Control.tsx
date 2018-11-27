@@ -31,7 +31,7 @@ export interface IControlProps extends IBaseControlProps, IControlFormContext, I
 
 // todo: add value property to make field a controlled component
 function prepareFieldDefinition(name: string, props: IControlProps): INormalizedFieldDefinition {
-	const { __formContext: { form }, rules = '' } = props;
+	const { form, rules = '' } = props;
 	const fieldDefinition: INormalizedFieldDefinition | undefined = form.formSchema[name];
 
 	if (fieldDefinition) {
@@ -89,12 +89,12 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 	}
 
 	public componentDidMount() {
-		const { __formContext: { form }, field } = this.props;
+		const { form, field } = this.props;
 		this.formErrorUnsubscribe = field.subscribeToFormValidation(form);
 	}
 
 	public componentWillUnmount(): void {
-		const { __formContext: { form }, field} = this.props;
+		const { form, field} = this.props;
 
 		this.formErrorUnsubscribe();
 
@@ -105,11 +105,11 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 
  public componentDidUpdate(prevProps: IControlProps) {
 		if (
-			this.props.__parentNameContext !== prevProps.__parentNameContext ||
+			this.props.parentName !== prevProps.parentName ||
 			this.props.name !== prevProps.name ||
 			this.props.rules  !==  prevProps.rules
 		) {
-			const newName = constructName(this.props.__parentNameContext, this.props.name);
+			const newName = constructName(this.props.parentName, this.props.name);
 			const newFieldDefinition = prepareFieldDefinition(newName, this.props);
 
 			this.props.field.update(newName, newFieldDefinition);
