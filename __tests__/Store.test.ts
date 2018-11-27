@@ -1,4 +1,3 @@
-declare var jest, describe, it, expect, beforeAll;
 import { FormStore } from '../lib/Store';
 
 describe('Testing the FormStore', () => {
@@ -37,17 +36,17 @@ describe('Testing the FormStore', () => {
 
 		formStore.registerForm('myform', {});
 		expect(formStore.forms.size).toBe(1);
-		expect(formStore.forms.get('myform').formSchema).toEqual({});
+		expect(formStore.forms.get('myform')!.formSchema).toEqual({});
 	});
 
 	test('It should be possible to extend form configuration', () => {
 		formStore.registerForm('myform', {});
 		expect(formStore.forms.size).toBe(1);
-		expect(formStore.forms.get('myform').formSchema).toEqual({});
+		expect(formStore.forms.get('myform')!.formSchema).toEqual({});
 
 		formStore.registerForm('myform', { schema: { name: ['Viktor', 'required'] } });
 		expect(formStore.forms.size).toBe(1);
-		expect(formStore.forms.get('myform').formSchema).toEqual({ name: ['Viktor', 'required'] });
+		expect(formStore.forms.get('myform')!.formSchema).toEqual({ name: ['Viktor', 'required'] });
 	});
 
 	test('It should be possible to unregister form', () => {
@@ -78,7 +77,7 @@ describe('Testing the FormStore', () => {
 		const yourForm = formStore.getForm('yourform');
 
 		expect(form).toBeDefined();
-		expect(form.formSchema).toEqual({ name: ['Viktor', 'required'] });
+		expect(form!.formSchema).toEqual({ name: ['Viktor', 'required'] });
 
 		expect(yourForm).not.toBeDefined();
 	});

@@ -36,9 +36,8 @@ const OurComp = <MyComp<IPlace>
 	bla="test"
 	name="test"
 	component="sfds"
-	form={{ form: new Form({})}
-	}
-	__parentNameContext="blaa"
+	form={new Form({})}
+  parentName="blaa"
 	field={new FieldSection('test')}
 	place="Kyiv"
 />;
@@ -49,7 +48,7 @@ const OurCompWithFormJSX = <OurCompWithForm<IPlace>
 	bla="test"
 	name="test"
 	component="sfds"
-	__parentNameContext="blaa"
+	parentName="blaa"
 	field={new FieldSection('test')}
 	place="Kyiv"
 />;

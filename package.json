@@ -26,43 +26,28 @@
   },
   "homepage": "https://github.com/vict-shevchenko/reactive-mobx-form#readme",
   "dependencies": {
-    "@types/enzyme": "^3.1.14",
-    "validatorjs": "^3.14.2"
+    "validatorjs": "^3.15.1"
   },
   "peerDependencies": {
     "mobx": "^4.0.0 || ^5.0.0",
-    "mobx-react": "^5.0.0",
-    "react": "^16.3.2"
+    "mobx-react": "^5.4.2",
+    "react": "^16.6.3"
   },
   "devDependencies": {
-    "@types/jest": "^22.2.3",
-    "@types/react": "^16.3.12",
-    "@types/react-dom": "^16.0.5",
+    "@types/enzyme": "^3.1.15",
+    "@types/jest": "^23.3.9",
+    "@types/react": "^16.7.7",
+    "@types/react-dom": "^16.0.10",
     "@types/validatorjs": "^3.7.1",
-    "enzyme": "^3.4.3",
-    "enzyme-adapter-react-16": "^1.6.0",
-    "jest": "^22.4.3",
-    "ts-jest": "^22.4.4",
-    "tslint": "^5.9.1",
-    "typescript": "^2.8.3"
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
   },
   "jest": {
     "verbose": true,
-    "globals": {
-      "ts-jest": {
-        "skipBabel": true
-      }
-    },
-    "transform": {
-      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ]
+    "preset": "ts-jest"
   }
 }

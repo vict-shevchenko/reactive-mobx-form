@@ -1,4 +1,3 @@
-declare var jest, describe, it, expect, beforeAll;
 import * as React from 'react';
 import { reactiveMobxForm, ReactiveMobxFormComponent, Control, FormStore } from '../index';
 import { ToggleControlForm, IToggle } from '../__mocks__/SimpleForm.mock';
@@ -6,6 +5,7 @@ import { mount } from 'enzyme';
 
 import * as Enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
+import { Form } from '../lib/Form';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -49,7 +49,7 @@ describe('Testing behavior when removing control from a Form', () => {
 		const ReactiveForm = reactiveMobxForm('toggleControlForm1')(ToggleControlForm);
 
 		wrapper = mount(<Wrapper form={ReactiveForm} />);
-		const form = formStore.getForm('toggleControlForm1');
+		const form = formStore.getForm('toggleControlForm1') as Form;
 
 		expect(wrapper.find(Control)).toHaveLength(1);
 		expect(wrapper.find('input')).toHaveLength(1);
@@ -67,7 +67,7 @@ describe('Testing behavior when removing control from a Form', () => {
 		const ReactiveForm = reactiveMobxForm('toggleControlForm2', { config: { destroyControlStateOnUnmount: false } })(ToggleControlForm);
 
 		wrapper = mount(<Wrapper form={ReactiveForm} />);
-		const form = formStore.getForm('toggleControlForm2');
+		const form = formStore.getForm('toggleControlForm2') as Form;
 
 		expect(wrapper.find(Control)).toHaveLength(1);
 		expect(wrapper.find('input')).toHaveLength(1);

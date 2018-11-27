@@ -1,4 +1,3 @@
-declare var jest, describe, it, expect;
 import * as React from 'react';
 import { omit, objectPath, isNumeric, objectMissProps, verifyRequiredProps, normalizeSchema } from '../lib/utils';
 import { IFormSchema } from '../lib/interfaces/Form';

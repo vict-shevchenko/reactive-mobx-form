@@ -1,13 +1,10 @@
-declare var jest, describe, it, expect, beforeAll;
 import * as React from 'react';
 import {
 	isConfigParamValid,
 	createForm,
-	configureValidatorjs,
 	validateConfigParams
 } from '../src/createForm';
 import BasicForm from '../__mocks__/BasicForm.mock';
-import { IFormSchema } from '../src/interfaces/Form';
 import { shallow } from 'enzyme';
 import { FormStore } from '../src/Store';
 

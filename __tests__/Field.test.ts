@@ -1,4 +1,3 @@
-declare var jest, describe, it, expect, beforeAll;
 import { Field } from '../lib/Field';
 import { Form } from '../lib/Form';
 import { formField } from '../lib/types';
