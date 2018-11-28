@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Control } from '../index';
-import { IInjectedFormProps } from '../index';
+import { IReactiveMobxFormProps } from '../index';
 
 export interface IToggle {
 	controlVisible: boolean;
 }
 
-export class ToggleControlForm extends React.Component<IInjectedFormProps & IToggle> {
+export class ToggleControlForm extends React.Component<IReactiveMobxFormProps & IToggle> {
 	public render() {
 		return (
 		<form onSubmit={this.props.submit}>
