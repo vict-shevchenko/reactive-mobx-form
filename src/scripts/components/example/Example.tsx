@@ -34,7 +34,6 @@ const FormView = inject('formStore')(observer(({ formStore, name }:{ formStore?:
 function FormRenderer({ formName }: {formName: string}) {
 	function handleSubmit(values) {
 		 alert(JSON.stringify(values));
-		return values;
 	}
 
 	switch (formName) {
