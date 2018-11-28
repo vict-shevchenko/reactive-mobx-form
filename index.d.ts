@@ -24,7 +24,7 @@ export { ControlArrayWithContext as ControlArray } from "./lib/ui/ControlArray";
 export { ControlSectionWithContext as ControlSection } from "./lib/ui/ControlSection";
 export {
 	createForm as reactiveMobxForm,
-	IInjectedFormProps,
+	IReactiveMobxFormProps,
 	ReactiveMobxForm as ReactiveMobxFormComponent,
 	configureValidatorjs as configureValidator
 } from './lib/createForm'
