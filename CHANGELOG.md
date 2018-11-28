@@ -1,3 +1,6 @@
+# 0.10.1
+- Fix typing for `onSubmit` parameter
+
 # 0.10.0 [Breaking Changes]
 - Changed the internal mechanism of handling destroyControlContextOnUnmount. Now in order to init form with it call `reactiveMobxForm('myForm', config: {destroyControlContextOnUnmount: true})`
 - Fix memory leak with not removing form validation reaction
