@@ -12,6 +12,10 @@ import ControlSectionForm from '../../examples/control-section/ControlSection';
 import ControlArrayForm from '../../examples/control-array/ControlArray';
 import ComputedControlForm from '../../examples/computed-control/ComputedControl';
 
+interface ITest {
+	bla: string;
+}
+
 
 const FormView = inject('formStore')(observer(({ formStore, name }:{ formStore?: FormStore, name?: string }) => {
 	console.log('render form view');
@@ -28,8 +32,9 @@ const FormView = inject('formStore')(observer(({ formStore, name }:{ formStore?:
 }));
 
 function FormRenderer({ formName }: {formName: string}) {
-	function handleSubmit(form) {
-		alert(JSON.stringify(form));
+	function handleSubmit(values) {
+		 alert(JSON.stringify(values));
+		return values;
 	}
 
 	switch (formName) {
