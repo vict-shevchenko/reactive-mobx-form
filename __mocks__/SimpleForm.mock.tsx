@@ -1,3 +1,5 @@
+// tslint:disable:variable-name
+
 import * as React from 'react';
 import { Control } from '../index';
 import { IReactiveMobxFormProps } from '../index';
@@ -20,3 +22,37 @@ export class ToggleControlForm extends React.Component<IReactiveMobxFormProps & 
 		);
 	}
 }
+
+export const SubmitForm: React.SFC<IReactiveMobxFormProps> = ({ submit }) => (
+	<form onSubmit={submit}>
+		<Control name="firstName" component="input" type="text" />
+		<button type="submit" id="submit">Submit</button>
+	</form>
+);
+
+export const CustomSubmitForm: React.SFC<IReactiveMobxFormProps> = ({ submit }) => {
+	const handleSubmit = (e: any) => {
+		submit(e, 'test');
+	};
+
+	return (
+		<form onSubmit={handleSubmit}>
+			<Control name="firstName" component="input" type="text" />
+			<button type="submit" id="submit">Submit</button>
+		</form>
+	);
+};
+
+export const WizardForm1: React.SFC<IReactiveMobxFormProps> = ({ submit }) => (
+	<form onSubmit={submit}>
+		<Control name="firstName" component="input" type="text" />
+		<button type="submit" id="submit">Submit</button>
+	</form>
+);
+
+export const WizardForm2: React.SFC<IReactiveMobxFormProps> = ({ submit }) => (
+	<form onSubmit={submit}>
+		<Control name="lastName" component="input" type="text" />
+		<button type="submit" id="submit">Submit</button>
+	</form>
+);

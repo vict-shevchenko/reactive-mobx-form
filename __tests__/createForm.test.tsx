@@ -5,11 +5,14 @@ import {
 	validateConfigParams
 } from '../src/createForm';
 import BasicForm from '../__mocks__/BasicForm.mock';
-import { shallow } from 'enzyme';
-import { FormStore } from '../src/Store';
+import { SubmitForm, CustomSubmitForm, WizardForm1, WizardForm2 } from '../__mocks__/SimpleForm.mock';
+import { shallow, mount } from 'enzyme';
+import { FormStore } from '../lib/Store';
 
 import * as Enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
+import { reactiveMobxForm } from '../index';
+import { ReactiveMobxFormComponent } from '../index';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -52,14 +55,14 @@ describe('Testing creation of Form Component', () => {
 	});
 });
 
-describe('Testing interaction of Form Component', () => {
+describe('Testing different props combinations with Form Component, and passing down correct props', () => {
 	// tslint:disable-next-line:variable-name
-	let ReactiveBasicForm, formStore;
+	let ReactiveBasicForm, formStore: FormStore;
 
 	beforeEach(() => {
 		ReactiveBasicForm = createForm('myForm')(BasicForm); // tslint:disable-line
 		formStore = new FormStore();
-		formStore.registerForm('myForm', {}, {}, {});
+		formStore.registerForm('myForm', {});
 	});
 
 	test('Rendering Form with incorrect "schema" parameter should throw error"', () => {
@@ -69,7 +72,7 @@ describe('Testing interaction of Form Component', () => {
 				// tslint:disable-next-line:no-empty
 				onSubmit={() => {}}
 				schema={'hello'}
-				/>
+			/>
 			)).toThrow('Attribute "schema" provided to Form has incorrect format. Object expected');
 	});
 
@@ -109,6 +112,72 @@ describe('Testing interaction of Form Component', () => {
 		/>).children();
 
 		expect(formWrapper.prop('myCustomProp')).toBe('hello');
+	});
+});
+
+describe('Form onSubmit should be called correctly and with correct attributes', () => {
+	let formStore, wrapper;
+
+	beforeEach(() => {
+		formStore = new FormStore();
+	});
+
+	afterAll(() => {
+		wrapper.unmount();
+	});
+
+	test('Testing onSubmit for submitting form via <form submit={sumbit}>', () => {
+		const handleSubmit = jest.fn(formValues => formValues);
+		// tslint:disable-next-line:variable-name
+		const ReactiveSubmitForm: ReactiveMobxFormComponent = reactiveMobxForm('submitForm')(SubmitForm);
+
+		wrapper = mount(<ReactiveSubmitForm onSubmit={handleSubmit} formStore={formStore} />);
+
+		wrapper.find('input').simulate('change', { target: { value: 'Hello' }});
+		wrapper.find('form').simulate('submit');
+
+		expect(handleSubmit.mock.calls.length).toBe(1);
+		expect(handleSubmit.mock.calls[0][0]).toEqual({firstName: 'Hello'});
+	});
+
+	test('Testing onSubmit for submitting form via <form submit={myCustomSubmit}>', () => {
+		const handleSubmit = jest.fn(formValues => formValues);
+		// tslint:disable-next-line:variable-name
+		const ReactiveCustomSubmitForm: ReactiveMobxFormComponent = reactiveMobxForm('customSubmitForm')(CustomSubmitForm);
+
+		wrapper = mount(<ReactiveCustomSubmitForm onSubmit={handleSubmit} formStore={formStore} />);
+
+		wrapper.find('input').simulate('change', { target: { value: 'Hello' }});
+		wrapper.find('form').simulate('submit');
+
+		expect(handleSubmit.mock.calls.length).toBe(1);
+		expect(handleSubmit.mock.calls[0][0]).toEqual({firstName: 'Hello'});
+	});
+
+	test('Testing onSubmit for submitting form via wizard type forms', () => {
+		const handleSubmit1 = jest.fn(formValues => formValues);
+		const handleSubmit2 = jest.fn(formValues => formValues);
+		// tslint:disable-next-line:variable-name max-line-length
+		const ReactiveWizard1Form: ReactiveMobxFormComponent = reactiveMobxForm('wizardForm', {config: {destroyFormStateOnUnmount: false, destroyControlStateOnUnmount: false}})(WizardForm1);
+		// tslint:disable-next-line:variable-name
+		const ReactiveWizard2Form: ReactiveMobxFormComponent = reactiveMobxForm('wizardForm')(WizardForm2);
+
+		wrapper = mount(<ReactiveWizard1Form onSubmit={handleSubmit1} formStore={formStore} />);
+
+		wrapper.find('input').simulate('change', { target: { value: 'Hello ' }});
+		wrapper.find('form').simulate('submit');
+
+		expect(handleSubmit1.mock.calls.length).toBe(1);
+		expect(handleSubmit1.mock.calls[0][0]).toEqual({firstName: 'Hello '});
+
+		wrapper.unmount();
+
+		wrapper = mount(<ReactiveWizard2Form onSubmit={handleSubmit2} formStore={formStore} />);
+		wrapper.find('input').simulate('change', { target: { value: 'World' }});
+		wrapper.find('form').simulate('submit');
+
+		expect(handleSubmit2.mock.calls.length).toBe(1);
+		expect(handleSubmit2.mock.calls[0][0]).toEqual({firstName: 'Hello ', lastName: 'World'});
 	});
 });
 

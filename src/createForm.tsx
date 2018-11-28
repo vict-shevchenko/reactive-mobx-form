@@ -43,7 +43,7 @@ export interface IFormProps {
 }
 
 export interface IReactiveMobxFormProps {
-	submit: (event: FormEvent<HTMLFormElement>, ...rest: any[]) => Promise<any>;
+	submit: (event: FormEvent, ...rest: any[]) => Promise<any>;
 	reset: () => void;
 	destroy: () => void;
 	submitting: boolean;
@@ -105,7 +105,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
-			public submitForm(event: Event, ...rest: any[]): Promise<any> {
+			public submitForm(event: FormEvent, ...rest: any[]): Promise<any> {
 				this.form.submitError = undefined;
 
 				try {
