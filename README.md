@@ -1,61 +1,17 @@
 # reactive-mobx-form  [![npm version](https://badge.fury.io/js/reactive-mobx-form.svg)](https://badge.fury.io/js/reactive-mobx-form)
-Forms library for React+MobX application. Under the hood it uses efficient MobX observable mechanizm, that allows tracking changes in form fields and rerender only things that have changed. This makes developer a feeling of working with 2-way databinding and reduces much boilerplate code needed to handle input events in 1-way data flow environment. 
+Simple ans scalable form management library for React+MobX application. Under the hood it uses efficient MobX observable mechanizm, that allows tracking changes in form fields and rerender only things that have changed. This gives developer a feeling of working with 2-way databinding and reduces much boilerplate code needed to handle input events in 1-way data flow environment. 
 
-The library is inspired by [Angular Reactive Forms](https://angular.io/guide/reactive-forms) and [Redux Form](http://redux-form.com). It has similar syntax to Redux Form, because of concept that are natural to React world. So if you previously had experience with it, it will be easy for you to start using `reactive-mobx-form`. But still one of the goals of this library is to be simple in usage for everyone.
+By default - it is "Zero-Config" and so-called "template base", meaning it does not require you to keep and maintain any JSON form descriptor in your model or state - what is in your JSX is what is in your form.
 
-## Note on versions
-- 0.7.5 - is a stable version for usage in environments with any version of React but MobX < 4. ([Map in MobX](https://github.com/mobxjs/mobx/blob/e17c47833d1812eee6d77914be890aa41e4b7908/CHANGELOG.md#breaking-changes-1))
-- 0.9.0 - is a stable version for React > 16.3, and MobX > 4(5) (mobx-react > 5.2.0). [See changelog for updates](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/CHANGELOG.md). This version will be mainly developed. 
-
-#### Migration to 0.9.x
-For most users migration will be just updating a version in `package.json`. Make sure you are running React > 16.3.0. Also you can check [commit](https://github.com/vict-shevchenko/reactive-mobx-form/commit/e7fcdeeaf7173de0ef3974c12d10fb1de3a1f31a) for migration for docs site of `reactive-mobx-form`
+The library is inspired by [Angular Reactive Forms](https://angular.io/guide/reactive-forms) and [Redux Form](http://redux-form.com). It has similar syntax to Redux Form, because of concept that are natural to React world. So if you previously had experience with it, it will be easy for you to start using `reactive-mobx-form`. But still syntax is aimed to be clear for everyone.
 
 ## Documentation
-[Examples](https://vict-shevchenko.github.io/reactive-mobx-form) can be found here. Documentation is under development, but you already can see some code and usage
-
-## Important notice
-Library is on its initial development stage, is unstable and may contain bugs. Most of all API will change.
-
-If considering a software development as next steps:
-1. Make it work 
-2. Make it right <-- we are here
-3. Make it fast
-
-Starting of version `0.2.10` library contains all basic functionality for handling simple and complex(nested) forms. For now I will focus on its documentation and different improvements(performance and code organization). API should left stable for some time. If you are using a library and require any help, please create an issue.
-
-## Motivation
- Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
- 
-Goals:
-1. Minimal configuration
-2. Easy to learn and start with
-3. Preferable over own solutions(I hope it to be)
-
-## Capabilities
-Its now possible: 
-1. Render simple one level forms
-2. Validate fields, see **validatorjs** docs
-3. Render multi-level fields with `ControlSection` Component
-4. Render filed, that contains array of data. Both singe item array, or array of objects.
-5. Submit a form
-
-## Dependancy
-reactive-mobx-forms depends directly on:
-1. [validatorjs](https://github.com/skaterdav85/validatorjs) library for validation. It is small, effective and scalable. 
-2. [prop-types](https://github.com/facebook/prop-types)
-
-reactive-mobx-forms peer dependencies are:
-1. [react](https://github.com/facebook/react)
-2. [mobx](https://github.com/mobxjs/mobx)
-3. [mobx-react](https://github.com/mobxjs/mobx-react)
-
-## Know Issues
-1. When replacing `<A />` with `<B />`, `B.componentWillMount` now always happens before `A.componentWillUnmount`. Previously, `A.componentWillUnmount` could fire first in some cases. - Based on this. If you replace one `reactiveMobXForm` with another **having the same name**. This will cause new form extend previous, and then form destroy. So just give your forms different names.
+[Examples](https://vict-shevchenko.github.io/reactive-mobx-form) can be found here.
 
 ## Installation
 
 ```
-npm install reactive-mobx-form --save // you can omit --save flag if using npm > 5
+npm install reactive-mobx-form
 ```
 
 ## Usage
@@ -70,7 +26,7 @@ import { FormStore } from 'reactive-mobx-form';
 const formStore = new FormStore();
 
 render(
-  <Provider appStore={appStore} formStore={formStore}> //appStore - is any other store in your application
+  <Provider appStore={appStore} formStore={formStore}> // appStore - is any other store in your application
     <App />
   </Provider>,
   document.getElementById('root')
@@ -83,7 +39,7 @@ Create a form
 ```javascript
 import { reactiveMobxForm, Control } from 'reactive-mobx-form';
 
-class ContactForm extends Component {
+class ContactForm extends React.Component {
   render() {
     const { submit } = this.props;
     
@@ -116,7 +72,7 @@ Use your form and enjoy
 ```javascript
 import ContactForm from './ContactForm';
 
-export default Page extends Component {
+export default Page extends React.Component {
   handleSubmit(form) {
     console.log(form)
   }
@@ -130,10 +86,10 @@ export default Page extends Component {
 ```
 
 ## How form submission is happening. 
-When you call `props.submit` function that is passed to your form - submission is started. Inside it calls your `submit` function (those you have passed into `onSubmit` parameter) will be called inside of promise(so it may be async).
+When you call `props.submit` function that is passed into your form - submission is started. Inside it calls your `submit` function (those you have passed into `onSubmit` parameter) inside of promise(so it may be async).
 props.submit` is also async function, that returns a promise, so you can add any required callbacks in `.then` and `.catch` methods.
-If your `submit` function returns a `resolved Promise` - `result will be passed to `props.submit.then` method. 
-If your `submit` function returns `rejectedPromise` than `form.submitionError` flag is raised and error will be passed to `props.submit.catch` method. 
+If your `onSubmit` function returns a `resolved Promise` - `result will be passed to `props.submit.then` method. 
+If your `onSubmit` function returns `rejectedPromise` than `form.submitionError` flag is raised and error will be passed to `props.submit.catch` method. 
 
 
 ## Language Support
@@ -150,10 +106,10 @@ configureValidator({
 });
 ```
 
-You can use MobX autorun funtion in order to execute this code each time app language change. Be carefull as changing the language happens on `Validator` class and effects all forms, even created before language switch.
+You can use MobX autorun function in order to execute this code each time app language change. Be careful as changing the language happens on `Validator` class and effects all forms, even created before language switch.
 
 ### Custom attribute names
-When display error messages, you may want to modify how field name is displayed in error message. For example if field name is 'user.name' and this field is required. You'd like to see it in error message like 'The user name field is required.'. This may be done via setting custom attribute names(locally) or attribute names formatter function(globally). Same as language support, the functionallity relays on [Validatorjs Custom attribute names](https://github.com/skaterdav85/validatorjs#custom-attribute-names).
+When display error messages, you may want to modify how field name is displayed in error message. For example if field name is 'user.name' and this field is required. You'd like to see it in error message like 'The user name field is required.'. This may be done via setting custom attribute names(locally) or attribute names formatter function(globally). Same as language support, the functionality relays on [Validatorjs Custom attribute names](https://github.com/skaterdav85/validatorjs#custom-attribute-names).
 
 ### Change custom attribute names globally
 In the `index.js` or other entry point of your app.
@@ -166,7 +122,7 @@ configureValidator({
 });
 ```
 
-`setAttributeFormatter` property should be a function, that accepts 1 paramenter field name, processes and returns it. In this example if we had a field name like 'user.name' it will be 'user name' in error message.
+`setAttributeFormatter` property should be a function, that accepts 1 parameter field name, processes and returns it. In this example if we had a field name like 'user.name' it will be 'user name' in error message.
 
 ### Change custom attribute names per form instance
 Here we will benefit from other optional parameter to `reactiveMobxForm` creation function called `validator` .In place where you initialize form
@@ -175,14 +131,14 @@ Here we will benefit from other optional parameter to `reactiveMobxForm` creatio
 const ContactFormReactive = reactiveMobxForm('contacts', {
     validator: {
       attributeNames: { // this option is available per form only
-        'users[0]' : 'First User'
+        'users.name' : 'User Name'
       }
       // local setAttributeFormatter is not implemented yet
     }
   })(ContactForm)
 ```
 
-`attributeNames` is an object that maps field name to attribute in error message. So if we had a field name like 'user.[0]' it will be 'First user' in error message.
+`attributeNames` is an object that maps field name to attribute in error message. So if we had a field name like 'user.name' it will be 'User NAme' in error message.
 
 ## Custom Error Messages
 With custom error messages it is possible to completely modify error message for some rule or combination of rule and field
@@ -198,4 +154,41 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
   })(ContactForm)
 ```
 
-##[FAQ](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/docs/FAQ.md)
+## Note on versions
+- 0.7.5 - is a stable version for usage in environments with any version of React but MobX < 4. ([Map in MobX](https://github.com/mobxjs/mobx/blob/e17c47833d1812eee6d77914be890aa41e4b7908/CHANGELOG.md#breaking-changes-1))
+- 0.9.0 - is a stable version for React > 16.3, and MobX > 4(5) (mobx-react > 5.2.0). [See changelog for updates](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/CHANGELOG.md). This version will be mainly developed. 
+
+#### Migration to 0.9.x
+For most users migration will be just updating a version in `package.json`. Make sure you are running React > 16.3.0. Also you can check [commit](https://github.com/vict-shevchenko/reactive-mobx-form/commit/e7fcdeeaf7173de0ef3974c12d10fb1de3a1f31a) for migration for docs site of `reactive-mobx-form`
+
+## Motivation
+ Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
+ 
+Goals:
+1. Zero configuration (I will not lie, you will still need some for not standard cases)
+2. Easy to learn and start with
+3. Preferable over own solutions (I hope it to be)
+
+## Capabilities
+Its now possible: 
+1. Render simple one level forms
+2. Validate fields, see **validatorjs** docs
+3. Render multi-level fields with `ControlSection` Component
+4. Render filed, that contains array of data. Both singe item array, or array of objects with `ControlArray`
+5. Render Dynamic forms, where subform appear or replace existing one. (Wizard type forms)
+6. Use `ComputedControl` component to render fields, which values is computed base of other form values
+7. Submit a form
+
+## Dependency
+reactive-mobx-forms depends directly on:
+1. [validatorjs](https://github.com/skaterdav85/validatorjs) library for validation. It is small, effective and scalable. 
+
+reactive-mobx-forms peer dependencies are:
+1. [react](https://github.com/facebook/react)
+2. [mobx](https://github.com/mobxjs/mobx)
+3. [mobx-react](https://github.com/mobxjs/mobx-react)
+
+## Know Issues
+1. When replacing `<A />` with `<B />`, `B.componentWillMount` now always happens before `A.componentWillUnmount`. Previously, `A.componentWillUnmount` could fire first in some cases. - Based on this. If you replace one `reactiveMobXForm` with another **having the same name**. This will cause new form extend previous, and then form destroy. So just give your forms different names.
+
+## [FAQ](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/docs/FAQ.md)
