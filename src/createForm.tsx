@@ -38,7 +38,7 @@ interface IFormStore {
 }
 
 export interface IFormProps {
-	onSubmit: <T>(values: IFormValues, ...rest: any[]) => T;
+	onSubmit: (values: IFormValues, ...rest: any[]) => unknown;
 	schema?: IFormSchema;
 }
 

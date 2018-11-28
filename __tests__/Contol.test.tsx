@@ -12,7 +12,10 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('Testing behavior when removing control from a Form', () => {
 	let wrapper;
 
+	type Abc = string;
+
 	const formStore = new FormStore(),
+		// tslint:disable-next-line:only-arrow-functions
 		submitHandler = v => v;
 
 	class Wrapper extends React.Component<{ form: ReactiveMobxFormComponent<IToggle> }> {
