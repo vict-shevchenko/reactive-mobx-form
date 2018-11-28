@@ -1,3 +1,9 @@
+# 0.10.0 [Breaking Changes]
+- Changed the internal mechanism of handling destroyControlContextOnUnmount. Now in order to init form with it call `reactiveMobxForm('myForm', config: {destroyControlContextOnUnmount: true})`
+- Fix memory leak with not removing form validation reaction
+- More TypeScript improvements
+- renamed exported interface 'IInjectedFormProps' to 'IReactiveMobxFormProps'
+
 # 0.9.11
 - TypeScript improvements. reactiveMobxForm
 
