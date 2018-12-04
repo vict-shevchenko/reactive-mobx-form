@@ -7,12 +7,12 @@ import { Form } from './Form';
 import {
 	IFormDefinition,
 	IFormSchema,
-	IValidatorjsConfiguration,
-	IFormValues
+	IValidatorjsConfiguration
 } from './interfaces/Form';
 import { FormStore } from './Store';
 import { FormContext } from './context';
 import { omit } from './utils';
+import { submitCallback } from './types';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
@@ -38,7 +38,7 @@ interface IFormStore {
 }
 
 export interface IFormProps {
-	onSubmit: (values: IFormValues, ...rest: any[]) => unknown;
+	onSubmit: submitCallback;
 	schema?: IFormSchema;
 }
 
@@ -91,7 +91,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				const fullSchema = (schema || props.schema) && Object.assign({}, schema, props.schema);
 
 				// tslint:disable-next-line:max-line-length
-				this.form = props.formStore!.registerForm(formName, { schema: fullSchema, config, validator});
+				this.form = props.formStore!.registerForm(formName, props.onSubmit, { schema: fullSchema, config, validator});
 			}
 
 			public componentWillUnmount() {
@@ -105,41 +105,15 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
-			public submitForm(event: FormEvent, ...rest: any[]): Promise<any> {
-				this.form.submitError = undefined;
+			public submitForm(...params: any[]) {
+				let externalParams = [];
 
-				try {
-					event.preventDefault();
-				}
-				catch (e) {
-					// tslint:disable-next-line
-					console.warn(`
-						'submit' function was called with incorrect 1st parameter.
-						React SyntheticEvent was expected but got ${JSON.stringify(event)}.
-						Please verify you are calling 'submit' from <form onSubmit> method,
-						or bypassing Event parameter via your custom onSubmit handler.
-					`);
+				if (params[0] instanceof Event) {
+					(params[0] as FormEvent).preventDefault();
+					[, externalParams] = params;
 				}
 
-				this.form.setTouched();
-
-				if (!this.form.isValid) {
-					this.form.submitError = this.form.errors.all();
-					return Promise.reject(this.form.submitError);
-				}
-
-				this.form.submitting = true;
-
-				return Promise.all([this.props.onSubmit(this.form.values, ...rest)])
-					.then(result => {
-						this.form.submitting = false;
-						return result[0];
-					}, error => {
-						this.form.submitting = false;
-						this.form.submitError = error;
-						return Promise.reject(this.form.submitError);
-					});
-				// todo: move into finally when it is part of standard
+				return this.form.submit(externalParams);
 			}
 
 			public resetForm(): void {

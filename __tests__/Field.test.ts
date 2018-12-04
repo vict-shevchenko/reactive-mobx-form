@@ -118,7 +118,7 @@ describe('Testing of Field class', () => {
 	});
 
 	test('Verify fetching errors for field from Form', () => {
-		const form = new Form({});
+		const form = new Form(v => v, {});
 
 		function createField(): formField {
 			return new Field('name', ['Viktor', 'required']);

@@ -62,7 +62,7 @@ describe('Testing different props combinations with Form Component, and passing 
 	beforeEach(() => {
 		ReactiveBasicForm = createForm('myForm')(BasicForm); // tslint:disable-line
 		formStore = new FormStore();
-		formStore.registerForm('myForm', {});
+		formStore.registerForm('myForm', v => v, {});
 	});
 
 	test('Rendering Form with incorrect "schema" parameter should throw error"', () => {
@@ -153,6 +153,10 @@ describe('Form onSubmit should be called correctly and with correct attributes',
 		expect(handleSubmit.mock.calls.length).toBe(1);
 		expect(handleSubmit.mock.calls[0][0]).toEqual({firstName: 'Hello'});
 	});
+
+	// test passign additional parameters to form
+
+	// test async submit function
 
 	test('Testing onSubmit for submitting form via wizard type forms', () => {
 		const handleSubmit1 = jest.fn(formValues => formValues);

@@ -3,7 +3,7 @@ import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 // tslint:disable-next-line:max-line-length
 import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, IFormConfiguration, IFormDefinition } from './interfaces/Form';
-import { formField } from './types';
+import { formField, submitCallback } from './types';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
 import { objectPath, normalizeSchema } from './utils';
@@ -19,6 +19,7 @@ export class Form {
 	private errorMessages: IFormErrorMessages | undefined = undefined;
 	private attributeNames: IFormAttributeNames | undefined = undefined;
 	private config: IFormConfiguration;
+	private externalSubmit: submitCallback;
 	private validationReactionDisposer: IReactionDisposer;
 
 	@observable public fields = new Map<string, formField>();
@@ -43,17 +44,18 @@ export class Form {
 	error
 	*/
 
-	constructor(options: IFormDefinition) {
-		this.extendConfiguration(options);
+	constructor(submit: submitCallback, options: IFormDefinition) {
+		this.extendConfiguration(submit, options);
 		this.config = Object.assign({}, DEFAULT_FORM_CONFIG, options.config);
 
 		this.registerValidation();
 	}
 
-	public extendConfiguration(options: IFormDefinition) {
-		const { schema = {}, validator = {}} = options;
+	public extendConfiguration(submit: submitCallback, options: IFormDefinition) {
+		const { schema = {}, validator = {} } = options;
 		const { errorMessages, attributeNames } = validator;
 
+		this.externalSubmit = submit;
 		Object.assign(this.formSchema, normalizeSchema(schema));
 		this.errorMessages ? Object.assign(this.errorMessages, errorMessages) : this.errorMessages = errorMessages;
 		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;
@@ -85,6 +87,29 @@ export class Form {
 
 	@action public setTouched() {
 		this.fields.forEach(field => field.setTouched());
+	}
+
+	public submit(...params: Array<unknown>): Promise<unknown> {
+		this.submitError = undefined;
+		this.setTouched();
+
+		if (!this.isValid) {
+			this.submitError = this.errors.all();
+			return Promise.reject(this.submitError);
+		}
+
+		this.submitting = true;
+
+		return Promise.all([this.externalSubmit(this.values, ...params)])
+			.then(result => {
+				this.submitting = false;
+				return result[0];
+			}, error => {
+				this.submitting = false;
+				this.submitError = error;
+				return Promise.reject(this.submitError);
+			});
+		// todo: move into finally when it is part of standard
 	}
 
 	@action public addField(field: formField): void {
