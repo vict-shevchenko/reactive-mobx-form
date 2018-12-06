@@ -42,8 +42,8 @@ export interface IFormProps {
 	schema?: IFormSchema;
 }
 
-export interface IReactiveMobxFormProps {
-	submit: (event: FormEvent, ...rest: any[]) => Promise<any>;
+export interface IReactiveMobxFormProps<P = any> {
+	submit: (...rest: Array<unknown>) => Promise<P>;
 	reset: () => void;
 	destroy: () => void;
 	submitting: boolean;
@@ -105,15 +105,16 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
-			public submitForm(...params: any[]) {
-				let externalParams = [];
+			public submitForm(...params: [FormEvent | MouseEvent, Array<unknown>] ) {
+				const maybeEvent = params[0];
 
-				if (params[0] instanceof Event) {
-					(params[0] as FormEvent).preventDefault();
-					[, externalParams] = params;
+				// stupid assumption, but enzyme fails on check maybeEvent.nativeEvent instanceof Event
+				if (maybeEvent.preventDefault) {
+					maybeEvent.preventDefault();
+					params.shift();
 				}
 
-				return this.form.submit(externalParams);
+				return this.form.submit(...params);
 			}
 
 			public resetForm(): void {

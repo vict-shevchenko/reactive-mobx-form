@@ -30,9 +30,24 @@ export const SubmitForm: React.SFC<IReactiveMobxFormProps> = ({ submit }) => (
 	</form>
 );
 
-export const CustomSubmitForm: React.SFC<IReactiveMobxFormProps> = ({ submit }) => {
+export const CustomSubmitFormWithEvent: React.SFC<IReactiveMobxFormProps> = ({ submit }) => {
 	const handleSubmit = (e: any) => {
 		submit(e, 'test');
+	};
+
+	return (
+		<form onSubmit={handleSubmit}>
+			<Control name="firstName" component="input" type="text" />
+			<button type="submit" id="submit">Submit</button>
+		</form>
+	);
+};
+
+export const CustomSubmitFormWithoutEvent: React.SFC<IReactiveMobxFormProps<string>> = ({ submit }) => {
+	const handleSubmit = () => {
+		submit('test').then(data => {
+			return data.length;
+		});
 	};
 
 	return (

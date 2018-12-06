@@ -5,7 +5,8 @@ import {
 	validateConfigParams
 } from '../src/createForm';
 import BasicForm from '../__mocks__/BasicForm.mock';
-import { SubmitForm, CustomSubmitForm, WizardForm1, WizardForm2 } from '../__mocks__/SimpleForm.mock';
+// tslint:disable-next-line:max-line-length
+import { SubmitForm, CustomSubmitFormWithEvent, CustomSubmitFormWithoutEvent, WizardForm1, WizardForm2 } from '../__mocks__/SimpleForm.mock';
 import { shallow, mount } from 'enzyme';
 import { FormStore } from '../lib/Store';
 
@@ -140,10 +141,10 @@ describe('Form onSubmit should be called correctly and with correct attributes',
 		expect(handleSubmit.mock.calls[0][0]).toEqual({firstName: 'Hello'});
 	});
 
-	test('Testing onSubmit for submitting form via <form submit={myCustomSubmit}>', () => {
+	test('Testing onSubmit for submitting form via <form submit={myCustomSubmit}> with passing event', () => {
 		const handleSubmit = jest.fn(formValues => formValues);
-		// tslint:disable-next-line:variable-name
-		const ReactiveCustomSubmitForm: ReactiveMobxFormComponent = reactiveMobxForm('customSubmitForm')(CustomSubmitForm);
+		// tslint:disable-next-line
+		const ReactiveCustomSubmitForm: ReactiveMobxFormComponent = reactiveMobxForm('customSubmitForm1')(CustomSubmitFormWithEvent);
 
 		wrapper = mount(<ReactiveCustomSubmitForm onSubmit={handleSubmit} formStore={formStore} />);
 
@@ -152,11 +153,42 @@ describe('Form onSubmit should be called correctly and with correct attributes',
 
 		expect(handleSubmit.mock.calls.length).toBe(1);
 		expect(handleSubmit.mock.calls[0][0]).toEqual({firstName: 'Hello'});
+		expect(handleSubmit.mock.calls[0][1]).toEqual('test');
 	});
 
-	// test passign additional parameters to form
+	test('Testing onSubmit for submitting form via <form submit={myCustomSubmit}> without passing event', () => {
+		const handleSubmit = jest.fn(formValues => formValues);
+		// tslint:disable-next-line
+		const ReactiveCustomSubmitForm: ReactiveMobxFormComponent = reactiveMobxForm('customSubmitForm2')(CustomSubmitFormWithoutEvent);
 
-	// test async submit function
+		wrapper = mount(<ReactiveCustomSubmitForm onSubmit={handleSubmit} formStore={formStore} />);
+
+		wrapper.find('input').simulate('change', { target: { value: 'Hello' }});
+		wrapper.find('form').simulate('submit');
+
+		expect(handleSubmit.mock.calls.length).toBe(1);
+		expect(handleSubmit.mock.calls[0][0]).toEqual({firstName: 'Hello'});
+		expect(handleSubmit.mock.calls[0][1]).toEqual('test');
+	});
+
+	test('Testing ASYNC onSubmit for submitting form via <form submit={sumbit}>', () => {
+		// tslint:disable-next-line:no-empty
+		let resolve;
+		const submissionPromise = new Promise(res => {
+			resolve = res;
+		});
+
+		const handleSubmit = jest.fn(()  => setTimeout(() => resolve('done'), 100));
+		// tslint:disable-next-line:variable-name
+		const ReactiveSubmitForm: ReactiveMobxFormComponent = reactiveMobxForm('asyncSubmitForm')(SubmitForm);
+
+		wrapper = mount(<ReactiveSubmitForm onSubmit={handleSubmit} formStore={formStore} />);
+
+		wrapper.find('input').simulate('change', { target: { value: 'Hello' }});
+		wrapper.find('form').simulate('submit');
+
+		return expect(submissionPromise).resolves.toEqual('done');
+	});
 
 	test('Testing onSubmit for submitting form via wizard type forms', () => {
 		const handleSubmit1 = jest.fn(formValues => formValues);
