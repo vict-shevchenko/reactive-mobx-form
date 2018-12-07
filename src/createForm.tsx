@@ -33,7 +33,7 @@ export function validateConfigParams(formName: string, params: any[]) {
 	}
 }
 
-interface IFormStore {
+export interface IFormStore {
 	formStore?: FormStore;
 }
 
