@@ -8,3 +8,5 @@ exports.ControlArray       = require('./lib/ui/ControlArray').ControlArrayWithCo
 exports.ControlSection     = require('./lib/ui/ControlSection').ControlSectionWithContext;
 exports.ComputedControl    = require('./lib/ui/ComputedControl').ComputedControlWithContext;
 exports.withFormSubmit     = require('./lib/ui/withFormHoc').withFormSubmit;
+exports.withFormErrors     = require('./lib/ui/withFormHoc').withFormErrors;
+exports.withFormValues     = require('./lib/ui/withFormHoc').withFormValues;
