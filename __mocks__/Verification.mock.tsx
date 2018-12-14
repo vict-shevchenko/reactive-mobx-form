@@ -1,5 +1,6 @@
 // tslint:disable:variable-name
 // tslint:disable:max-classes-per-file
+// tslint:disable:max-line-length only-arrow-functions interface-name no-unused-expression
 
 import * as React from 'react';
 import { IBaseControlProps } from '../lib/ui/BaseControl';
@@ -12,9 +13,9 @@ import { FormStore } from '../lib/Store';
 import { IFormProps, IInjectedFormProps } from '../lib/createForm';
 
 // tslint:disable-next-line:max-line-length
-interface IMyComp extends IBaseControlProps, IControlFormContext, IControlParentNameContext, IControlWithFieldContext<FieldSection> {
+type IMyComp = IBaseControlProps & IControlFormContext & IControlParentNameContext & IControlWithFieldContext<FieldSection> & {
 	bla: string;
-}
+};
 
 interface IPlace {
 	place: string;
@@ -29,7 +30,10 @@ class MyComp<P> extends React.Component<P & IMyComp, any> {
 
 	public render() {
 		return (
-			<div>{this.props.field}</div>
+			<div>
+				<div>{this.props.form}</div>
+				<div>{this.props.field}</div>
+			</div>
 		);
 	}
 }
@@ -39,7 +43,7 @@ const OurComp = <MyComp<IPlace>
 	bla="test"
 	name="test"
 	component="sfds"
-	form={new Form({})}
+	form={new Form(v => v, {})}
   parentName="blaa"
 	field={new FieldSection('test')}
 	place="Kyiv"
@@ -177,3 +181,46 @@ class MyOtherFormApp extends React.Component {
 		);
 	}
 }
+
+
+
+//////////////
+
+interface NameInterface {
+  name: string;
+};
+
+function withName<OriginalProps extends object>(Component: React.ComponentType<OriginalProps & NameInterface>) {
+  return function (props: OriginalProps) {
+    return (
+      <Component
+        {...props}
+        name={'John'}
+      />
+    );
+  }
+}
+
+const UnNamed_1: React.SFC<NameInterface> = ({ name }) => (<p>My name is {name}</p>);
+const Named_1 = withName(UnNamed_1);
+<Named_1 /> // Property 'name' is missing in type '{}' but required in type 'NameInterface'.ts(2741)
+
+
+interface UnNamedPropsInterface extends NameInterface {
+  age: number;
+}
+const UnNamed_2: React.SFC<UnNamedPropsInterface> = ({ name, age }) => (<p>My name is {name} and {age}</p>);
+const Named_2 = withName(UnNamed_2);
+<Named_2 age={30} /> // Property 'name' is missing in type '{ age: number; }' but required in type 'UnNamedPropsInterface'.ts(2741)
+
+
+type UnNamedType = NameInterface;
+const UnNamed_3: React.SFC<UnNamedType> = ({ name }) => (<p>My name is {name}</p>);
+const Named_3 = withName(UnNamed_3);
+<Named_3 /> // Property 'name' is missing in type '{}' but required in type 'NameInterface'.ts(2741)
+
+
+type UnNamedType_2 = NameInterface & { age: number };
+const UnNamed_4: React.SFC<UnNamedType_2> = ({ name, age }) => (<p>My name is {name} and {age}</p>);
+const Named_4 = withName(UnNamed_4);
+<Named_4 age={30} /> // All OK

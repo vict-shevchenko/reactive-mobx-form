@@ -45,7 +45,7 @@ export interface IFormProps {
 export interface IReactiveMobxFormProps<P = any> {
 	submit: (...rest: Array<unknown>) => Promise<P>;
 	reset: () => void;
-	destroy: () => void;
+	/* destroy: () => void; */
 	submitting: boolean;
 	submitError: Error;
 	valid: boolean | void;
@@ -127,7 +127,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 						<FormComponent
 							submit={this.submitForm.bind(this)}
 							reset={this.resetForm.bind(this)}
-							destroy={this.destroyForm.bind(this)}
+						/* 	destroy={this.destroyForm.bind(this)} */
 							submitting={this.form.submitting}
 							submitError={this.form.submitError}
 							valid={this.form.isValid}

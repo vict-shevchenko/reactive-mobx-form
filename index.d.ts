@@ -28,5 +28,7 @@ export {
 	ReactiveMobxForm as ReactiveMobxFormComponent,
 	configureValidatorjs as configureValidator
 } from './lib/createForm'
-export { withFormSubmit, withFormErrors, withFormValues } from './lib/ui/withFormHoc';
+export { withFormData, WithFormDataType } from './lib/hoc/withFormData';
+export { withFormErrors, WithFormErrorsType } from './lib/hoc/withFormErrors';
+export { withFormValues, WithFormValuesType } from './lib/hoc/withFormValues';
 export { FormStore } from "./lib/Store";

@@ -9,7 +9,7 @@ export class FormStore {
 	public registerForm(
 			name: string,
 			submit: submitCallback,
-			options: IFormDefinition): Form
+			options: IFormDefinition)
 		{ // tslint:disable-line
 		let form: Form;
 
@@ -25,7 +25,7 @@ export class FormStore {
 		return form;
 	}
 
-	public unRegisterForm(name: string): void {
+	public unRegisterForm(name: string) {
 		if (this.forms.has(name)) {
 			const form = this.getForm(name) as Form;
 			form.cleanup();
@@ -33,11 +33,11 @@ export class FormStore {
 		}
 	}
 
-	public hasForm(name: string): boolean {
+	public hasForm(name: string) {
 		return this.forms.has(name);
 	}
 
-	public getForm(name: string): Form | undefined {
+	public getForm(name: string) {
 		return this.forms.get(name);
 	}
 }
