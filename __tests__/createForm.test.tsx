@@ -97,7 +97,6 @@ describe('Testing different props combinations with Form Component, and passing 
 
 		expect(formWrapper.prop('submit')).toBeDefined();
 		expect(formWrapper.prop('reset')).toBeDefined();
-		expect(formWrapper.prop('destroy')).toBeDefined();
 		expect(formWrapper.prop('submitting')).toBeFalsy();
 		expect(formWrapper.prop('submitError')).not.toBeDefined();
 		expect(formWrapper.prop('valid')).not.toBeDefined();
