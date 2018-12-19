@@ -5,7 +5,6 @@ import { Form } from '../Form';
 import { omit } from '../utils';
 import { IReactiveMobxFormProps, IFormStore } from '../createForm';
 import { FormStore } from '../Store';
-import { spawn } from 'child_process';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
