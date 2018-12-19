@@ -1,3 +1,6 @@
+# 0.10.2
+- Fix #18. Introduced withFormData, withFormErrors, withFormValues HOC. 
+
 # 0.10.1
 - Fix typing for `onSubmit` parameter
 
