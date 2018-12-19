@@ -30,6 +30,11 @@ export function withFormValues(formName: string): <P extends IReactiveMobxFormVa
 				super(props);
 
 				this.form = props.formStore!.getForm(formName);
+
+				if (!this.form) {
+					// tslint:disable-next-line:max-line-length
+					throw(new Error(`Form '${formName}' does not exist in store. Please check call to 'withFormValues(${formName})(${Component.name})'`));
+				}
 			}
 
 			public render() {

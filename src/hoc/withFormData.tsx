@@ -4,6 +4,8 @@ import { inject, observer } from 'mobx-react';
 import { Form } from '../Form';
 import { omit } from '../utils';
 import { IReactiveMobxFormProps, IFormStore } from '../createForm';
+import { FormStore } from '../Store';
+import { spawn } from 'child_process';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
@@ -25,6 +27,16 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 				super(props);
 
 				this.form = props.formStore!.getForm(formName);
+
+				if (!this.form) {
+					// tslint:disable-next-line:max-line-length
+					throw(new Error(`Form '${formName}' does not exist in store. Please check call to 'withFormData(${formName})(${Component.name})'`));
+				}
+			}
+
+			public destroyForm() {
+				// to avoid this.props.formStore is possibly undefined
+				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
 			public submitForm(...params: [FormEvent | MouseEvent, Array<unknown>] ) {
@@ -49,6 +61,7 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 							dirty={this.form!.isDirty}
 							valid={this.form!.isValid}
 							submit={this.submitForm.bind(this)}
+							destroy={this.destroyForm}
 							reset={this.resetForm.bind(this)}
 							submitting={this.form!.submitting}
 							submitError={this.form!.submitError}
