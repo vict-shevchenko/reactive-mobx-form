@@ -95,9 +95,11 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public componentWillUnmount() {
-				if (config && config.destroyFormStateOnUnmount) {
-					this.destroyForm();
+				if (config && config.destroyFormStateOnUnmount === false) {
+					return;
 				}
+
+				this.destroyForm();
 			}
 
 			public destroyForm() {
