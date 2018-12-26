@@ -29,10 +29,7 @@ export class ControlArray extends React.Component<IControlArrayProps> {
 
 	public componentWillUnmount(): void {
 		const { form, field} = this.props;
-		if (!field.detached) {
-			field.setDetached();
-			form.unregisterField(field.name);
-		}
+		form.unregisterField(field);
 	}
 
 	public componentDidUpdate(prevProps: IControlArrayProps) {

@@ -2,7 +2,7 @@ import { observable, action, computed, reaction, IReactionDisposer } from 'mobx'
 import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 // tslint:disable-next-line:max-line-length
-import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, IFormConfiguration, IFormDefinition } from './interfaces/Form';
+import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, IFormConfiguration, IFormDefinition, IFormValues } from './interfaces/Form';
 import { formField, submitCallback } from './types';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
@@ -15,6 +15,7 @@ export const DEFAULT_FORM_CONFIG: IFormConfiguration = {
 
 export class Form {
 	public formSchema: IFormNormalizedSchema = {};
+	public snapshot: IFormValues = {};
 
 	private errorMessages: IFormErrorMessages | undefined = undefined;
 	private attributeNames: IFormAttributeNames | undefined = undefined;
@@ -66,7 +67,7 @@ export class Form {
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
-	@computed get validation(): IValidator<{ [name: string]: boolean | number | string }> {
+	@computed get validation(): IValidator<IFormValues> {
 		return new Validator(this.values, this.rules, this.errorMessages);
 	}
 
@@ -74,11 +75,25 @@ export class Form {
 	@computed get values() {
 		// return this.fields.entries().map(entry =>
 		// ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
-		return Array.from(this.fields.entries()).reduce((values, [name, field]) => (values[name] = field.value, values), {});
+		return Array.from(this.fields.entries()).reduce((values, [name, field]) => {
+			if (field.attached) {
+				values[name] = field.value;
+			}
+
+			return values;
+		}, Object.assign({}, this.snapshot));
 	}
 
-	@computed get rules(): { [propName: string]: string } { // todo: check if rule is computed on new field add
-		return Array.from(this.fields.values()).reduce((rules, field) => Object.assign(rules, field.rules), {});
+	@computed get rules(): { [propName: string]: string } {
+		// todo: check if rule is computed on new field add
+		// Rules are collect only for attached fields
+		return Array.from(this.fields.values()).reduce((rules, field) => {
+			if (field.attached) {
+				Object.assign(rules, field.rules);
+			}
+
+			return rules;
+		}, {});
 	}
 
 	@action public reset() {
@@ -87,6 +102,10 @@ export class Form {
 
 	@action public setTouched() {
 		this.fields.forEach(field => field.setTouched());
+	}
+
+	@action public eraseSnapshot() {
+		this.snapshot = {};
 	}
 
 	public submit(...params: Array<unknown>): Promise<unknown> {
@@ -99,6 +118,10 @@ export class Form {
 		}
 
 		this.submitting = true;
+
+		if (!this.config.destroyFormStateOnUnmount) {
+			this.snapshot = this.values;
+		}
 
 		return Promise.all([this.externalSubmit(this.values, ...params)])
 			.then(result => {
@@ -117,7 +140,7 @@ export class Form {
 	}
 
 	@action public removeField(fieldName: string): void {
-		(this.fields.get(fieldName) as formField).setDetached();
+		this.fields.get(fieldName)!.detach();
 		this.fields.delete(fieldName);
 	}
 
@@ -157,14 +180,25 @@ export class Form {
 				field = creationFn();
 				(fieldParent as Form | FieldArray | FieldSection).addField(field as formField);
 			}
+			else {
+				field.attachCount++;
+
+				if (this.snapshot[name]) {
+					delete this.snapshot[name];
+				}
+			}
 		}
 
 		return field as formField;
 	}
 
-	public unregisterField(fieldName: string) {
+	public unregisterField(field: formField) { // goes from parent to child ControlSection -> Control
+		if (field.attached) { // subfield may be already detached when parent detaches
+
+		field.detach(); // to trigger disappear from rules and not cause validation error
+
 		if (this.config.destroyControlStateOnUnmount) {
-			const fieldPath = objectPath(fieldName),
+				const fieldPath = objectPath(field.name),
 				lastIndex = fieldPath.length - 1,
 				lastNode = fieldPath[lastIndex],
 				fieldParent = this.getFieldParent(fieldPath);
@@ -173,7 +207,8 @@ export class Form {
 				(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
 			}
 			else {
-				console.log('Attempt to remove field on already removed parent field', fieldName) // tslint:disable-line
+					console.log('Attempt to remove field on already removed parent field', field.name) // tslint:disable-line
+				}
 			}
 		}
 	}

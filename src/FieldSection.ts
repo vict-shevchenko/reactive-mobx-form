@@ -4,8 +4,8 @@ import { objectPath } from './utils';
 
 export class FieldSection {
 	public name: string;
-	public detached: boolean = false;
 
+	@observable public attachCount: number = 1;
 	@observable public subFields = new Map<string, formField>();
 
 	constructor(name: string) {
@@ -14,6 +14,10 @@ export class FieldSection {
 
 	public update(name: string) {
 		this.name = name;
+	}
+
+	@computed get attached(): boolean {
+		return this.attachCount > 0;
 	}
 
 	@action public addField(field: formField) {
@@ -42,19 +46,33 @@ export class FieldSection {
 		return this.subFields.get(index);
 	}
 
-	public setDetached(): void {
-		this.detached = true;
-		this.subFields.forEach(subField => subField.setDetached());
+	public detach(): void {
+		if (this.attached) {
+			this.attachCount = this.attachCount - 1;
+		}
+		this.subFields.forEach(subField => subField.detach());
 	}
 
 	@computed get value() {
 		// tslint:disable-next-line: max-line-length
-		return Array.from(this.subFields.entries()).reduce((values, [name, field]) => (values[name] = field.value, values), {});
+		return Array.from(this.subFields.entries()).reduce((values, [name, field]) => {
+			if (field.attached) {
+				values[name] = field.value;
+			}
+
+			return values;
+		}, {});
 	}
 
 	@computed get rules() {
 		// tslint:disable-next-line: max-line-length
-		return Array.from(this.subFields.values()).reduce((rules, field) => Object.assign(rules, field.rules), {});
+		return Array.from(this.subFields.values()).reduce((rules, field) => {
+			if (!field.attached) {
+				Object.assign(rules, field.rules);
+			}
+
+			return rules;
+		}, {});
 	}
 
 	@computed get isDirty() {

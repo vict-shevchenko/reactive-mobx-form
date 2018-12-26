@@ -97,10 +97,7 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 		const { form, field} = this.props;
 
 		this.formErrorUnsubscribe();
-
-		if (!field.detached) {
-			form.unregisterField(field.name);
-		}
+		form.unregisterField(field);
 	}
 
  public componentDidUpdate(prevProps: IControlProps) {

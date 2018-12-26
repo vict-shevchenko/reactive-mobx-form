@@ -23,10 +23,7 @@ export class ControlSection extends React.Component<IControlSectionProps> {
 
 	public componentWillUnmount(): void {
 		const { form, field } = this.props;
-		if (!field.detached) {
-			field.setDetached();
-			form.unregisterField(field.name);
-		}
+		form.unregisterField(field);
 	}
 
 	public componentDidUpdate(prevProps: IControlSectionProps) {

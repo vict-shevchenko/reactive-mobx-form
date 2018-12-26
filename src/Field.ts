@@ -3,15 +3,15 @@ import { fieldValue, INormalizedFieldDefinition } from './interfaces/Form';
 import { Form } from './Form';
 
 export class Field {
-	public detached: boolean = false;
 	private initialValue: fieldValue;
 
 	/* tslint:disable: typedef-whitespace */
-	@observable public name     : string; // name is updated on FieldArray remove item
-	@observable public value    : fieldValue;
-	@observable public errors   : string[] = [];
-	@observable public isFocused: boolean  = false;
-	@observable public isTouched: boolean  = false;
+	@observable public attachCount: number = 1;
+	@observable public name       : string; // name is updated on FieldArray remove item
+	@observable public value      : fieldValue;
+	@observable public errors     : string[] = [];
+	@observable public isFocused  : boolean  = false;
+	@observable public isTouched  : boolean  = false;
 
 	@observable private _rules: string; // rules are updated on FieldArray remove item
 	/* tslint:enable: typedef-whitespace */
@@ -25,6 +25,10 @@ export class Field {
 		this.initialValue = fieldDefinition[0];
 		this.value = this.value || this.initialValue;
 		this._rules = fieldDefinition[1];
+	}
+
+	@computed get attached(): boolean {
+		return this.attachCount > 0;
 	}
 
 	@computed get isDirty(): boolean {
@@ -63,8 +67,10 @@ export class Field {
 		this.isTouched = true;
 	}
 
-	public setDetached(): void  {
-		this.detached = true;
+	@action public detach(): void  {
+		if (this.attached) {
+			this.attachCount = this.attachCount - 1;
+		}
 	}
 
 	public subscribeToFormValidation(form: Form): IReactionDisposer {

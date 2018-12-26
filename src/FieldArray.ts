@@ -4,8 +4,8 @@ import { objectPath, isNumeric } from './utils';
 
 export class FieldArray {
 	public name: string;
-	public detached: boolean = false;
 
+	@observable public attachCount: number = 1;
 	public subFields: IObservableArray<formField> = observable<formField>([]);
 	@observable public errors: string[] = [];
 
@@ -15,6 +15,10 @@ export class FieldArray {
 
 	public update(name: string): void {
 		this.name = name;
+	}
+
+	@computed get attached(): boolean {
+		return this.attachCount > 0;
 	}
 
 	@action public addField(field: formField): void {
@@ -41,7 +45,7 @@ export class FieldArray {
 	}
 
 	@action public reset() {
-		this.subFields.forEach(subField => subField.setDetached());
+		this.subFields.forEach(subField => subField.detach());
 		this.subFields.clear();
 	}
 
@@ -59,14 +63,18 @@ export class FieldArray {
 		return (this.subFields.length > parseInt(index, 10)) ? this.subFields[index] : undefined;
 	}
 
-	public setDetached() {
-		this.detached = true;
-		this.subFields.forEach(subField => subField.setDetached());
+	public detach() {
+		if (this.attached) {
+			this.attachCount = this.attachCount - 1;
+		}
+
+		this.subFields.forEach(subField => subField.detach());
 	}
 
 	@computed get realSubFields(): formField[] {
-		// filter in order to avoid errors when subFields has a gap for item to be insetred
-		return this.subFields.filter(subField => subField);
+		// filter in order to avoid errors when subFields has a gap for item to be inserted
+		// tslint:disable-next-line:max-line-length
+		return this.subFields.filter(subField => subField && subField.attached);
 	}
 
 	@computed get value() {
@@ -74,7 +82,12 @@ export class FieldArray {
 	}
 
 	@computed get rules() {
-		return this.realSubFields.reduce((rules, subField) => Object.assign(rules, subField.rules), {});
+		return this.realSubFields.reduce((rules, subField) => {
+			if (subField.attached) {
+				Object.assign(rules, subField.rules);
+			}
+			return rules;
+		}, {});
 	}
 
 	@computed get isDirty(): boolean {
