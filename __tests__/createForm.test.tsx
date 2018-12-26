@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
 	isConfigParamValid,
-	createForm,
 	validateConfigParams
 } from '../src/createForm';
 import BasicForm from '../__mocks__/BasicForm.mock';
@@ -9,11 +8,10 @@ import BasicForm from '../__mocks__/BasicForm.mock';
 import { SubmitForm, CustomSubmitFormWithEvent, CustomSubmitFormWithoutEvent, WizardForm1, WizardForm2 } from '../__mocks__/SimpleForm.mock';
 import { shallow, mount } from 'enzyme';
 import { FormStore } from '../lib/Store';
+import { reactiveMobxForm, ReactiveMobxFormComponent } from '../index';
 
 import * as Enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
-import { reactiveMobxForm } from '../index';
-import { ReactiveMobxFormComponent } from '../index';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -43,13 +41,13 @@ describe('Testing validateConfigParams', () => {
 
 describe('Testing creation of Form Component', () => {
 	test('Calling "createForm should return a function, and be defined"', () => {
-		const formCreationFunction = createForm('myForm');
+		const formCreationFunction = reactiveMobxForm('myForm');
 
 		expect(formCreationFunction).toBeDefined();
 	});
 
 	test('Calling of creation function should return React.Component', () => {
-		const formCreationFunction = createForm('myForm');
+		const formCreationFunction = reactiveMobxForm('myForm');
 		const ReactiveBasicForm = formCreationFunction(BasicForm); // tslint:disable-line
 
 		expect(ReactiveBasicForm).toBeDefined();
@@ -61,9 +59,8 @@ describe('Testing different props combinations with Form Component, and passing 
 	let ReactiveBasicForm, formStore: FormStore;
 
 	beforeEach(() => {
-		ReactiveBasicForm = createForm('myForm')(BasicForm); // tslint:disable-line
+		ReactiveBasicForm = reactiveMobxForm('myForm')(BasicForm); // tslint:disable-line
 		formStore = new FormStore();
-		formStore.registerForm('myForm', v => v, {});
 	});
 
 	test('Rendering Form with incorrect "schema" parameter should throw error"', () => {
@@ -94,9 +91,9 @@ describe('Testing different props combinations with Form Component, and passing 
 		/>).children();
 
 		expect(formWrapper.is('BasicForm')).toBeTruthy();
-
 		expect(formWrapper.prop('submit')).toBeDefined();
 		expect(formWrapper.prop('reset')).toBeDefined();
+		expect(formWrapper.prop('destroy')).toBeDefined();
 		expect(formWrapper.prop('submitting')).toBeFalsy();
 		expect(formWrapper.prop('submitError')).not.toBeDefined();
 		expect(formWrapper.prop('valid')).not.toBeDefined();

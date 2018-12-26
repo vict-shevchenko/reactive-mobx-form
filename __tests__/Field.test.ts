@@ -18,7 +18,8 @@ describe('Testing of Field class', () => {
 
 		expect(field.name).toBe('name');
 		expect(field.value).toBe('');
-		expect(field.detached).toBe(false);
+		expect(field.attachCount).toBe(1);
+		expect(field.attached).toBeTruthy();
 		expect(field.errors).toBeInstanceOf(Array);
 		expect(field.errors.length).toBe(0);
 		expect(field.isFocused).toBe(false);
@@ -95,8 +96,8 @@ describe('Testing of Field class', () => {
 		const field = new Field('name', ['Viktor', 'required']);
 
 		field.onChange('Olena');
-		field.setDetached();
-		expect(field.detached).toBe(true);
+		field.detach();
+		expect(field.attachCount).toBe(0);
 	});
 
 	test('Verify field method update works correctly as expected', () => {
