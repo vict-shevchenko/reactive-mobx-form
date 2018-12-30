@@ -180,7 +180,8 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 			touched: field.isTouched,
 			dirty  : field.isDirty,
 			valid  : field.isValid,
-			errors : field.errors
+			errors : field.errors,
+			reset  : field.reset
 		};
 
 		const className = [
