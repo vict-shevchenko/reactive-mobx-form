@@ -1,3 +1,8 @@
+# 0.11.0
+- possibility to reset Control state via `props.meta.reset`
+- improved handling of wizard forms
+- fix for `destroyFormStateOnUnmount`
+
 # 0.10.2
 - Fix #18. Introduced withFormData, withFormErrors, withFormValues HOC. 
 
