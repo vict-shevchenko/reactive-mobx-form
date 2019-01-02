@@ -1,3 +1,6 @@
+# 0.11.1
+- Fix for mechanism of reset Control state via `props.meta.reset`
+
 # 0.11.0
 - possibility to reset Control state via `props.meta.reset`
 - improved handling of wizard forms
