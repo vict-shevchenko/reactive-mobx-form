@@ -181,7 +181,7 @@ export class Control<P> extends React.Component<P & IControlProps, any> {
 			dirty  : field.isDirty,
 			valid  : field.isValid,
 			errors : field.errors,
-			reset  : field.reset
+			reset  : field.reset.bind(field)
 		};
 
 		const className = [
