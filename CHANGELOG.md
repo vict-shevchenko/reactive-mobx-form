@@ -1,3 +1,6 @@
+# 0.12.0 [Breaking Changes]
+- Removed `destroyControlStateOnUnmount` from configuration. From now for all controls that appeared in Form will store their corresponding field state in Form. So if control was changed and then removed from DOM, after bringing it back - it will have its changed value (not initial one)
+
 # 0.11.1
 - Fix for mechanism of reset Control state via `props.meta.reset`
 

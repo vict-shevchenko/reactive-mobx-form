@@ -161,6 +161,9 @@ const ContactFormReactive = reactiveMobxForm('contacts', {
 #### Migration to 0.9.x
 For most users migration will be just updating a version in `package.json`. Make sure you are running React > 16.3.0. Also you can check [commit](https://github.com/vict-shevchenko/reactive-mobx-form/commit/e7fcdeeaf7173de0ef3974c12d10fb1de3a1f31a) for migration for docs site of `reactive-mobx-form`
 
+#### Migration to 0.12.x
+Remove `destroyControlStateOnUnmount` parameter from form initialization. If you relied on a logic that control are brought back to form with initial values check [here](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/docs/FAQ.md)
+
 ## Motivation
  Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
  
