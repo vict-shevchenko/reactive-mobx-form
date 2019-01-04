@@ -25,7 +25,6 @@ export interface IFormValidatorDefinition {
 
 export interface IFormConfiguration {
 	destroyFormStateOnUnmount: boolean;
-	destroyControlStateOnUnmount: boolean;
 }
 
 export interface IFormDefinition {

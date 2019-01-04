@@ -190,7 +190,7 @@ describe('Form onSubmit should be called correctly and with correct attributes',
 		const handleSubmit1 = jest.fn(formValues => formValues);
 		const handleSubmit2 = jest.fn(formValues => formValues);
 		// tslint:disable-next-line:variable-name max-line-length
-		const ReactiveWizard1Form: ReactiveMobxFormComponent = reactiveMobxForm('wizardForm', {config: {destroyFormStateOnUnmount: false, destroyControlStateOnUnmount: false}})(WizardForm1);
+		const ReactiveWizard1Form: ReactiveMobxFormComponent = reactiveMobxForm('wizardForm', {config: {destroyFormStateOnUnmount: false }})(WizardForm1);
 		// tslint:disable-next-line:variable-name
 		const ReactiveWizard2Form: ReactiveMobxFormComponent = reactiveMobxForm('wizardForm')(WizardForm2);
 

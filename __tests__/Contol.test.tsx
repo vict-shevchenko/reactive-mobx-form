@@ -45,30 +45,10 @@ describe('Testing behavior when removing control from a Form', () => {
 		wrapper.unmount();
 	});
 
-	test('Control data should be removed from form values and from form fields', () => {
-		// tslint:disable-next-line:variable-name
-		const ReactiveForm = reactiveMobxForm('toggleControlForm1')(ToggleControlForm);
-
-		wrapper = mount(<Wrapper form={ReactiveForm} />);
-		const form = formStore.getForm('toggleControlForm1') as Form;
-
-		expect(wrapper.find(Control)).toHaveLength(1);
-		expect(wrapper.find('input')).toHaveLength(1);
-		expect(form.values).toEqual({ firstName: '' });
-		expect(form.fields.get('firstName')).toBeDefined();
-
-		wrapper.find('#changeVis').simulate('click');
-
-		expect(wrapper.find(Control)).toHaveLength(0);
-		expect(wrapper.find('input')).toHaveLength(0);
-		expect(form.values).toEqual({});
-		expect(form.fields.get('firstName')).toBeUndefined();
-	});
-
 	// tslint:disable-next-line:max-line-length
-	test('Control data should be removed from form values but not from fields, if destroyControlStateOnUnmount is false', () => {
+	test('Control data should be removed from form values but not from fields', () => {
 		// tslint:disable-next-line
-		const ReactiveForm = reactiveMobxForm('toggleControlForm2', { config: { destroyControlStateOnUnmount: false } })(ToggleControlForm);
+		const ReactiveForm = reactiveMobxForm('toggleControlForm2')(ToggleControlForm);
 
 		wrapper = mount(<Wrapper form={ReactiveForm} />);
 		const form = formStore.getForm('toggleControlForm2') as Form;

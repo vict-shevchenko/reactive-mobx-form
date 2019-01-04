@@ -48,8 +48,7 @@ Shape looks like:
   },
   schema: {},
   config: {
-    destroyFormStateOnUnmount: true,
-    destroyControlStateOnUnmount: true
+    destroyFormStateOnUnmount: true
   }
 }
 ```
@@ -83,7 +82,3 @@ An object with a configuration for form fields, allowing to specify their initia
 #### `destroyFormStateOnUnmount : boolean` 
 
 Should or should not the form state be cleaned from `formStore` when Form component is unmounted. It may be useful if you have some part of form appear dynamically. And would like not to remove all form State, when this part disappear. For example Wizard form.  Defaults to `true`.
-
-#### `destroyControlStateOnUnmount : boolean` 
-
-Should or should not the Control state be cleaned from FormState when Control component is unmounted. `reactive-mobx-form` is designed in a way, that onSubmit, your formState contains only fields that are presented on screen. That allows to omit writing a model of a form in JavaScript (like in Angular 2) and actually construct a model on a fly, based on Control components that are rendered. Defaults to `true`.

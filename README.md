@@ -1,7 +1,7 @@
 # reactive-mobx-form  [![npm version](https://badge.fury.io/js/reactive-mobx-form.svg)](https://badge.fury.io/js/reactive-mobx-form)
 Simple ans scalable form management library for React+MobX application. Under the hood it uses efficient MobX observable mechanizm, that allows tracking changes in form fields and rerender only things that have changed. This gives developer a feeling of working with 2-way databinding and reduces much boilerplate code needed to handle input events in 1-way data flow environment. 
 
-By default - it is "Zero-Config" and so-called "template base", meaning it does not require you to keep and maintain any JSON form descriptor in your model or state - what is in your JSX is what is in your form.
+One of main features is "template based" approach - so you maintain your JSX structure only. This brings you to a situation that what is in your DOM is in your form values. 
 
 The library is inspired by [Angular Reactive Forms](https://angular.io/guide/reactive-forms) and [Redux Form](http://redux-form.com). It has similar syntax to Redux Form, because of concept that are natural to React world. So if you previously had experience with it, it will be easy for you to start using `reactive-mobx-form`. But still syntax is aimed to be clear for everyone.
 

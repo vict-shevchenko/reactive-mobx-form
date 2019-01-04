@@ -11,37 +11,28 @@
 When you call `submit` function form `props` passed to your form - submition is started. Your `submit` function (those you have passed into `onSubmit` parameter) will be called inside of promise(so it may be async). If your `submit` function returns a `resolved Promise` - `form.reset` will be called to drop form state to initial one. If your `submit` function returns `rejectedPromise` than `form.submitionError` flag is raised and form keeps its state untouched.
 
 ### I have an `input type="hidden"` and want to set its value after form was initialized. 
-The best solution I see here is use native Mobx capabilities. As Mobx is extremely good at deriving things from state.
+You should probably use a `ComputedControl` component. Check it example [here](/reactive-mobx-form/#/examples/computed-control/ComputedControl)
 
-Lets assume we have Control in our form
-
-```javascript
-<Control type="hidden" name="computedProperty" component="input" />
-```
-
-You can either update field value manually
-```javascript
-someOtherFieldOnBlur(event) {
-    const value = event.target.value.trim();
-
-    const form = this.props.formStore.getForm('myForm');
-    const computedPropertyField = form.findField('computedProperty');
-    computedPropertyField.onChange(value);
-}
-```
-
-Or use `reaction` method from `mobx`
+### I need my controls to have initial values when they appear back in DOM.
+Reactive Mobx Form main idea is that what is in DOM is in form values. In real life there are situations where some part of form appear or disappear based on certain circumstances. To handle such cases and not to loose data, control state is kept for all controls in form, so in scenarios like appear -> change -> disappear -> appear control will have its last changed value (not initial one). If you need to reset control state to have initial value on each appear you may consider writing such HOC:
 
 ```javascript
-componentWillMount() {
-        this.disposer = reaction(
-            () => this.props.myOtherStore.someComputedValue, // or value may arrive from server
-            (someComputedValue) => {
-                const form = this.props.formStore.getForm('myForm');
-                const computedPropertyField = form.findField('computedProperty');
-                computedPropertyField.onChange(someComputedValue);
-            },
-        );
+function resetOnDidMount(Component) {
+  return class ResetControlOnDidMount extends React.Component {
+    componentDidMount() {
+      this.props.meta.reset();
     }
-   // Do not forget to call this.disposer() in componentWillUnmount
+
+    render() {
+      return (typeof Component === 'function') ? <Component {...this.props} /> : <Component {...this.props.input} />
+    }
+  }
+}
+
+const InputWithReset = resetOnDidMount('input');
+// or
+const MyControlWithReset = resetOnDidMount(MyControl)
+
+// and use it like:
+<Control type="text" component={InputWithReset} name="name"/>
 ```

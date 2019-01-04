@@ -9,8 +9,7 @@ import { FieldSection } from './FieldSection';
 import { objectPath, normalizeSchema } from './utils';
 
 export const DEFAULT_FORM_CONFIG: IFormConfiguration = {
-	destroyFormStateOnUnmount: true,
-	destroyControlStateOnUnmount: true
+	destroyFormStateOnUnmount: true
 };
 
 export class Form {
@@ -197,7 +196,7 @@ export class Form {
 
 		field.detach(); // to trigger disappear from rules and not cause validation error
 
-		if (this.config.destroyControlStateOnUnmount) {
+		/* if (this.config.destroyControlStateOnUnmount) {
 				const fieldPath = objectPath(field.name),
 				lastIndex = fieldPath.length - 1,
 				lastNode = fieldPath[lastIndex],
@@ -209,7 +208,7 @@ export class Form {
 			else {
 					console.log('Attempt to remove field on already removed parent field', field.name) // tslint:disable-line
 				}
-			}
+			} */
 		}
 	}
 
