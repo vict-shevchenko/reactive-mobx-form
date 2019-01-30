@@ -2,23 +2,24 @@ import { observable, action, computed, reaction, IReactionDisposer } from 'mobx'
 import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 // tslint:disable-next-line:max-line-length
-import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, IFormConfiguration, IFormDefinition, IFormValues } from './interfaces/Form';
+import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, /* IFormConfiguration, */ IFormDefinition, IFormValues } from './interfaces/Form';
 import { formField, submitCallback } from './types';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
 import { objectPath, normalizeSchema } from './utils';
+import { FormEvent } from 'react';
 
-export const DEFAULT_FORM_CONFIG: IFormConfiguration = {
+/* export const DEFAULT_FORM_CONFIG: IFormConfiguration = {
 	destroyFormStateOnUnmount: true
 };
-
+ */
 export class Form {
 	public formSchema: IFormNormalizedSchema = {};
-	public snapshot: IFormValues = {};
+	public attachCount: number = 1;
 
 	private errorMessages: IFormErrorMessages | undefined = undefined;
 	private attributeNames: IFormAttributeNames | undefined = undefined;
-	private config: IFormConfiguration;
+	// private config: IFormConfiguration;
 	private externalSubmit: submitCallback;
 	private validationReactionDisposer: IReactionDisposer;
 
@@ -29,6 +30,18 @@ export class Form {
 	@observable public submitting: boolean = false;
 	@observable public validating: boolean = false;
 	@observable public submitError: any;
+
+	@observable public snapshots: IFormValues[] = [];
+	@computed private get snapshot() {
+		if (!this.snapshots.length) {
+			return {} as IFormValues;
+		}
+
+		return this.snapshots[this.snapshots.length - 1];
+	}
+	@computed public get currentStep() {
+		return this.snapshots.length + 1;
+	}
 
 	// computed
 	/*
@@ -45,17 +58,18 @@ export class Form {
 	*/
 
 	constructor(submit: submitCallback, options: IFormDefinition) {
-		this.extendConfiguration(submit, options);
-		this.config = Object.assign({}, DEFAULT_FORM_CONFIG, options.config);
+		this.externalSubmit = submit;
+
+		this.extendConfiguration(options);
+	/* 	this.config = Object.assign({}, DEFAULT_FORM_CONFIG, options.config); */
 
 		this.registerValidation();
 	}
 
-	public extendConfiguration(submit: submitCallback, options: IFormDefinition) {
+	public extendConfiguration(options: IFormDefinition) {
 		const { schema = {}, validator = {} } = options;
 		const { errorMessages, attributeNames } = validator;
 
-		this.externalSubmit = submit;
 		Object.assign(this.formSchema, normalizeSchema(schema));
 		this.errorMessages ? Object.assign(this.errorMessages, errorMessages) : this.errorMessages = errorMessages;
 		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;
@@ -95,19 +109,40 @@ export class Form {
 		}, {});
 	}
 
-	@action public reset() {
+	@action.bound public reset() {
 		this.fields.forEach(field => field.reset());
 	}
 
-	@action public setTouched() {
+	@action.bound public setTouched() {
 		this.fields.forEach(field => field.setTouched());
 	}
 
-	@action public eraseSnapshot() {
-		this.snapshot = {};
+	@action.bound public takeSnapshot() {
+		this.snapshots.push(Object.assign({}, this.values));
 	}
 
-	public submit(...params: Array<unknown>): Promise<unknown> {
+	// steps (-1, -2 same like browserHistory)
+	@action.bound public restoreSnapshot(steps: unknown) {
+		const _steps = typeof steps === 'number' ? steps : -1;
+		const step = this.snapshots.length + _steps;
+
+		if (step <= 0) {
+			this.snapshots.length = 0;
+		}
+		else {
+			this.snapshots.splice(step, Math.abs(_steps));
+		}
+	}
+
+	@action.bound public submit(...params: [FormEvent | MouseEvent, Array<unknown>]) {
+		const maybeEvent = params[0];
+
+		// stupid assumption, but enzyme fails on check maybeEvent.nativeEvent instanceof Event
+		if (maybeEvent.preventDefault) {
+			maybeEvent.preventDefault();
+			params.shift();
+		}
+
 		this.submitError = undefined;
 		this.setTouched();
 
@@ -117,10 +152,6 @@ export class Form {
 		}
 
 		this.submitting = true;
-
-		if (!this.config.destroyFormStateOnUnmount) {
-			this.snapshot = this.values;
-		}
 
 		return Promise.all([this.externalSubmit(this.values, ...params)])
 			.then(result => {
@@ -181,10 +212,6 @@ export class Form {
 			}
 			else {
 				field.attachCount++;
-
-				if (this.snapshot[name]) {
-					delete this.snapshot[name];
-				}
 			}
 		}
 
@@ -194,21 +221,21 @@ export class Form {
 	public unregisterField(field: formField) { // goes from parent to child ControlSection -> Control
 		if (field.attached) { // subfield may be already detached when parent detaches
 
-		field.detach(); // to trigger disappear from rules and not cause validation error
+			field.detach(); // to trigger disappear from rules and not cause validation error
 
-		/* if (this.config.destroyControlStateOnUnmount) {
-				const fieldPath = objectPath(field.name),
-				lastIndex = fieldPath.length - 1,
-				lastNode = fieldPath[lastIndex],
-				fieldParent = this.getFieldParent(fieldPath);
+			/* if (this.config.destroyControlStateOnUnmount) {
+					const fieldPath = objectPath(field.name),
+					lastIndex = fieldPath.length - 1,
+					lastNode = fieldPath[lastIndex],
+					fieldParent = this.getFieldParent(fieldPath);
 
-			if (fieldParent) {
-				(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
-			}
-			else {
-					console.log('Attempt to remove field on already removed parent field', field.name) // tslint:disable-line
+				if (fieldParent) {
+					(fieldParent as Form | FieldArray | FieldSection).removeField(lastNode);
 				}
-			} */
+				else {
+						console.log('Attempt to remove field on already removed parent field', field.name) // tslint:disable-line
+					}
+				} */
 		}
 	}
 

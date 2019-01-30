@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { FormEvent } from 'react';
 import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
@@ -44,12 +43,15 @@ export interface IFormProps {
 
 export interface IReactiveMobxFormProps<P = any> {
 	submit: (...rest: Array<unknown>) => Promise<P>;
+	next: () => void;
+	previous: (steps: unknown) => void;
 	reset: () => void;
 	destroy: () => void;
 	submitting: boolean;
 	submitError: Error;
 	valid: boolean | void;
 	dirty: boolean;
+	step: number;
 }
 
 // tslint:disable-next-line:max-line-length
@@ -72,9 +74,9 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 		@observer
 		// tslint:disable-next-line:max-line-length
 		class FormUI extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormProps & IFormStore)> {
-/* 			public static defaultProps: any = {
-				schema: {}
-			}; */
+			/* 			public static defaultProps: any = {
+							schema: {}
+						}; */
 			public form: Form;
 
 			constructor(props: P & IFormProps & IFormStore) {
@@ -91,7 +93,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				const fullSchema = (schema || props.schema) && Object.assign({}, schema, props.schema);
 
 				// tslint:disable-next-line:max-line-length
-				this.form = props.formStore!.registerForm(formName, props.onSubmit, { schema: fullSchema, config, validator});
+				this.form = props.formStore!.registerForm(formName, props.onSubmit, { schema: fullSchema, config, validator });
 			}
 
 			public componentWillUnmount() {
@@ -107,33 +109,22 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
-			public submitForm(...params: [FormEvent | MouseEvent, Array<unknown>] ) {
-				const maybeEvent = params[0];
-
-				// stupid assumption, but enzyme fails on check maybeEvent.nativeEvent instanceof Event
-				if (maybeEvent.preventDefault) {
-					maybeEvent.preventDefault();
-					params.shift();
-				}
-
-				return this.form.submit(...params);
-			}
-
-			public resetForm(): void {
-				this.form.reset();
-			}
-
 			public render() {
 				return (
 					<FormContext.Provider value={this.form}>
 						<FormComponent
-							submit={this.submitForm.bind(this)}
-							reset={this.resetForm.bind(this)}
-							destroy={this.destroyForm.bind(this)}
-							submitting={this.form.submitting}
-							submitError={this.form.submitError}
 							valid={this.form.isValid}
 							dirty={this.form.isDirty}
+							submitting={this.form.submitting}
+							submitError={this.form.submitError}
+							step={this.form.currentStep}
+
+							submit={this.form.submit}
+							reset={this.form.reset}
+							previous={this.form.restoreSnapshot}
+							next={this.form.takeSnapshot}
+
+							destroy={this.destroyForm.bind(this)}
 							{...omit(this.props, ['schema', 'onSubmit', 'formStore'])}
 						/>
 					</FormContext.Provider>

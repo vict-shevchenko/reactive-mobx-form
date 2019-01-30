@@ -81,4 +81,4 @@ An object with a configuration for form fields, allowing to specify their initia
 
 #### `destroyFormStateOnUnmount : boolean` 
 
-Should or should not the form state be cleaned from `formStore` when Form component is unmounted. It may be useful if you have some part of form appear dynamically. And would like not to remove all form State, when this part disappear. For example Wizard form.  Defaults to `true`.
+Configures if the form state should be cleaned from `formStore` when Form component is unmounted. Defaults to `true`. This parameter is not intended for a regular use. In most cases you should try to keep all your form under single `ReactiveMobxForm` Component. Still there may be some rare cases where form has to be combined from 2 (or more) sub-forms located in a different parts of application. In case if sub-form B disappears - this will cause removing of `Form instance` out of `formStore` so sub-form A will be disconnected from `formStore`. 

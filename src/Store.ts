@@ -15,7 +15,8 @@ export class FormStore {
 
 		if (this.hasForm(name)) {
 			form = this.getForm(name) as Form;
-			form.extendConfiguration(submit, options);
+			form.attachCount++;
+			form.extendConfiguration(options);
 		}
 		else {
 			form = new Form(submit, options);
@@ -26,10 +27,14 @@ export class FormStore {
 	}
 
 	public unRegisterForm(name: string) {
-		if (this.forms.has(name)) {
+		if (this.hasForm(name)) {
 			const form = this.getForm(name) as Form;
-			form.cleanup();
-			this.forms.delete(name);
+			form.attachCount--;
+
+			if (form.attachCount === 0) {
+				form.cleanup();
+				this.forms.delete(name);
+			}
 		}
 	}
 

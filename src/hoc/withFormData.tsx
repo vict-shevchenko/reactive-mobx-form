@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { FormEvent } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Form } from '../Form';
 import { omit } from '../utils';
@@ -29,7 +28,7 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 
 				if (!this.form) {
 					// tslint:disable-next-line:max-line-length
-					throw(new Error(`Form '${formName}' does not exist in store. Please check call to 'withFormData(${formName})(${Component.name})'`));
+					throw (new Error(`Form '${formName}' does not exist in store. Please check call to 'withFormData(${formName})(${Component.name})'`));
 				}
 			}
 
@@ -38,35 +37,25 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
-			public submitForm(...params: [FormEvent | MouseEvent, Array<unknown>] ) {
-				const maybeEvent = params[0];
-
-				// stupid assumption, but enzyme fails on check maybeEvent.nativeEvent instanceof Event
-				if (maybeEvent.preventDefault) {
-					maybeEvent.preventDefault();
-					params.shift();
-				}
-
-				return this.form!.submit(...params);
-			}
-
-			public resetForm() {
-				this.form!.reset();
-			}
-
 			public render() {
-				return (
+				if (this.form) {
+					return (
 						<Component
-							dirty={this.form!.isDirty}
-							valid={this.form!.isValid}
-							submit={this.submitForm.bind(this)}
-							destroy={this.destroyForm}
-							reset={this.resetForm.bind(this)}
-							submitting={this.form!.submitting}
-							submitError={this.form!.submitError}
+							valid={this.form.isValid}
+							dirty={this.form.isDirty}
+							submitting={this.form.submitting}
+							submitError={this.form.submitError}
+							step={this.form.snapshots.length}
+
+							submit={this.form.submit}
+							reset={this.form.reset}
+							previous={this.form.restoreSnapshot}
+							next={this.form.takeSnapshot}
+							destroy={this.destroyForm.bind(this)}
 							{...omit(this.props, ['formStore'])}
 						/>
-				);
+					);
+				}
 			}
 		}
 
