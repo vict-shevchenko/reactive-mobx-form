@@ -2,14 +2,15 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Form } from '../Form';
 import { omit } from '../utils';
-import { IReactiveMobxFormProps, IFormStore } from '../createForm';
+import { IReactiveMobxFormProps, IFormExtendProps } from '../createForm';
 import { FormStore } from '../Store';
+import { FormContext } from '../context';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
 
 // tslint:disable-next-line:max-line-length
-export type WithFormDataType<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormProps> & IFormStore>;
+export type WithFormDataType<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormProps> & IFormExtendProps>;
 
 // tslint:disable-next-line:max-line-length variable-name
 export function withFormData(formName: string): <P extends IReactiveMobxFormProps>(Component: React.ComponentType<P>) => WithFormDataType<P> {
@@ -18,18 +19,18 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 	return <P extends IReactiveMobxFormProps>(Component: React.ComponentType<P>) => {
 		@inject('formStore')
 		@observer
-		class WithFormData extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormStore)> {
+		class WithFormData extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormExtendProps)> {
 			private form: Form | undefined;
 
-			constructor(props: P & IFormStore) {
+			constructor(props: P & IFormExtendProps) {
 				super(props);
 
-				this.form = props.formStore!.getForm(formName);
+				// this will throw if form does not exist
+				this.form = props.formStore!.extendForm(formName, { schema: props.schema || {} });
+			}
 
-				if (!this.form) {
-					// tslint:disable-next-line:max-line-length
-					throw (new Error(`Form '${formName}' does not exist in store. Please check call to 'withFormData(${formName})(${Component.name})'`));
-				}
+			public componentWillUnmount() {
+				this.destroyForm();
 			}
 
 			public destroyForm() {
@@ -40,20 +41,22 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 			public render() {
 				if (this.form) {
 					return (
-						<Component
-							valid={this.form.isValid}
-							dirty={this.form.isDirty}
-							submitting={this.form.submitting}
-							submitError={this.form.submitError}
-							step={this.form.snapshots.length}
+						<FormContext.Provider value={this.form}>
+							<Component
+								valid={this.form.isValid}
+								dirty={this.form.isDirty}
+								submitting={this.form.submitting}
+								submitError={this.form.submitError}
+								step={this.form.snapshots.length}
 
-							submit={this.form.submit}
-							reset={this.form.reset}
-							previous={this.form.restoreSnapshot}
-							next={this.form.takeSnapshot}
-							destroy={this.destroyForm.bind(this)}
-							{...omit(this.props, ['formStore'])}
-						/>
+								submit={this.form.submit}
+								reset={this.form.reset}
+								previous={this.form.restoreSnapshot}
+								next={this.form.takeSnapshot}
+								destroy={this.destroyForm.bind(this)}
+								{...omit(this.props, ['schema', 'formStore'])}
+							/>
+						</FormContext.Provider>
 					);
 				}
 			}

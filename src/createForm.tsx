@@ -36,9 +36,12 @@ export interface IFormStore {
 	formStore?: FormStore;
 }
 
-export interface IFormProps {
-	onSubmit?: submitCallback;
+export interface IFormExtendProps extends IFormStore {
 	schema?: IFormSchema;
+}
+
+export interface IFormProps extends IFormExtendProps {
+	onSubmit: submitCallback;
 }
 
 export interface IReactiveMobxFormProps<P = any> {
@@ -55,7 +58,7 @@ export interface IReactiveMobxFormProps<P = any> {
 }
 
 // tslint:disable-next-line:max-line-length
-export type ReactiveMobxForm<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormProps> & IFormProps & IFormStore>;
+export type ReactiveMobxForm<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormProps> & IFormProps>;
 
 // tslint:disable-next-line
 export function createForm(formName: string, formDefinition: IFormDefinition = {}): <P extends IReactiveMobxFormProps>(FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P> {
@@ -73,25 +76,26 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 		@inject('formStore')
 		@observer
 		// tslint:disable-next-line:max-line-length
-		class FormUI extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormProps & IFormStore)> {
+		class FormUI extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormProps)> {
 			/* 			public static defaultProps: any = {
 							schema: {}
 						}; */
 			public form: Form;
 
-			constructor(props: P & IFormProps & IFormStore) {
+			constructor(props: P & IFormProps) {
 				super(props);
 
 				if (props.schema && !isConfigParamValid(props.schema)) {
 					throw new Error('Attribute "schema" provided to Form has incorrect format. Object expected');
 				}
 
-				/* if (!props.onSubmit && !props.formStore!.hasForm(formName)) {
+				if (!props.onSubmit) {
 					throw new Error(`Attribute "onSubmit" is Required for <${FormComponent.name} /> component`);
-				} */
+				}
 
 				const fullSchema = (schema || props.schema) && Object.assign({}, schema, props.schema);
 
+				// this will throw if form already exist
 				// tslint:disable-next-line:max-line-length
 				this.form = props.formStore!.registerForm(formName, props.onSubmit, { schema: fullSchema, config, validator });
 			}
