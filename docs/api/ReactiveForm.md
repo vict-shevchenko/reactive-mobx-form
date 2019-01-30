@@ -1,15 +1,12 @@
 ## ReactiveForm
 
-Or any way you name it. Your decorated form that is produced via calling `reactiveMobxForm` function.
+Or any way you name it. Your decorated form that is produced via applying `reactiveMobxForm` HOC over your React From Component (calling `reactiveMobxForm` function).
 
 
 ```javascript
 // form.jsx
 class Form extends React.Component {
-  render() {
-
-	// this.props.someMyProp  - defined here
-    
+  render() { 
     return (
       <form onSubmit={submit}>
        ...
@@ -33,7 +30,7 @@ class Page extends React.Component {
     
     return (
       <div>
-       <ReactiveForm onSubmit={yourOnSummitFunction} schema={{ fieldName:'fieldInitialValue' }} someMyProp={someMyValue}/>
+       <ReactiveForm onSubmit={yourOnSummitFunction} schema={{ fieldName:'fieldInitialValue' }}>
       </div>
     );
   }
@@ -41,17 +38,17 @@ class Page extends React.Component {
 
 ```
 
-`ReactiveForm` can accept any amount of properties, that will be transparently passed to your form component. Except two properties:
+`ReactiveForm` can accept any amount of properties, that will be transparently passed to your form component. Except this properties:
 - onSubmit
 - schema
 
-### onSubmit
-A function that will be called when form is submitted. Is called with first parameter `form.values` object. And rest parameters that may be optionally passed to `<form onSubmit>` method inside your form. This callback is executed **asynchronously** as a part of `reactiveMobXForm` submission mechanism. `form.isSubmitting` flag is raised.
+### onSubmit [optional] 
+A function that will be called when form is submitted. Is called with first parameter `form.values` object. And rest parameters that may be optionally passed to `props.submit` function inside your form. This callback is executed **asynchronously** as a part of `reactiveMobXForm` submission mechanism. `form.isSubmitting` flag is raised.
 
 And can return:
 - value, meaning submission is successful
-- Promise. Resolve cases reset of Form(drop all fields to initial values). Reject - raises `form.submitError` flag and no reset of Form happens.
+- Promise for asynchronous submit. Reject - raises `form.submitError` flag.
 
-### schema
+### schema [optional] 
 The place where you can define fields initial values and validation rules during render stage.
 Please see [reactiveMobxForm() page](/reactive-mobx-form/#/api/reactiveMobxForm) page for syntax.

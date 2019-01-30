@@ -86,9 +86,9 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 					throw new Error('Attribute "schema" provided to Form has incorrect format. Object expected');
 				}
 
-				if (!props.onSubmit) {
+				/* if (!props.onSubmit && !props.formStore!.hasForm(formName)) {
 					throw new Error(`Attribute "onSubmit" is Required for <${FormComponent.name} /> component`);
-				}
+				} */
 
 				const fullSchema = (schema || props.schema) && Object.assign({}, schema, props.schema);
 
