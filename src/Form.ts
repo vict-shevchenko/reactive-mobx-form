@@ -9,10 +9,7 @@ import { FieldSection } from './FieldSection';
 import { objectPath, normalizeSchema } from './utils';
 import { FormEvent } from 'react';
 
-/* export const DEFAULT_FORM_CONFIG: IFormConfiguration = {
-	destroyFormStateOnUnmount: true
-};
- */
+
 export class Form {
 	public formSchema: IFormNormalizedSchema = {};
 	public attachCount: number = 1;
@@ -62,7 +59,6 @@ export class Form {
 		this.externalSubmit = submit;
 
 		this.extendConfiguration(options);
-	/* 	this.config = Object.assign({}, DEFAULT_FORM_CONFIG, options.config); */
 
 		this.registerValidation();
 	}

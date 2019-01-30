@@ -23,14 +23,9 @@ export interface IFormValidatorDefinition {
 	attributeNames: IFormAttributeNames;
 }
 
-export interface IFormConfiguration {
-	destroyFormStateOnUnmount: boolean;
-}
-
 export interface IFormDefinition {
 	validator?: Partial<IFormValidatorDefinition>;
 	schema?: IFormSchema;
-	config?: Partial<IFormConfiguration>;
 }
 
 export interface IFormValues {

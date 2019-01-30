@@ -64,12 +64,11 @@ export type ReactiveMobxForm<P = {}> = React.ComponentType<Subtract<P, IReactive
 export function createForm(formName: string, formDefinition: IFormDefinition = {}): <P extends IReactiveMobxFormProps>(FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P> {
 	const {
 		validator,
-		schema,
-		config
+		schema
 	} = formDefinition;
 
 	// todo, run in dev mode only
-	validateConfigParams(formName, [validator, schema, config]);
+	validateConfigParams(formName, [validator, schema]);
 
 	// tslint:disable-next-line:variable-name
 	return <P extends IReactiveMobxFormProps>(FormComponent: React.ComponentType<P>) => {
@@ -97,14 +96,10 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 				// this will throw if form already exist
 				// tslint:disable-next-line:max-line-length
-				this.form = props.formStore!.registerForm(formName, props.onSubmit, { schema: fullSchema, config, validator });
+				this.form = props.formStore!.registerForm(formName, props.onSubmit, { schema: fullSchema, validator });
 			}
 
 			public componentWillUnmount() {
-				if (config && config.destroyFormStateOnUnmount === false) {
-					return;
-				}
-
 				this.destroyForm();
 			}
 

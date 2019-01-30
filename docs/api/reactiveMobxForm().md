@@ -46,10 +46,7 @@ Shape looks like:
     errorMessages: {},
     attributeNames: {}
   },
-  schema: {},
-  config: {
-    destroyFormStateOnUnmount: true
-  }
+  schema: {}
 }
 ```
 
@@ -77,8 +74,4 @@ An object with a configuration for form fields, allowing to specify their initia
 {firstName: ['Viktor', 'required|string']}
 ```
 
-**Hint: If you get initial values from server, better pass them as 'schema' attribute to generated ReactiveForm Component in parent component**
-
-#### `destroyFormStateOnUnmount : boolean` 
-
-Configures if the form state should be cleaned from `formStore` when Form component is unmounted. Defaults to `true`. This parameter is not intended for a regular use. In most cases you should try to keep all your form under single `ReactiveMobxForm` Component. Still there may be some rare cases where form has to be combined from 2 (or more) sub-forms located in a different parts of application. In case if sub-form B disappears - this will cause removing of `Form instance` out of `formStore` so sub-form A will be disconnected from `formStore`. 
+**Hint: If you get initial values from server, better pass them as 'schema' attribute to generated ReactiveForm Component from parent component**
