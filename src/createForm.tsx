@@ -37,7 +37,7 @@ export interface IFormStore {
 }
 
 export interface IFormProps {
-	onSubmit: submitCallback;
+	onSubmit?: submitCallback;
 	schema?: IFormSchema;
 }
 

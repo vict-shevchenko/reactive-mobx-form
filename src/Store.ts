@@ -8,7 +8,7 @@ export class FormStore {
 
 	public registerForm(
 			name: string,
-			submit: submitCallback,
+			submit: submitCallback | undefined,
 			options: IFormDefinition)
 		{ // tslint:disable-line
 		let form: Form;

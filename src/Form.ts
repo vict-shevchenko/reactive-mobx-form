@@ -57,8 +57,9 @@ export class Form {
 	error
 	*/
 
-	constructor(submit: submitCallback, options: IFormDefinition) {
-		this.externalSubmit = submit;
+	constructor(submit: submitCallback | undefined, options: IFormDefinition) {
+		// tslint:disable-next-line:no-console
+		this.externalSubmit = submit ? submit : (values, ...params) => console.log(values, params);
 
 		this.extendConfiguration(options);
 	/* 	this.config = Object.assign({}, DEFAULT_FORM_CONFIG, options.config); */
