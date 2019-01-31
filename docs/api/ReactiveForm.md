@@ -60,7 +60,7 @@ Please see [reactiveMobxForm() page](/reactive-mobx-form/#/api/reactiveMobxForm)
 ### keepState [optional] 
 Parameter defines if form should be removed from formStore when it was unmounted. This may be useful if you want to preserve form state when routing of application changes.
 Note: form is fetched from store in same state as it was before `Form` Component was unmounted. Any changes to Form parameters like `onSubmit` or `schema` will be ignored.
-Defaults to `false` - meaning form are removed from store when they are unmounted.
+Defaults to `false` - meaning form are removed from store when they are unmounted. *Do not forget to manually call `destroy` function from form component, if you do not need a form any more. For example after submission*
 
 
 
