@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing the FormStore It should not be possible to register new Form with same name, should throw 1`] = `"Form with name \\"myform\\" already exist. Use \\"withFormData\\" HOC to extend it"`;
+
+exports[`Testing the FormStore It should throw when extending form that was not created 1`] = `"Form with name \\"myform\\" does not exist so can not be extended. Use \\"reactiveMobxForm\\" HOC to create it firstly"`;

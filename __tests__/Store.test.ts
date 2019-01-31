@@ -1,52 +1,47 @@
 import { FormStore } from '../lib/Store';
 
 describe('Testing the FormStore', () => {
-	let formStore: FormStore;
+	const formStore: FormStore = new FormStore();
 
-	beforeAll(() => {
-		formStore = new FormStore();
+	beforeEach(() => {
+		formStore.forms.clear();
 	});
 
-	test('Creation on new FormStore instance should wokr correctly', () => {
+	test('Creation on new FormStore instance should work correctly', () => {
 		expect(formStore).toEqual(expect.any(FormStore));
 	});
 
 	test('created instance of FormStore should have proper methods and properties', () => {
 		expect(formStore.forms).toBeDefined();
 		expect(formStore.forms.size).toBe(0);
-
-		/* formStore.registerForm('myform', {}, {}, {});
-
-		expect(formStore.forms.get('myform')).toBeDefined();
-
-		formStore.unRegisterForm('myform');
-
-		expect(formStore.forms.get('myform')).not.toBeDefined();
-		expect(formStore.forms.size).toBe(0); */
 	});
 
 	test('It should be possible to register new Form', () => {
 		formStore.registerForm('myform', v => v, {});
 		expect(formStore.forms.size).toBe(1);
+		expect(formStore.forms.get('myform')!.formSchema).toEqual({});
+		expect(formStore.forms.get('myform')!.attachCount).toBe(1);
 	});
 
-	test('It should not be possible to register new Form with same name', () => {
-		formStore.registerForm('myform', v => v, {});
-		expect(formStore.forms.size).toBe(1);
-
+	test('It should not be possible to register new Form with same name, should throw', () => {
 		formStore.registerForm('myform', v => v, {});
 		expect(formStore.forms.size).toBe(1);
 		expect(formStore.forms.get('myform')!.formSchema).toEqual({});
+
+		expect(() => formStore.registerForm('myform', v => v, {})).toThrowErrorMatchingSnapshot();
 	});
 
 	test('It should be possible to extend form configuration', () => {
 		formStore.registerForm('myform', v => v, {});
-		expect(formStore.forms.size).toBe(1);
-		expect(formStore.forms.get('myform')!.formSchema).toEqual({});
+		formStore.extendForm('myform', { schema: { name: ['Viktor', 'required'] } });
 
-		formStore.registerForm('myform', v => v, { schema: { name: ['Viktor', 'required'] } });
 		expect(formStore.forms.size).toBe(1);
+		expect(formStore.forms.get('myform')!.attachCount).toBe(2);
 		expect(formStore.forms.get('myform')!.formSchema).toEqual({ name: ['Viktor', 'required'] });
+	});
+
+	test('It should throw when extending form that was not created', () => {
+		expect(() => formStore.extendForm('myform', { schema: {} })).toThrowErrorMatchingSnapshot();
 	});
 
 	test('It should be possible to unregister form', () => {
@@ -57,15 +52,15 @@ describe('Testing the FormStore', () => {
 		expect(formStore.forms.size).toBe(0);
 	});
 
-	test('It should be possible. Unregistring of form with invalid name should not throw', () => {
+	test('Form should stay in FormStore if unregister was called with keepState', () => {
 		formStore.registerForm('myform', v => v, {});
 		expect(formStore.forms.size).toBe(1);
 
-		formStore.unRegisterForm('yourform');
+		formStore.unRegisterForm('myform', true);
 		expect(formStore.forms.size).toBe(1);
 	});
 
-	test('It should be possible to check form existance', () => {
+	test('It should be possible to check form existence', () => {
 		formStore.registerForm('myform', v => v, {});
 		expect(formStore.hasForm('myform')).toBe(true);
 		expect(formStore.hasForm('yourform')).toBe(false);

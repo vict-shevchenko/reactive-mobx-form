@@ -12,7 +12,6 @@ export class FormStore {
 		if (!this.hasForm(name)) {
 			form = new Form(submit, options);
 			this.forms.set(name, form);
-			return form;
 		}
 		else {
 			form = this.getForm(name) as Form;
