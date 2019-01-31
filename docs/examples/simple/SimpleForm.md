@@ -1,3 +1,3 @@
 ### Simple Form
 
-Documnetation for a simple form example. Simplr Form
+Documentation for a simple form example. Simplr Form
