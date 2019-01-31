@@ -30,7 +30,11 @@ class Page extends React.Component {
     
     return (
       <div>
-       <ReactiveForm onSubmit={yourOnSummitFunction} schema={{ fieldName:'fieldInitialValue' }}>
+       <ReactiveForm 
+        onSubmit={yourOnSummitFunction}
+        schema={{ fieldName:'fieldInitialValue' }}
+        keepState={true}
+      />
       </div>
     );
   }
@@ -42,7 +46,7 @@ class Page extends React.Component {
 - onSubmit
 - schema
 
-### onSubmit [optional] 
+### onSubmit
 A function that will be called when form is submitted. Is called with first parameter `form.values` object. And rest parameters that may be optionally passed to `props.submit` function inside your form. This callback is executed **asynchronously** as a part of `reactiveMobXForm` submission mechanism. `form.isSubmitting` flag is raised.
 
 And can return:
@@ -52,3 +56,11 @@ And can return:
 ### schema [optional] 
 The place where you can define fields initial values and validation rules during render stage.
 Please see [reactiveMobxForm() page](/reactive-mobx-form/#/api/reactiveMobxForm) page for syntax.
+
+### keepState [optional] 
+Parameter defines if form should be removed from formStore when it was unmounted. This may be useful if you want to preserve form state when routing of application changes.
+Note: form is fetched from store in same state as it was before `Form` Component was unmounted. Any changes to Form parameters like `onSubmit` or `schema` will be ignored.
+Defaults to `false` - meaning form are removed from store when they are unmounted.
+
+
+

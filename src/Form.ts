@@ -9,10 +9,9 @@ import { FieldSection } from './FieldSection';
 import { objectPath, normalizeSchema } from './utils';
 import { FormEvent } from 'react';
 
-
 export class Form {
 	public formSchema: IFormNormalizedSchema = {};
-	public attachCount: number = 1;
+	public attachCount: number = 0;
 
 	private errorMessages: IFormErrorMessages | undefined = undefined;
 	private attributeNames: IFormAttributeNames | undefined = undefined;

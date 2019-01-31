@@ -42,6 +42,7 @@ export interface IFormExtendProps extends IFormStore {
 
 export interface IFormProps extends IFormExtendProps {
 	onSubmit: submitCallback;
+	keepState?: boolean;
 }
 
 export interface IReactiveMobxFormProps<P = any> {
@@ -100,12 +101,12 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public componentWillUnmount() {
-				this.destroyForm();
+				this.destroyForm(this.props.keepState);
 			}
 
-			public destroyForm() {
+			public destroyForm(keepState) {
 				// to avoid this.props.formStore is possibly undefined
-				(this.props.formStore as FormStore).unRegisterForm(formName);
+				(this.props.formStore as FormStore).unRegisterForm(formName, keepState);
 			}
 
 			public render() {
@@ -123,7 +124,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 							previous={this.form.restoreSnapshot}
 							next={this.form.takeSnapshot}
 
-							destroy={this.destroyForm.bind(this)}
+							destroy={this.destroyForm.bind(this, false)}
 							{...omit(this.props, ['schema', 'onSubmit', 'formStore'])}
 						/>
 					</FormContext.Provider>
