@@ -5,7 +5,7 @@ import {
 } from '../src/createForm';
 import BasicForm from '../__mocks__/BasicForm.mock';
 // tslint:disable-next-line:max-line-length
-import { SubmitForm, CustomSubmitFormWithEvent, CustomSubmitFormWithoutEvent, WizardForm1, WizardForm2 } from '../__mocks__/SimpleForm.mock';
+import { SubmitForm, CustomSubmitFormWithEvent, CustomSubmitFormWithoutEvent } from '../__mocks__/SimpleForm.mock';
 import { shallow, mount } from 'enzyme';
 import { FormStore } from '../lib/Store';
 import { reactiveMobxForm, ReactiveMobxFormComponent } from '../index';
@@ -74,7 +74,7 @@ describe('Testing different props combinations with Form Component, and passing 
 			)).toThrow('Attribute "schema" provided to Form has incorrect format. Object expected');
 	});
 
-	test('Rendering Form with incorrect "onSubmit" parameter should throw error"', () => {
+	test('Rendering Form without "onSubmit" parameter should throw error"', () => {
 		// tslint:disable-next-line:no-empty
 		expect(() => shallow(
 			<ReactiveBasicForm.wrappedComponent
@@ -86,13 +86,15 @@ describe('Testing different props combinations with Form Component, and passing 
 	test('It should render form and pass correct props to it', () => {
 		const formWrapper = shallow(<ReactiveBasicForm.wrappedComponent
 			formStore={formStore}
-		// tslint:disable-next-line:no-empty
-			onSubmit={() => {}}
+			onSubmit={v => v}
 		/>).children();
 
 		expect(formWrapper.is('BasicForm')).toBeTruthy();
 		expect(formWrapper.prop('submit')).toBeDefined();
 		expect(formWrapper.prop('reset')).toBeDefined();
+		expect(formWrapper.prop('step')).toBe(1);
+		expect(formWrapper.prop('next')).toBeDefined();
+		expect(formWrapper.prop('previous')).toBeDefined();
 		expect(formWrapper.prop('destroy')).toBeDefined();
 		expect(formWrapper.prop('submitting')).toBeFalsy();
 		expect(formWrapper.prop('submitError')).not.toBeDefined();
@@ -113,13 +115,14 @@ describe('Testing different props combinations with Form Component, and passing 
 });
 
 describe('Form onSubmit should be called correctly and with correct attributes', () => {
-	let formStore, wrapper;
+	const formStore = new FormStore();
+	let wrapper;
 
 	beforeEach(() => {
-		formStore = new FormStore();
+		formStore.forms.clear();
 	});
 
-	afterAll(() => {
+	afterEach(() => {
 		wrapper.unmount();
 	});
 
@@ -186,11 +189,13 @@ describe('Form onSubmit should be called correctly and with correct attributes',
 		return expect(submissionPromise).resolves.toEqual('done');
 	});
 
-	test('Testing onSubmit for submitting form via wizard type forms', () => {
+	/* test('Testing onSubmit for submitting form via wizard type forms', () => {
 		const handleSubmit1 = jest.fn(formValues => formValues);
 		const handleSubmit2 = jest.fn(formValues => formValues);
 		// tslint:disable-next-line:variable-name max-line-length
-		const ReactiveWizard1Form: ReactiveMobxFormComponent = reactiveMobxForm('wizardForm', {config: {destroyFormStateOnUnmount: false }})(WizardForm1);
+		// tslint:disable-next-line:max-line-length
+		const ReactiveWizard1Form: ReactiveMobxFormComponent =
+		reactiveMobxForm('wizardForm', {config: {destroyFormStateOnUnmount: false }})(WizardForm1);
 		// tslint:disable-next-line:variable-name
 		const ReactiveWizard2Form: ReactiveMobxFormComponent = reactiveMobxForm('wizardForm')(WizardForm2);
 
@@ -210,7 +215,7 @@ describe('Form onSubmit should be called correctly and with correct attributes',
 
 		expect(handleSubmit2.mock.calls.length).toBe(1);
 		expect(handleSubmit2.mock.calls[0][0]).toEqual({firstName: 'Hello ', lastName: 'World'});
-	});
+	}); */
 });
 
 /* describe('Testing interaction with FormStore', () => {
