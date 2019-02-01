@@ -1,5 +1,5 @@
 # reactive-mobx-form  [![npm version](https://badge.fury.io/js/reactive-mobx-form.svg)](https://badge.fury.io/js/reactive-mobx-form)
-Simple ans scalable form management library for React+MobX application. Under the hood it uses efficient MobX observable mechanizm, that allows tracking changes in form fields and rerender only things that have changed. This gives developer a feeling of working with 2-way databinding and reduces much boilerplate code needed to handle input events in 1-way data flow environment. 
+Simple ans scalable form management library for React+MobX application. Under the hood it uses efficient MobX observable mechanizm, that allows tracking changes in form fields and rerender only things that have changed. This gives developer a feeling of working with 2-way data binding and reduces much boilerplate code needed to handle input events in 1-way data flow environment. 
 
 One of main features is "template based" approach - so you maintain your JSX structure only. This brings you to a situation that what is in your DOM is in your form values. 
 
@@ -34,7 +34,7 @@ render(
 ```
 
 ### Step 2
-Create a form
+Create a form, look no more `onChange` handlers on form fields. Just use `Control`! 
 
 ```javascript
 import { reactiveMobxForm, Control } from 'reactive-mobx-form';
@@ -67,10 +67,10 @@ export default ContactFormReactive;
 Detailed explanation of [formDefinition](https://vict-shevchenko.github.io/reactive-mobx-form/#/api/reactiveMobxForm()) object
 
 ### Step 3
-Use your form and enjoy
+Use your form and enjoy, just don't forget to pass `onSubmit` to it
 
 ```javascript
-import ContactForm from './ContactForm';
+import ContactFormReactive from './ContactForm';
 
 export default Page extends React.Component {
   handleSubmit(form) {
@@ -79,17 +79,23 @@ export default Page extends React.Component {
 
   render() {
     <div>
-      <ContactForm onSubmit={this.handleSubmit.bind(this)} /> // schema={{fieldName: [initialValue, rules]}} optional parameter
+      <ContactFormReactive onSubmit={this.handleSubmit.bind(this)} />
     </div>
   }
 }
 ```
 
-## How form submission is happening. 
-When you call `props.submit` function that is passed into your form - submission is started. Inside it calls your `submit` function (those you have passed into `onSubmit` parameter) inside of promise(so it may be async).
-props.submit` is also async function, that returns a promise, so you can add any required callbacks in `.then` and `.catch` methods.
-If your `onSubmit` function returns a `resolved Promise` - `result will be passed to `props.submit.then` method. 
-If your `onSubmit` function returns `rejectedPromise` than `form.submitionError` flag is raised and error will be passed to `props.submit.catch` method. 
+This is how you may turn a simple form into a Reactive Mobx Form one. But `reactive-mobx-form` gives you much more...
+
+## Capabilities
+Its now possible: 
+1. Render simple forms and submit them
+2. Validate fields, with powerful **validatorjs** library
+3. Render multi-level fields with `ControlSection` Component. Great for Component reuse.
+4. Render filed, that contains array of data. Both singe item array, or array of objects with `ControlArray`.
+5. Manage multi step forms, aka Wizard.
+6. Use `ComputedControl` component to render fields, which values are computed base of other form values
+7. Localize your form/field names/error messages
 
 
 ## Language Support
@@ -164,6 +170,12 @@ For most users migration will be just updating a version in `package.json`. Make
 #### Migration to 0.12.x
 Remove `destroyControlStateOnUnmount` parameter from form initialization. If you relied on a logic that control are brought back to form with initial values check [here](https://github.com/vict-shevchenko/reactive-mobx-form/blob/master/docs/FAQ.md)
 
+#### Migration to 0.13.x
+* Remove `destroyFormStateOnUnmount` parameter from form initialization.
+* If you relaid on mechanism that form state is preserved between full form unmounts - please use `keepState` property on your `Form` component.  
+* You will have to rewrite your multi step forms via [new API](https://vict-shevchenko.github.io/reactive-mobx-form/#/examples/multi-step/MultiStep)
+
+
 ## Motivation
  Working with forms was always a pain in web development. This library is an attempt to solve it for MobX and React users.
  
@@ -171,16 +183,6 @@ Goals:
 1. Zero configuration (I will not lie, you will still need some for not standard cases)
 2. Easy to learn and start with
 3. Preferable over own solutions (I hope it to be)
-
-## Capabilities
-Its now possible: 
-1. Render simple one level forms
-2. Validate fields, see **validatorjs** docs
-3. Render multi-level fields with `ControlSection` Component
-4. Render filed, that contains array of data. Both singe item array, or array of objects with `ControlArray`
-5. Render Dynamic forms, where subform appear or replace existing one. (Wizard type forms)
-6. Use `ComputedControl` component to render fields, which values is computed base of other form values
-7. Submit a form
 
 ## Dependency
 reactive-mobx-forms depends directly on:

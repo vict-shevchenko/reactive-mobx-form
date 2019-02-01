@@ -36,3 +36,9 @@ const MyControlWithReset = resetOnDidMount(MyControl)
 // and use it like:
 <Control type="text" component={InputWithReset} name="name"/>
 ```
+
+## How form submission is happening. 
+When you call `props.submit` function that is passed into your form - submission is started. Inside it calls your `submit` function (those you have passed into `onSubmit` parameter) inside of promise(so it may be async).
+props.submit` is also async function, that returns a promise, so you can add any required callbacks in `.then` and `.catch` methods.
+If your `onSubmit` function returns a `resolved Promise` - `result will be passed to `props.submit.then` method. 
+If your `onSubmit` function returns `rejectedPromise` than `form.submitionError` flag is raised and error will be passed to `props.submit.catch` method. 
