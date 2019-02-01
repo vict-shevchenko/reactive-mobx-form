@@ -1,3 +1,10 @@
+# 0.13.0 [Breaking Changes]
+- Introduced new way of handling multi step (wizard) type forms via new form methods `next`, `previous` and `step` property
+- `withFormData` HOC now also can be used for extension of form with additional field. For cases where 2 part of form are located in different pars of application
+- Deprecated `destroyFormStateOnUnmount` parameter
+- Deprecated `config` parameter to `reactiveMobxForm` function
+- Add `keepState` Form property to support cases where form has to be retrieved after it was fully unmounted from DOM.
+
 # 0.12.0 [Breaking Changes]
 - Removed `destroyControlStateOnUnmount` from configuration. From now for all controls that appeared in Form will store their corresponding field state in Form. So if control was changed and then removed from DOM, after bringing it back - it will have its changed value (not initial one)
 
