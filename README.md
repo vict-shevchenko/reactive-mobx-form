@@ -89,7 +89,7 @@ This is how you may turn a simple form into a Reactive Mobx Form one. But `react
 
 ## Capabilities
 Its now possible: 
-1. Render simple forms and submit them
+1. Render forms and submit them
 2. Validate fields, with powerful **validatorjs** library
 3. Render multi-level fields with `ControlSection` Component. Great for Component reuse.
 4. Render filed, that contains array of data. Both singe item array, or array of objects with `ControlArray`.
