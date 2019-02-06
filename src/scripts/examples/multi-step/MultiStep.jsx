@@ -1,23 +1,6 @@
 import * as React from 'react';
 import { reactiveMobxForm, Control, ControlSection } from 'reactive-mobx-form';
 
-const NameFormSection = () => (
-	<React.Fragment>
-		<div>
-			<label>First Name</label>
-			<div>
-				<Control name="firstName" component="input" type="text" placeholder="First Name" />
-			</div>
-		</div>
-		<div>
-			<label>Last Name</label>
-			<div>
-				<Control name="lastName" component="input" type="text" placeholder="Last Name" />
-			</div>
-		</div>
-	</React.Fragment>
-)
-
 class ContactForm extends React.Component {
 	render() {
 		const { submit, next, previous, step } = this.props;
