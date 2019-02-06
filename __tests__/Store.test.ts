@@ -20,7 +20,7 @@ describe('Testing the FormStore', () => {
 		formStore.registerForm('myform', v => v, {});
 		expect(formStore.forms.size).toBe(1);
 		expect(formStore.forms.get('myform')!.formSchema).toEqual({});
-		expect(formStore.forms.get('myform')!.attachCount).toBe(1);
+		expect(formStore.forms.get('myform')!.attached).toBeTruthy();
 	});
 
 	test('It should not be possible to register new Form with same name, should throw', () => {
@@ -36,7 +36,7 @@ describe('Testing the FormStore', () => {
 		formStore.extendForm('myform', { schema: { name: ['Viktor', 'required'] } });
 
 		expect(formStore.forms.size).toBe(1);
-		expect(formStore.forms.get('myform')!.attachCount).toBe(2);
+		expect(formStore.forms.get('myform')!.attached).toBeTruthy();
 		expect(formStore.forms.get('myform')!.formSchema).toEqual({ name: ['Viktor', 'required'] });
 	});
 
@@ -52,12 +52,12 @@ describe('Testing the FormStore', () => {
 		expect(formStore.forms.size).toBe(0);
 	});
 
-	test('Form should stay in FormStore if unregister was called with keepState', () => {
+	test('Form should stay in FormStore if detachForm was called', () => {
 		formStore.registerForm('myform', v => v, {});
-		expect(formStore.forms.size).toBe(1);
 
-		formStore.unRegisterForm('myform', true);
+		formStore.detachForm('myform');
 		expect(formStore.forms.size).toBe(1);
+		expect(formStore.forms.get('myform')!.attached).toBeFalsy();
 	});
 
 	test('It should be possible to check form existence', () => {
