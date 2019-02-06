@@ -1,4 +1,4 @@
-### Multi Step Form (Wizard)
+# Multi Step Form (Wizard)
 
 One of very popular type of form are multiple step forms, where user fills in several fields and then clicks "Next" in order to fill in another set of fields.
 
