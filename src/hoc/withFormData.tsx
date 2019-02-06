@@ -29,10 +29,6 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 				this.form = props.formStore!.extendForm(formName, { schema: props.schema || {} });
 			}
 
-			public componentWillUnmount() {
-				this.destroyForm();
-			}
-
 			public destroyForm() {
 				// to avoid this.props.formStore is possibly undefined
 				(this.props.formStore as FormStore).unRegisterForm(formName);

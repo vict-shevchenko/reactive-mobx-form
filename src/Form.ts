@@ -11,7 +11,7 @@ import { FormEvent } from 'react';
 
 export class Form {
 	public formSchema: IFormNormalizedSchema = {};
-	public attachCount: number = 0;
+	public attached: boolean = false;
 
 	private errorMessages: IFormErrorMessages | undefined = undefined;
 	private attributeNames: IFormAttributeNames | undefined = undefined;

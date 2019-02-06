@@ -15,14 +15,14 @@ export class FormStore {
 		}
 		else {
 			form = this.getForm(name) as Form;
-			if (form.attachCount > 0) {
+			if (form.attached) {
 				// attempt to double register form
 				throw (new Error(`Form with name "${name}" already exist. Use "withFormData" HOC to extend it`));
 			}
 		}
 
-		// looks ok, we created new form or retrieved form form store as it was destroyed with keepState=true
-		form.attachCount++;
+		// looks ok, we created new form or retrieved form form store as it was disconnected with keepState=true
+		form.attached = true;
 		return form;
 	}
 
@@ -30,7 +30,6 @@ export class FormStore {
 		if (this.hasForm(name)) {
 			const form = this.getForm(name) as Form;
 			form.extendConfiguration(options);
-			form.attachCount++;
 			return form;
 		}
 		else {
@@ -39,19 +38,16 @@ export class FormStore {
 		}
 	}
 
-	public unRegisterForm(name: string, keepInStore?: boolean | undefined) {
+	public unRegisterForm(name: string) {
 		const form = this.getForm(name) as Form;
-		form.attachCount--;
 
-		if (keepInStore === true) {
-			return;
-		}
+		form.cleanup();
+		this.forms.delete(name);
+	}
 
-		// last UI Form attached to Form instance left
-		if (form.attachCount === 0) {
-			form.cleanup();
-			this.forms.delete(name);
-		}
+	public detachForm(name) {
+		const form = this.getForm(name) as Form;
+		form.attached = false;
 	}
 
 	public hasForm(name: string) {

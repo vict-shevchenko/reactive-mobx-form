@@ -17,7 +17,7 @@
         "noEmitOnError": false,
         "lib": [
             "dom",
-            "es6"
+            "es7"
         ],
         "typeRoots": [
             "node_modules/@types"

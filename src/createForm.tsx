@@ -101,12 +101,16 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 			}
 
 			public componentWillUnmount() {
-				this.destroyForm(this.props.keepState);
+				if (this.props.keepState) {
+					(this.props.formStore as FormStore).detachForm(formName);
+				} else {
+					this.destroyForm();
+				}
 			}
 
-			public destroyForm(keepState) {
+			public destroyForm() {
 				// to avoid this.props.formStore is possibly undefined
-				(this.props.formStore as FormStore).unRegisterForm(formName, keepState);
+				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
 			public render() {
