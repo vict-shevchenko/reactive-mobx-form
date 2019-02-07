@@ -1,3 +1,6 @@
+# 0.13.2
+- Fix rules for FieldSection type of fields
+
 # 0.13.1
 - Add `setAllTouched` property to Form props
 
