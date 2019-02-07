@@ -1,3 +1,6 @@
+# 0.13.1
+- Add `setAllTouched` property to Form props
+
 # 0.13.0 [Breaking Changes]
 - Introduced new way of handling multi step (wizard) type forms via new form methods `next`, `previous` and `step` property
 - `withFormData` HOC now also can be used for extension of form with additional field. For cases where 2 part of form are located in different pars of application
