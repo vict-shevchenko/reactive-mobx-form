@@ -55,6 +55,9 @@ Optional parameters that you pass to submit function after event will be transpa
 **`reset` : function**
 Function to return form to initial state. Input fields are returned to their initial values. Control Arrays are returned to initial amount if were added.
 
+**`setAllTouched` : function**
+Function to mark all form fields as touched. Useful if you need to indicate an error.
+
 **`destroy` : function**
 Function to manually unregister form in `formStore`.
 

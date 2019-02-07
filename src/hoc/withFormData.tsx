@@ -47,6 +47,7 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 
 								submit={this.form.submit}
 								reset={this.form.reset}
+								setAllTouched={this.form.setTouched}
 								previous={this.form.restoreSnapshot}
 								next={this.form.takeSnapshot}
 								destroy={this.destroyForm.bind(this)}
