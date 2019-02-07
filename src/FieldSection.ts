@@ -67,7 +67,7 @@ export class FieldSection {
 	@computed get rules() {
 		// tslint:disable-next-line: max-line-length
 		return Array.from(this.subFields.values()).reduce((rules, field) => {
-			if (!field.attached) {
+			if (field.attached) {
 				Object.assign(rules, field.rules);
 			}
 
