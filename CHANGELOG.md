@@ -1,4 +1,7 @@
 # 0.13.2
+- Renamed `setAllTouched` to `touch`
+
+# 0.13.2
 - Fix rules for FieldSection type of fields
 
 # 0.13.1
