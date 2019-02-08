@@ -51,7 +51,7 @@ export interface IReactiveMobxFormProps<P = any> {
 	previous: (steps: unknown) => void;
 	reset: () => void;
 	destroy: () => void;
-	setAllTouched: () => void;
+	touch: () => void;
 	submitting: boolean;
 	submitError: Error;
 	valid: boolean | void;
@@ -126,7 +126,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 
 							submit={this.form.submit}
 							reset={this.form.reset}
-							setAllTouched={this.form.setTouched}
+							touch={this.form.setTouched}
 							previous={this.form.restoreSnapshot}
 							next={this.form.takeSnapshot}
 
