@@ -1,4 +1,7 @@
-# 0.13.2
+# 0.14.1
+- [Bug Fix] ComputedControl now reacts on properties change and runs compute function. Not only on values.
+
+# 0.14.0
 - Renamed `setAllTouched` to `touch`
 
 # 0.13.2
