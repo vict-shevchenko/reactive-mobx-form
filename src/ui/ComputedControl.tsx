@@ -41,10 +41,11 @@ export class ComputedControl extends React.Component<IComputedControlProps> {
 	}
 
 	public componentDidMount() {
-		const componentOwnProps = omit(this.props, ['form']);
-
 		this.formValueUpdateUnsubscribe = reaction(
-			() => this.props.compute(this.props.form.values, componentOwnProps),
+			() => {
+				const componentOwnProps = omit(this.props, ['form']);
+				return this.props.compute(this.props.form.values, componentOwnProps);
+			},
 			newValue => { this.field.onChange(newValue); },
 			{ fireImmediately: true }
 		);
