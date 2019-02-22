@@ -16,10 +16,10 @@ export interface IReactiveMobxFormValuesProps {
 export type WithFormValuesType<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormValuesProps> & IFormStore>;
 
 // tslint:disable-next-line:max-line-length variable-name
-export function withFormValues(formName: string): <P extends IReactiveMobxFormValuesProps>(Component: React.ComponentType<P>) => WithFormValuesType<P> {
+export function withFormValues<P extends IReactiveMobxFormValuesProps>(formName: string): (Component: React.ComponentType<P>) => WithFormValuesType<P> {
 
 	// tslint:disable-next-line:variable-name
-	return <P extends IReactiveMobxFormValuesProps>(Component: React.ComponentType<P>) => {
+	return (Component: React.ComponentType<P>) => {
 		// tslint:disable-next-line:max-classes-per-file
 		@inject('formStore')
 		@observer

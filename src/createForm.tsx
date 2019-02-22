@@ -63,7 +63,7 @@ export interface IReactiveMobxFormProps<P = any> {
 export type ReactiveMobxForm<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormProps> & IFormProps>;
 
 // tslint:disable-next-line
-export function createForm(formName: string, formDefinition: IFormDefinition = {}): <P extends IReactiveMobxFormProps>(FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P> {
+export function createForm<P extends IReactiveMobxFormProps>(formName: string, formDefinition: IFormDefinition = {}): (FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P> {
 	const {
 		validator,
 		schema
@@ -73,7 +73,7 @@ export function createForm(formName: string, formDefinition: IFormDefinition = {
 	validateConfigParams(formName, [validator, schema]);
 
 	// tslint:disable-next-line:variable-name
-	return <P extends IReactiveMobxFormProps>(FormComponent: React.ComponentType<P>) => {
+	return (FormComponent: React.ComponentType<P>) => {
 		@inject('formStore')
 		@observer
 		// tslint:disable-next-line:max-line-length
