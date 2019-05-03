@@ -10,7 +10,8 @@ import { FieldSection } from '../lib/FieldSection';
 import { Form } from '../lib/Form';
 import { Control, reactiveMobxForm } from '../index';
 import { FormStore } from '../lib/Store';
-import { IFormProps, IInjectedFormProps } from '../lib/createForm';
+import { IReactiveMobxFormProps } from '../lib/createForm';
+import { withFormValues } from '../index';
 
 // tslint:disable-next-line:max-line-length
 type IMyComp = IBaseControlProps & IControlFormContext & IControlParentNameContext & IControlWithFieldContext<FieldSection> & {
@@ -79,7 +80,7 @@ const OurCompWithFieldJSX = (<OurCompWithField<IPlace>
 // tslint:disable-next-line
 
 // tslint:disable-next-line:no-empty-interface
-interface IMyForm extends IInjectedFormProps {
+interface IMyForm extends IReactiveMobxFormProps {
 
 }
 
@@ -109,7 +110,7 @@ function submitHandler(values) {
 }
 
 class MyFormApp extends React.Component {
-	render() {
+	public render() {
 		return (
 			<div>
 				<ReactiveMyForm onSubmit={submitHandler} schema={{}} formStore={new FormStore()}/>
@@ -118,14 +119,13 @@ class MyFormApp extends React.Component {
 	}
 }
 
-
-const myFunc = (a) => {
+const myFunc = a => {
 	return a + 10;
-}
+};
 
-const myFunc2= (a) => {
+const myFunc2= a => {
 	return a + 'hello';
-}
+};
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
@@ -134,42 +134,41 @@ interface IName {
 	name: string;
 }
 
-interface IMyFunc3 extends IFormProps, IName {
+interface IMyFunc3 extends IReactiveMobxFormProps, IName {
 
 }
 class MyFunc3 extends React.Component<IMyFunc3> {
 
-	render() {
+	public render() {
 		return (
 			<div>test {this.props}</div>
-		)
+		);
 	}
 }
 
 // tslint:disable-next-line:max-line-length
 // tslint:disable-next-line:max-line-length
-function someFunc(a: number) : <P extends IName>(Func: React.ComponentType<P>) => React.ComponentType<Subtract<P, IName>> {
+function someFunc(a: number): <P extends IName>(Func: React.ComponentType<P>) => React.ComponentType<Subtract<P, IName>> {
 
 	const b = a + 10;
 
 	return function<P extends IName>(Func: React.ComponentType<P>) {
 		return class Bla extends React.Component<Subtract<P, IName>> {
-			render() {
+			public render() {
 				return (
 					<Func name="dsfssd" />
 				);
 			}
 		};
-	}
+	};
 }
 
 const enhancer = someFunc(20);
 
 const MyAnotherFunction = enhancer(MyFunc3);
 
-
 class MyOtherFormApp extends React.Component {
-	render() {
+	public render() {
 		return (
 			<div>
 				<MyAnotherFunction onSubmit={submitHandler} name={} vlad={} />
@@ -182,23 +181,47 @@ class MyOtherFormApp extends React.Component {
 	}
 }
 
+///////////////  withFormValues HOC //////////////
+interface IPassedInValues {
+	phone: string;
+}
 
+class MyFormWithoutValues extends React.Component<IReactiveMobxFormProps & IPassedInValues>  {
+	constructor(props) {
+		super(props);
+	}
 
-//////////////
+	public render() {
+		// all props from IReactiveMobxFormProps are here
+		// this.props.phone is avaliable here
+		return (
+			<div>
+				<label htmlFor="">Name</label>
+				<Control name="phone" type="text" component="input" />
+			</div>
+		);
+	}
+}
+
+const FormWithValues = withFormValues<IPassedInValues, {}>('myFormWithoutValues', v => ({phone: v.phone as string}))(MyFormWithoutValues);
+
+////////////// END /////////////
+
+////////////// TS BUG With HOC Typing ///////////
 
 interface NameInterface {
   name: string;
-};
+}
 
 function withName<OriginalProps extends object>(Component: React.ComponentType<OriginalProps & NameInterface>) {
-  return function (props: OriginalProps) {
+  return function(props: OriginalProps) {
     return (
       <Component
         {...props}
         name={'John'}
       />
     );
-  }
+  };
 }
 
 const UnNamed_1: React.SFC<NameInterface> = ({ name }) => (<p>My name is {name}</p>);
@@ -224,3 +247,6 @@ type UnNamedType_2 = NameInterface & { age: number };
 const UnNamed_4: React.SFC<UnNamedType_2> = ({ name, age }) => (<p>My name is {name} and {age}</p>);
 const Named_4 = withName(UnNamed_4);
 <Named_4 age={30} /> // All OK
+
+
+///////////////////////////////////////////////////
