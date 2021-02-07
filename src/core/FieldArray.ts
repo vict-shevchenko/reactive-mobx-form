@@ -1,6 +1,6 @@
 import { observable, action, computed, IObservableArray } from 'mobx';
-import { formField } from './types';
-import { objectPath, isNumeric } from './utils';
+import { formField } from '../types';
+import { objectPath, isNumeric } from '../utils';
 
 export class FieldArray {
 	public name: string;
@@ -45,12 +45,12 @@ export class FieldArray {
 	}
 
 	@action public reset() {
-		this.subFields.forEach(subField => subField.detach());
+		this.subFields.forEach((subField) => subField.detach());
 		this.subFields.clear();
 	}
 
 	@action public setTouched() {
-		this.subFields.forEach(subField => subField.setTouched());
+		this.subFields.forEach((subField) => subField.setTouched());
 	}
 
 	@action public removeField(index: string) {
@@ -60,7 +60,7 @@ export class FieldArray {
 	public getField(index: string): formField | undefined {
 		// Avoid mobx.js:1905 [mobx.array] Attempt to read an array index (0) that is out of bounds (0).
 		// Please check length first. Out of bound indices will not be tracked by MobX
-		return (this.subFields.length > parseInt(index, 10)) ? this.subFields[index] : undefined;
+		return this.subFields.length > parseInt(index, 10) ? this.subFields[index] : undefined;
 	}
 
 	public detach() {
@@ -68,17 +68,17 @@ export class FieldArray {
 			this.attachCount = this.attachCount - 1;
 		}
 
-		this.subFields.forEach(subField => subField.detach());
+		this.subFields.forEach((subField) => subField.detach());
 	}
 
 	@computed get realSubFields(): formField[] {
 		// filter in order to avoid errors when subFields has a gap for item to be inserted
 		// tslint:disable-next-line:max-line-length
-		return this.subFields.filter(subField => subField && subField.attached);
+		return this.subFields.filter((subField) => subField && subField.attached);
 	}
 
 	@computed get value() {
-		return this.realSubFields.map(subField => subField.value);
+		return this.realSubFields.map((subField) => subField.value);
 	}
 
 	@computed get rules() {
@@ -91,6 +91,6 @@ export class FieldArray {
 	}
 
 	@computed get isDirty(): boolean {
-		return this.realSubFields.some(subField => subField.isDirty);
+		return this.realSubFields.some((subField) => subField.isDirty);
 	}
 }

@@ -2,14 +2,14 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import * as Validator from 'validatorjs';
 
-import { Form } from './Form';
+import { Form } from './core/Form';
 import {
 	IFormDefinition,
 	IFormSchema,
 	IValidatorjsConfiguration
 } from './interfaces/Form';
-import { FormStore } from './Store';
-import { FormContext } from './context';
+import { FormStore } from './react/Store';
+import { FormContext } from './react/context';
 import { omit } from './utils';
 import { submitCallback } from './types';
 

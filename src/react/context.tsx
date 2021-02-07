@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Subtract } from 'utility-types';
-import { Form } from './Form';
+import { Form } from '../core/Form';
+import { FormStore } from './Store';
 
 export interface IControlFormContext {
 	form: Form;
@@ -10,6 +11,8 @@ export interface IControlParentNameContext {
 	parentName: string;
 }
 
+// tslint:disable-next-line: variable-name
+export const FormStoreContext = React.createContext({} as FormStore);
 // tslint:disable-next-line: variable-name
 export const FormContext = React.createContext({} as Form);
 // tslint:disable-next-line: variable-name

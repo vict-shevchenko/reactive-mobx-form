@@ -2,11 +2,16 @@ import { observable, action, computed, reaction, IReactionDisposer } from 'mobx'
 import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 // tslint:disable-next-line:max-line-length
-import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, /* IFormConfiguration, */ IFormDefinition} from './interfaces/Form';
-import { formField, submitCallback } from './types';
+import {
+	IFormErrorMessages,
+	IFormAttributeNames,
+	IFormNormalizedSchema,
+	/* IFormConfiguration, */ IFormDefinition,
+} from '../interfaces/Form';
+import { formField, submitCallback } from '../types';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
-import { objectPath, normalizeSchema } from './utils';
+import { objectPath, normalizeSchema } from '../utils';
 import { FormEvent } from 'react';
 
 export class Form<V = {}> {
@@ -67,12 +72,12 @@ export class Form<V = {}> {
 		const { errorMessages, attributeNames } = validator;
 
 		Object.assign(this.formSchema, normalizeSchema(schema));
-		this.errorMessages ? Object.assign(this.errorMessages, errorMessages) : this.errorMessages = errorMessages;
-		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : this.attributeNames = attributeNames;
+		this.errorMessages ? Object.assign(this.errorMessages, errorMessages) : (this.errorMessages = errorMessages);
+		this.attributeNames ? Object.assign(this.attributeNames, attributeNames) : (this.attributeNames = attributeNames);
 	}
 
 	@computed get isDirty(): boolean {
-		return Array.from(this.fields.values()).some(field => field.isDirty);
+		return Array.from(this.fields.values()).some((field) => field.isDirty);
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
@@ -106,11 +111,11 @@ export class Form<V = {}> {
 	}
 
 	@action.bound public reset() {
-		this.fields.forEach(field => field.reset());
+		this.fields.forEach((field) => field.reset());
 	}
 
 	@action.bound public setTouched() {
-		this.fields.forEach(field => field.setTouched());
+		this.fields.forEach((field) => field.setTouched());
 	}
 
 	@action.bound public takeSnapshot() {
@@ -124,8 +129,7 @@ export class Form<V = {}> {
 
 		if (step <= 0) {
 			this.snapshots.length = 0;
-		}
-		else {
+		} else {
 			this.snapshots.splice(step, Math.abs(_steps));
 		}
 	}
@@ -149,15 +153,17 @@ export class Form<V = {}> {
 
 		this.submitting = true;
 
-		return Promise.all([this.externalSubmit(this.values, ...params)])
-			.then(result => {
+		return Promise.all([this.externalSubmit(this.values, ...params)]).then(
+			(result) => {
 				this.submitting = false;
 				return result[0];
-			}, error => {
+			},
+			(error) => {
 				this.submitting = false;
 				this.submitError = error;
 				return Promise.reject(this.submitError);
-			});
+			}
+		);
 		// todo: move into finally when it is part of standard
 	}
 
@@ -170,7 +176,7 @@ export class Form<V = {}> {
 		this.fields.delete(fieldName);
 	}
 
-	public getField(fieldName: string): (undefined | formField) {
+	public getField(fieldName: string): undefined | formField {
 		return this.fields.get(fieldName);
 	}
 
@@ -205,8 +211,7 @@ export class Form<V = {}> {
 			if (!field) {
 				field = creationFn();
 				(fieldParent as Form | FieldArray | FieldSection).addField(field as formField);
-			}
-			else {
+			} else {
 				field.attachCount++;
 			}
 		}
@@ -214,8 +219,10 @@ export class Form<V = {}> {
 		return field as formField;
 	}
 
-	public unregisterField(field: formField) { // goes from parent to child ControlSection -> Control
-		if (field.attached) { // subfield may be already detached when parent detaches
+	public unregisterField(field: formField) {
+		// goes from parent to child ControlSection -> Control
+		if (field.attached) {
+			// subfield may be already detached when parent detaches
 
 			field.detach(); // to trigger disappear from rules and not cause validation error
 
@@ -245,14 +252,18 @@ export class Form<V = {}> {
 		try {
 			// f is Form initially, and formField after, can`t handle type error
 			return path.reduce((f: any, node) => (f as Form | FieldArray | FieldSection).getField(node), this);
-		}
-		catch (e) {
-			console.error(`Field can't be selected. Check name hierarchy. Probably some field on the chain does not exist`, e); // tslint:disable-line
+		} catch (e) {
+			console.error(
+				`Field can't be selected. Check name hierarchy. Probably some field on the chain does not exist`,
+				e
+			); // tslint:disable-line
 		}
 	}
 
 	private getFieldParent(path: string[]): Form | FieldArray | FieldSection | undefined {
 		const pathToParent = path.slice(0, path.length - 1);
-		return path.length === 1 ? this : (this.findFieldInHierarchy(pathToParent) as FieldArray | FieldSection | undefined); // tslint:disable-line
+		return path.length === 1
+			? this
+			: (this.findFieldInHierarchy(pathToParent) as FieldArray | FieldSection | undefined); // tslint:disable-line
 	}
 }

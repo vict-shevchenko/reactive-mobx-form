@@ -2,11 +2,11 @@ import * as React from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import ProxyFieldArray from '../ProxyFieldArray';
-import { FieldArray } from '../FieldArray';
+import { FieldArray } from '../core/FieldArray';
 import { omit, verifyRequiredProps } from '../utils';
 import {BaseControl, IBaseControlProps} from './BaseControl';
 // tslint:disable-next-line:max-line-length
-import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext } from '../context';
+import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext } from '../react/context';
 import { constructName, withField, IControlWithFieldContext } from './WithFieldHoc';
 
 // tslint:disable-next-line:max-line-length

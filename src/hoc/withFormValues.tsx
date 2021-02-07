@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Form } from '../Form';
+import { Form } from '../core/Form';
 import { omit } from '../utils';
 import { IFormStore } from '../createForm';
 

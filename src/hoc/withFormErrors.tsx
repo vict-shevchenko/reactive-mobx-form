@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Errors } from 'validatorjs';
-import { Form } from '../Form';
+import { Form } from '../core/Form';
 import { omit } from '../utils';
 import { IReactiveMobxFormProps, IFormStore } from '../createForm';
 

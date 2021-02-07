@@ -1,6 +1,6 @@
 import { observable, action, computed } from 'mobx';
-import { formField } from './types';
-import { objectPath } from './utils';
+import { formField } from '../types';
+import { objectPath } from '../utils';
 
 export class FieldSection {
 	public name: string;
@@ -21,7 +21,6 @@ export class FieldSection {
 	}
 
 	@action public addField(field: formField) {
-
 		// todo: looks like this is not a good solution to copy this part of code fron FieldArray
 		const fieldPath = objectPath(field.name);
 		const lastPathNode = fieldPath[fieldPath.length - 1];
@@ -31,11 +30,11 @@ export class FieldSection {
 
 	// todo: probably we dont need values()
 	@action public reset() {
-		this.subFields.forEach(subField => subField.reset());
+		this.subFields.forEach((subField) => subField.reset());
 	}
 
 	@action public setTouched() {
-		this.subFields.forEach(subField => subField.setTouched());
+		this.subFields.forEach((subField) => subField.setTouched());
 	}
 
 	@action public removeField(index: string) {
@@ -50,7 +49,7 @@ export class FieldSection {
 		if (this.attached) {
 			this.attachCount = this.attachCount - 1;
 		}
-		this.subFields.forEach(subField => subField.detach());
+		this.subFields.forEach((subField) => subField.detach());
 	}
 
 	@computed get value() {
@@ -77,6 +76,6 @@ export class FieldSection {
 
 	@computed get isDirty() {
 		// tslint:disable-next-line: max-line-length
-		return Array.from(this.subFields.values()).some(subField => subField.isDirty);
+		return Array.from(this.subFields.values()).some((subField) => subField.isDirty);
 	}
 }

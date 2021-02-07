@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Field } from '../Field';
+import { Field } from '../core/Field';
 
 import { fieldValue } from '../interfaces/Form';
 import { omit, verifyRequiredProps } from '../utils';
-import { withForm, IControlFormContext } from '../context';
+import { withForm, IControlFormContext } from '../react/context';
 import { IReactionDisposer, reaction } from 'mobx';
 import { ControlWithContext as Control } from './Control';
 import { IBaseControlProps } from './BaseControl';

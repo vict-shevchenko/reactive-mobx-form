@@ -1,7 +1,6 @@
-
-import { Field } from './Field';
-import { FieldArray } from './FieldArray';
-import { FieldSection } from './FieldSection';
+import { Field } from './core/Field';
+import { FieldArray } from './core/FieldArray';
+import { FieldSection } from './core/FieldSection';
 
 export type formField = Field | FieldArray | FieldSection;
 

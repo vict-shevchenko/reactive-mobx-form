@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
-import { Form } from './Form';
-import { IFormDefinition, IFormSchema } from './interfaces/Form';
-import { submitCallback } from './types';
+import { Form } from '../core/Form';
+import { IFormDefinition, IFormSchema } from '../interfaces/Form';
+import { submitCallback } from '../types';
 
 export class FormStore {
 	@observable public forms: Map<string, Form<any>> = observable.map();
@@ -12,12 +12,11 @@ export class FormStore {
 		if (!this.hasForm(name)) {
 			form = new Form<V>(submit, options);
 			this.forms.set(name, form);
-		}
-		else {
+		} else {
 			form = this.getForm(name) as Form<V>;
 			if (form.attached) {
 				// attempt to double register form
-				throw (new Error(`Form with name "${name}" already exist. Use "withFormData" HOC to extend it`));
+				throw new Error(`Form with name "${name}" already exist. Use "withFormData" HOC to extend it`);
 			}
 		}
 
@@ -31,10 +30,11 @@ export class FormStore {
 			const form = this.getForm(name) as Form;
 			form.extendConfiguration(options);
 			return form;
-		}
-		else {
+		} else {
 			// tslint:disable-next-line:max-line-length
-			throw (new Error(`Form with name "${name}" does not exist so can not be extended. Use "reactiveMobxForm" HOC to create it firstly`));
+			throw new Error(
+				`Form with name "${name}" does not exist so can not be extended. Use "reactiveMobxForm" HOC to create it firstly`
+			);
 		}
 	}
 

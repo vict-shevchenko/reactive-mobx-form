@@ -1,5 +1,5 @@
 import { observable, action, computed, autorun, IReactionDisposer } from 'mobx';
-import { fieldValue, INormalizedFieldDefinition } from './interfaces/Form';
+import { fieldValue, INormalizedFieldDefinition } from '../interfaces/Form';
 import { Form } from './Form';
 
 export class Field {
@@ -7,11 +7,11 @@ export class Field {
 
 	/* tslint:disable: typedef-whitespace */
 	@observable public attachCount: number = 1;
-	@observable public name       : string; // name is updated on FieldArray remove item
-	@observable public value      : fieldValue;
-	@observable public errors     : string[] = [];
-	@observable public isFocused  : boolean  = false;
-	@observable public isTouched  : boolean  = false;
+	@observable public name: string; // name is updated on FieldArray remove item
+	@observable public value: fieldValue;
+	@observable public errors: string[] = [];
+	@observable public isFocused: boolean = false;
+	@observable public isTouched: boolean = false;
 
 	@observable private _rules: string; // rules are updated on FieldArray remove item
 	/* tslint:enable: typedef-whitespace */
@@ -43,14 +43,14 @@ export class Field {
 		return this._rules ? { [this.name]: this._rules } : {};
 	}
 
-	@action public onFocus(): void  {
+	@action public onFocus(): void {
 		this.isFocused = true;
 		if (!this.isTouched) {
 			this.isTouched = true;
 		}
 	}
 
-	@action public onBlur(): void  {
+	@action public onBlur(): void {
 		this.isFocused = false;
 	}
 
@@ -58,7 +58,7 @@ export class Field {
 		this.value = value;
 	}
 
-	@action public reset(): void  {
+	@action public reset(): void {
 		this.value = this.initialValue;
 		this.isTouched = false;
 	}
@@ -67,7 +67,7 @@ export class Field {
 		this.isTouched = true;
 	}
 
-	@action public detach(): void  {
+	@action public detach(): void {
 		if (this.attached) {
 			this.attachCount = this.attachCount - 1;
 		}
