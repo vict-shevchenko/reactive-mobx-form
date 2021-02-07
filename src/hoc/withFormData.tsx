@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Form } from '../Form';
+import { Form } from '../core/Form';
 import { omit } from '../utils';
 import { IReactiveMobxFormProps, IFormExtendProps } from '../createForm';
-import { FormStore } from '../Store';
-import { FormContext } from '../context';
+import { FormStore } from '../react/Store';
+import { FormContext } from '../react/context';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
