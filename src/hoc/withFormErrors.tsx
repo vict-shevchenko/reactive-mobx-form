@@ -14,15 +14,16 @@ export type IReactiveMobxFormErrorsProps<S = any> = Pick<IReactiveMobxFormProps<
 // tslint:disable-next-line:max-line-length
 export type WithFormErrorsType<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormErrorsProps> & IFormStore>;
 
-// tslint:disable-next-line:max-line-length variable-name
-export function withFormErrors(formName: string): <P extends IReactiveMobxFormErrorsProps>(Component: React.ComponentType<P>) => WithFormErrorsType<P> {
-
+export function withFormErrors(
+	formName: string
+	// tslint:disable-next-line:max-line-length variable-name
+): <P extends IReactiveMobxFormErrorsProps>(Component: React.ComponentType<P>) => WithFormErrorsType<P> {
 	// tslint:disable-next-line:variable-name
 	return <P extends IReactiveMobxFormErrorsProps>(Component: React.ComponentType<P>) => {
 		// tslint:disable-next-line:max-classes-per-file
 		@inject('formStore')
 		@observer
-		class WithFormErrors extends React.Component<(Subtract<P, IReactiveMobxFormErrorsProps> & IFormStore)> {
+		class WithFormErrors extends React.Component<Subtract<P, IReactiveMobxFormErrorsProps> & IFormStore> {
 			private form: Form | undefined;
 
 			constructor(props: P & IFormStore) {
@@ -31,18 +32,20 @@ export function withFormErrors(formName: string): <P extends IReactiveMobxFormEr
 				this.form = props.formStore!.getForm(formName);
 
 				if (!this.form) {
-					// tslint:disable-next-line:max-line-length
-					throw(new Error(`Form '${formName}' does not exist in store. Please check call to 'withFormErrors(${formName})(${Component.name})'`));
+					throw new Error(
+						// tslint:disable-next-line:max-line-length
+						`Form '${formName}' does not exist in store. Please check call to 'withFormErrors(${formName})(${Component.name})'`
+					);
 				}
 			}
 
-			public render() {
+			render() {
 				return (
-						<Component
-							submitError={this.form!.submitError}
-							errors={this.form!.errors}
-							{...omit(this.props, ['formStore'])}
-						/>
+					<Component
+						submitError={this.form!.submitError}
+						errors={this.form!.errors}
+						{...(omit(this.props, ['formStore']) as P)}
+					/>
 				);
 			}
 		}

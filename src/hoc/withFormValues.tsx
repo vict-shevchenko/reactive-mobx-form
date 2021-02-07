@@ -3,31 +3,30 @@ import { inject, observer } from 'mobx-react';
 import { Form } from '../Form';
 import { omit } from '../utils';
 import { IFormStore } from '../createForm';
-import { IFormValues } from '../interfaces/Form';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;
 
-export interface IReactiveMobxFormValuesProps {
-	values?: IFormValues;
+export interface IReactiveMobxFormValuesProps<V> {
+	values?: V;
 }
 
 // tslint:disable-next-line:max-line-length
-export type WithFormValuesType<P = {}, T = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormValuesProps> & T & IFormStore>;
+export type WithFormValuesType<V, T, P> = React.ComponentType<Subtract<P, IReactiveMobxFormValuesProps<V>> & T & IFormStore>;
 
 // tslint:disable-next-line:max-line-length
-export type mapFormValuesToPropsType<T> = (values: IFormValues) => T;
+export type mapFormValuesToPropsType<V, T> = (values: V) => T;
 
 // tslint:disable-next-line:max-line-length variable-name
-export function withFormValues<T, P extends IReactiveMobxFormValuesProps>(formName: string, mapValues?: mapFormValuesToPropsType<T>): (Component: React.ComponentType<P & T>) => WithFormValuesType<P, T> {
+export function withFormValues<V, T, P extends IReactiveMobxFormValuesProps<V>>(formName: string, mapValues?: mapFormValuesToPropsType<V, T>): (Component: React.ComponentType<P>) => WithFormValuesType<V, T, P> {
 
 	// tslint:disable-next-line:variable-name
-	return (Component: React.ComponentType<P & T>) => {
+	return (Component: React.ComponentType<P>) => {
 		// tslint:disable-next-line:max-classes-per-file
 		@inject('formStore')
 		@observer
-		class WithFormValues extends React.Component<(Subtract<P, IReactiveMobxFormValuesProps> & T & IFormStore)> {
-			private form: Form | undefined;
+		class WithFormValues extends React.Component<(Subtract<P, IReactiveMobxFormValuesProps<V>> & T & IFormStore)> {
+			private form: Form<V> | undefined;
 
 			constructor(props: P & T & IFormStore) {
 				super(props);
@@ -41,13 +40,13 @@ export function withFormValues<T, P extends IReactiveMobxFormValuesProps>(formNa
 				}
 			}
 
-			public render() {
+			render() {
 				const formValuesToPass = mapValues ? mapValues(this.form!.values) : {values: this.form!.values};
 
 				return (
 						<Component
 							{...formValuesToPass}
-							{...omit(this.props, ['formStore'])}
+							{...omit(this.props, ['formStore']) as P}
 						/>
 				);
 			}

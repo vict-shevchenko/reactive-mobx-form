@@ -2,21 +2,21 @@ import { observable, action, computed, reaction, IReactionDisposer } from 'mobx'
 import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 // tslint:disable-next-line:max-line-length
-import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, /* IFormConfiguration, */ IFormDefinition, IFormValues } from './interfaces/Form';
+import { IFormErrorMessages, IFormAttributeNames, IFormNormalizedSchema, /* IFormConfiguration, */ IFormDefinition} from './interfaces/Form';
 import { formField, submitCallback } from './types';
 import { FieldArray } from './FieldArray';
 import { FieldSection } from './FieldSection';
 import { objectPath, normalizeSchema } from './utils';
 import { FormEvent } from 'react';
 
-export class Form {
+export class Form<V = {}> {
 	public formSchema: IFormNormalizedSchema = {};
 	public attached: boolean = false;
 
 	private errorMessages: IFormErrorMessages | undefined = undefined;
 	private attributeNames: IFormAttributeNames | undefined = undefined;
 	// private config: IFormConfiguration;
-	private externalSubmit: submitCallback;
+	private externalSubmit: submitCallback<V>;
 	private validationReactionDisposer: IReactionDisposer;
 
 	@observable public fields = new Map<string, formField>();
@@ -27,10 +27,10 @@ export class Form {
 	@observable public validating: boolean = false;
 	@observable public submitError: any;
 
-	@observable public snapshots: IFormValues[] = [];
+	@observable public snapshots: V[] = [];
 	@computed private get snapshot() {
 		if (!this.snapshots.length) {
-			return {} as IFormValues;
+			return {} as V;
 		}
 
 		return this.snapshots[this.snapshots.length - 1];
@@ -53,7 +53,7 @@ export class Form {
 	error
 	*/
 
-	constructor(submit: submitCallback, options: IFormDefinition) {
+	constructor(submit: submitCallback<V>, options: IFormDefinition) {
 		// tslint:disable-next-line:no-console
 		this.externalSubmit = submit;
 
@@ -76,12 +76,12 @@ export class Form {
 	}
 
 	// todo: on for initialize values are recomputed -> this cause validation to recompute, may be inefficient
-	@computed get validation(): IValidator<IFormValues> {
+	@computed get validation(): IValidator<V> {
 		return new Validator(this.values, this.rules, this.errorMessages);
 	}
 
 	// todo: values are recomputed each time field is registered, think if this is good behavior for form initialization
-	@computed get values() {
+	@computed get values(): V {
 		// return this.fields.entries().map(entry =>
 		// ({ [entry[0]]: entry[1].value })).reduce((val, entry) => Object.assign(val, entry), {});
 		return Array.from(this.fields.entries()).reduce((values, [name, field]) => {

@@ -4,17 +4,17 @@ import { IFormDefinition, IFormSchema } from './interfaces/Form';
 import { submitCallback } from './types';
 
 export class FormStore {
-	@observable public forms: Map<string, Form> = observable.map();
+	@observable public forms: Map<string, Form<any>> = observable.map();
 
-	public registerForm(name: string, submit: submitCallback, options: IFormDefinition) {
-		let form: Form;
+	public registerForm<V>(name: string, submit: submitCallback<V>, options: IFormDefinition) {
+		let form: Form<V>;
 
 		if (!this.hasForm(name)) {
-			form = new Form(submit, options);
+			form = new Form<V>(submit, options);
 			this.forms.set(name, form);
 		}
 		else {
-			form = this.getForm(name) as Form;
+			form = this.getForm(name) as Form<V>;
 			if (form.attached) {
 				// attempt to double register form
 				throw (new Error(`Form with name "${name}" already exist. Use "withFormData" HOC to extend it`));

@@ -40,13 +40,13 @@ export interface IFormExtendProps extends IFormStore {
 	schema?: IFormSchema;
 }
 
-export interface IFormProps extends IFormExtendProps {
-	onSubmit: submitCallback;
+export interface IFormProps<V> extends IFormExtendProps {
+	onSubmit: submitCallback<V>;
 	keepState?: boolean;
 }
 
 export interface IReactiveMobxFormProps<P = any> {
-	submit: (...rest: Array<unknown>) => Promise<P>;
+	submit: (values, ...rest: Array<unknown>) => Promise<P>;
 	next: () => void;
 	previous: (steps: unknown) => void;
 	reset: () => void;
@@ -60,10 +60,10 @@ export interface IReactiveMobxFormProps<P = any> {
 }
 
 // tslint:disable-next-line:max-line-length
-export type ReactiveMobxForm<P = {}> = React.ComponentType<Subtract<P, IReactiveMobxFormProps> & IFormProps>;
+export type ReactiveMobxForm<P, V> = React.ComponentType<Subtract<P, IReactiveMobxFormProps<V>> & IFormProps<V>>;
 
 // tslint:disable-next-line
-export function createForm<P extends IReactiveMobxFormProps>(formName: string, formDefinition: IFormDefinition = {}): (FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P> {
+export function createForm<P, V>(formName: string, formDefinition: IFormDefinition = {}): (FormComponent: React.ComponentType<P>) => ReactiveMobxForm<P, V> {
 	const {
 		validator,
 		schema
@@ -77,13 +77,13 @@ export function createForm<P extends IReactiveMobxFormProps>(formName: string, f
 		@inject('formStore')
 		@observer
 		// tslint:disable-next-line:max-line-length
-		class FormUI extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormProps)> {
+		class FormUI extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormProps<V>)> {
 			/* 			public static defaultProps: any = {
 							schema: {}
 						}; */
-			public form: Form;
+			form: Form<V>;
 
-			constructor(props: P & IFormProps) {
+			constructor(props: P & IFormProps<V>) {
 				super(props);
 
 				if (props.schema && !isConfigParamValid(props.schema)) {
@@ -98,10 +98,10 @@ export function createForm<P extends IReactiveMobxFormProps>(formName: string, f
 
 				// this will throw if form already exist
 				// tslint:disable-next-line:max-line-length
-				this.form = props.formStore!.registerForm(formName, props.onSubmit, { schema: fullSchema, validator });
+				this.form = props.formStore!.registerForm<V>(formName, props.onSubmit, { schema: fullSchema, validator });
 			}
 
-			public componentWillUnmount() {
+			componentWillUnmount() {
 				if (this.props.keepState) {
 					(this.props.formStore as FormStore).detachForm(formName);
 				} else {
@@ -109,12 +109,12 @@ export function createForm<P extends IReactiveMobxFormProps>(formName: string, f
 				}
 			}
 
-			public destroyForm() {
+			destroyForm() {
 				// to avoid this.props.formStore is possibly undefined
 				(this.props.formStore as FormStore).unRegisterForm(formName);
 			}
 
-			public render() {
+			render() {
 				return (
 					<FormContext.Provider value={this.form}>
 						<FormComponent
@@ -131,7 +131,7 @@ export function createForm<P extends IReactiveMobxFormProps>(formName: string, f
 							next={this.form.takeSnapshot}
 
 							destroy={this.destroyForm.bind(this, false)}
-							{...omit(this.props, ['schema', 'onSubmit', 'formStore'])}
+							{...omit(this.props, ['schema', 'onSubmit', 'formStore', 'keepState']) as P}
 						/>
 					</FormContext.Provider>
 				);

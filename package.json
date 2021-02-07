@@ -26,6 +26,10 @@
   },
   "homepage": "https://github.com/vict-shevchenko/reactive-mobx-form#readme",
   "dependencies": {
+    "mobx": "^5.9.4",
+    "mobx-react": "^5.4.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "validatorjs": "^3.15.1"
   },
   "peerDependencies": {
@@ -36,15 +40,16 @@
   "devDependencies": {
     "@types/enzyme": "^3.1.15",
     "@types/jest": "^23.3.9",
-    "@types/react": "^16.7.7",
-    "@types/react-dom": "^16.0.10",
+    "@types/react": "^16.8.15",
+    "@types/react-dom": "^16.8.4",
     "@types/validatorjs": "^3.7.1",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
     "jest": "^23.6.0",
     "ts-jest": "^23.10.5",
     "tslint": "^5.11.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.4.5",
+    "utility-types": "^3.7.0"
   },
   "jest": {
     "verbose": true,

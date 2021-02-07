@@ -28,10 +28,6 @@ export interface IFormDefinition {
 	schema?: IFormSchema;
 }
 
-export interface IFormValues {
-	[propType: string]: fieldValue;
-}
-
 export interface IValidatorjsConfiguration {
 	language?: string;
 	setAttributeFormatter?: (attribute: string) => string;

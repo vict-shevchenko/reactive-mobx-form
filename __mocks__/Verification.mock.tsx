@@ -29,7 +29,7 @@ class MyComp<P> extends React.Component<P & IMyComp, any> {
 		const a = props;
 	}
 
-	public render() {
+	render() {
 		return (
 			<div>
 				<div>{this.props.form}</div>
@@ -45,7 +45,7 @@ const OurComp = <MyComp<IPlace>
 	name="test"
 	component="sfds"
 	form={new Form(v => v, {})}
-  parentName="blaa"
+	parentName="blaa"
 	field={new FieldSection('test')}
 	place="Kyiv"
 />;
@@ -80,26 +80,29 @@ const OurCompWithFieldJSX = (<OurCompWithField<IPlace>
 // tslint:disable-next-line
 
 // tslint:disable-next-line:no-empty-interface
-interface IMyForm extends IReactiveMobxFormProps {
-
+interface MyFormProps {
+	myAdditionalProp: string;
+}
+interface MyFormValues {
+	firstName: string;
 }
 
-class MyForm extends React.Component<IMyForm> {
+class MyForm extends React.Component<MyFormProps & IReactiveMobxFormProps> {
 	constructor(props) {
 		super(props);
 	}
 
-	public render() {
+	render() {
 		return (
 			<div>
 				<label htmlFor="">Name</label>
-				<Control name="firstName" type="text" component="input" />
+				<Control<IPlace> name="firstName" type="text" component="input" place="retw" />
 			</div>
 		);
 	}
 }
 
-const ReactiveMyForm = reactiveMobxForm('myform')(MyForm);
+const ReactiveMyForm = reactiveMobxForm<MyFormProps, MyFormValues>('myform')(MyForm);
 
 interface IAdditionalFormProps {
 	myAdditionalProp: string;
@@ -110,10 +113,16 @@ function submitHandler(values) {
 }
 
 class MyFormApp extends React.Component {
-	public render() {
+	render() {
 		return (
 			<div>
-				<ReactiveMyForm onSubmit={submitHandler} schema={{}} formStore={new FormStore()}/>
+				<ReactiveMyForm
+					onSubmit={submitHandler}
+					schema={{}}
+					formStore={new FormStore()}
+					keepState={true}
+					myAdditionalProp="test"
+				/>
 			</div>
 		);
 	}
@@ -123,7 +132,7 @@ const myFunc = a => {
 	return a + 10;
 };
 
-const myFunc2= a => {
+const myFunc2 = a => {
 	return a + 'hello';
 };
 
@@ -152,7 +161,7 @@ function someFunc(a: number): <P extends IName>(Func: React.ComponentType<P>) =>
 
 	const b = a + 10;
 
-	return function<P extends IName>(Func: React.ComponentType<P>) {
+	return function <P extends IName>(Func: React.ComponentType<P>) {
 		return class Bla extends React.Component<Subtract<P, IName>> {
 			public render() {
 				return (
@@ -203,25 +212,25 @@ class MyFormWithoutValues extends React.Component<IReactiveMobxFormProps & IPass
 	}
 }
 
-const FormWithValues = withFormValues<IPassedInValues, {}>('myFormWithoutValues', v => ({phone: v.phone as string}))(MyFormWithoutValues);
+const FormWithValues = withFormValues<IPassedInValues, {}>('myFormWithoutValues', v => ({ phone: v.phone as string }))(MyFormWithoutValues);
 
 ////////////// END /////////////
 
 ////////////// TS BUG With HOC Typing ///////////
 
 interface NameInterface {
-  name: string;
+	name: string;
 }
 
 function withName<OriginalProps extends object>(Component: React.ComponentType<OriginalProps & NameInterface>) {
-  return function(props: OriginalProps) {
-    return (
-      <Component
-        {...props}
-        name={'John'}
-      />
-    );
-  };
+	return function (props: OriginalProps) {
+		return (
+			<Component
+				{...props}
+				name={'John'}
+			/>
+		);
+	};
 }
 
 const UnNamed_1: React.SFC<NameInterface> = ({ name }) => (<p>My name is {name}</p>);
@@ -230,7 +239,7 @@ const Named_1 = withName(UnNamed_1);
 
 
 interface UnNamedPropsInterface extends NameInterface {
-  age: number;
+	age: number;
 }
 const UnNamed_2: React.SFC<UnNamedPropsInterface> = ({ name, age }) => (<p>My name is {name} and {age}</p>);
 const Named_2 = withName(UnNamed_2);
