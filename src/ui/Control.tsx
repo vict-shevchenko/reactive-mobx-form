@@ -5,7 +5,7 @@ import { Field } from '../core/Field';
 import { INormalizedFieldDefinition } from '../interfaces/Form';
 import { omit, verifyRequiredProps } from '../utils';
 import { IBaseControlProps, BaseControl } from './BaseControl';
-import { withForm, withParentName, IControlFormContext, IControlParentNameContext } from '../react/context';
+import { withForm, withParentName, IControlFormContext, IControlParentNameContext } from '../react/Context';
 import { withField, constructName, IControlWithFieldContext } from './WithFieldHoc';
 import { IReactionDisposer } from 'mobx';
 

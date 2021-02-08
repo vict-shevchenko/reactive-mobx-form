@@ -6,7 +6,7 @@ import { FieldArray } from '../core/FieldArray';
 import { omit, verifyRequiredProps } from '../utils';
 import {BaseControl, IBaseControlProps} from './BaseControl';
 // tslint:disable-next-line:max-line-length
-import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext } from '../react/context';
+import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext } from '../react/Context';
 import { constructName, withField, IControlWithFieldContext } from './WithFieldHoc';
 
 // tslint:disable-next-line:max-line-length

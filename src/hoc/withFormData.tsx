@@ -4,7 +4,7 @@ import { Form } from '../core/Form';
 import { omit } from '../utils';
 import { IReactiveMobxFormProps, IFormExtendProps } from '../createForm';
 import { FormStore } from '../react/Store';
-import { FormContext } from '../react/context';
+import { FormContext } from '../react/Context';
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type Subtract<T, K> = Omit<T, keyof K>;

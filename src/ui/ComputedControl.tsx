@@ -4,7 +4,7 @@ import { Field } from '../core/Field';
 
 import { fieldValue } from '../interfaces/Form';
 import { omit, verifyRequiredProps } from '../utils';
-import { withForm, IControlFormContext } from '../react/context';
+import { withForm, IControlFormContext } from '../react/Context';
 import { IReactionDisposer, reaction } from 'mobx';
 import { ControlWithContext as Control } from './Control';
 import { IBaseControlProps } from './BaseControl';

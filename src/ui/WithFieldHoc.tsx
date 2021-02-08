@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subtract } from 'utility-types';
 import { formField } from '../types';
-import { IControlFormContext, IControlParentNameContext } from '../react/context';
+import { IControlFormContext, IControlParentNameContext } from '../react/Context';
 import { IBaseControlProps } from './BaseControl';
 
 export interface IControlWithFieldContext<F> {

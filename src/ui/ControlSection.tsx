@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { FieldSection } from '../core/FieldSection';
 import { omit, verifyRequiredProps } from '../utils';
 import {BaseControl, IBaseControlProps} from './BaseControl';
-import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext} from '../react/context';
+import { ParentNameContext, withParentName, withForm, IControlFormContext, IControlParentNameContext} from '../react/Context';
 import { constructName, withField, IControlWithFieldContext } from './WithFieldHoc';
 
 // tslint:disable-next-line:max-line-length

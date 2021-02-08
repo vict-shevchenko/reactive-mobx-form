@@ -9,7 +9,7 @@ import {
 	IValidatorjsConfiguration
 } from './interfaces/Form';
 import { FormStore } from './react/Store';
-import { FormContext } from './react/context';
+import { FormContext } from './react/Context';
 import { omit } from './utils';
 import { submitCallback } from './types';
 
