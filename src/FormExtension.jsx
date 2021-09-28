@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { reactiveMobxForm, Control } from "reactive-mobx-form";
 
 function FormExtension() {
