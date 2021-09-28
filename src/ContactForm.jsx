@@ -1,21 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { observer, inject } from 'mobx-react';
-import {reactiveMobxForm, Control, ControlArray, ControlSection, ComputedControl} from 'reactive-mobx-form';
+import {reactiveMobxForm, Control, ControlArray, ControlSection} from 'reactive-mobx-form';
 
-const RenderField = ({input, meta: {dirty, valid, errors}, label, placeholder, type}) => (
-	<div style={{backgroundColor: (valid ? 'lightgreen' : 'pink')}}>
-		<label>{label}</label>
-		<div>
-			<input {...input} placeholder={placeholder} type={type}/>
-		</div>
-		{dirty ? (valid ? 'valid' : errors[0]) : ''}
-	</div>
-);
 
-const Location = (props) => (
+const Location = () => (
 	<ControlSection name="address" component={Address} />
 );
-
 
 const Address = inject('appState')(observer(({appState}) =>
 	<div>
@@ -71,30 +61,6 @@ const Hobbies = ({fields}) => (
 	</div>
 );
 
-/* class Tags extends React.Component {
-	constructor(props) {
-		super(props);
-
-		console.log('Tags.constructor');
-	}
-
-	componentWillUnmount() {
-		console.log('Tags.componentWillUnmount')
-	}
-
-	render() {
-		console.log('Tags.render')
-		return (
-			<div>
-				<h1>Tags</h1>
-				<Control name={0} component="input" type="text" />
-			</div>
-		)
-	}
-} */
-
-const RenderTags = (p) => <Tags {...p} />
-
 @inject('appState')
 @observer
 class ContactForm extends React.Component {
@@ -105,98 +71,23 @@ class ContactForm extends React.Component {
 	}
 
 	render() {
-		const { submit, reset, submitting, submitError, valid, dirty, paramToForm } = this.props;
+		const { reset, submitting, submitError, valid, dirty } = this.props;
 		return (
 			<form onSubmit={this.myCustomSubmit.bind(this)}>
-			{/* 	<div>
-					<label htmlFor="firstName">First Name</label>
-					<Control name="firstName" component={RenderField} type="text" alt="some text"  label="FN"/>
-				</div>
-				<div>
-					<label htmlFor="lastName">Last Name</label>
-					<Control name="lastName" component={RenderField} type="text" label="LN"/>
-				</div>
-			 <div>
-					<label htmlFor="photo">Photo</label>
-					<Control name="photo" component="input" type="file"/>
-				</div>
-				<div>
-					<label htmlFor="nickName">Nick Name</label>
-					<Control name="nickName" component="input" type="text"/>
-				</div>
-				<div>
-					<label htmlFor="age">Age</label>
-					<Control name="age" component={RenderField} type="number"/>
-				</div> 
-				<div>
-					<label htmlFor="email">Email</label>
-					<Control name="email" component={RenderField} type="email" label="Email"/>
-				</div>
-				<div>
-					<label htmlFor="acceptTerms">Accept terms</label>
-					<Control name="acceptTerms" component="input" type="checkbox"/>
-				</div> 
-				<div>
-					<label htmlFor="Faivorite film">Favourite film</label>
-					<Control name="favoriteFilm" component="select">
-						<option/>
-						<option value="terminator">Terminator</option>
-						<option value="dieHard">Die Hard</option>
-						<option value="Robocop">Robocop</option>
-					</Control>
-				</div> */}
-			{/* 	<div>
-					<label>Sex</label>
-					<div>
-						<label><Control name="sex" component="input" type="radio" value="male"/> Male</label>
-						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
-					</div>
-				</div> */}
 			<ControlArray name="persons" component={Persons} />
-		{/* 	<div>
-				<h1>Paramter to Form</h1>
-				{paramToForm}
-			</div> */}
 				<hr />
-
 				<ControlSection name="location" component={Location} />
-
-				{/* <div>
-					<label>Person Age</label>
-					<div>
-						<Control name="age" component="input" type="text" rules={this.props.appState.simpleRules ? 'required' : 'required|numeric|between:10,30'}/>
-
-						<button type="button" onClick={() => this.props.appState.simpleRules = !this.props.appState.simpleRules}> Change rules</button>
-					</div>
-				</div> */}
-
-				{/* <div>
-					<label>Sex</label>
-					<div>
-						<label><Control name="sex" component="input" type="radio" value="male"/> Male</label>
-						<label><Control name="sex" component="input" type="radio" value="female"/> Female</label>
-					</div>
-				</div> */}
-
 				<div>
 					<label htmlFor="nope">Age</label>
 					<div>
 						<Control name="age" type="number" component="input" />
 					</div>
 				</div>
-
 				<div>
 					<label htmlFor="acceptTerms">Accept terms</label>
 					<Control name="acceptTerms" component="input" type="checkbox" className="my-checkbox-class"/>
 				</div>
-
-		{/* 		<div>
-					<label htmlFor="acceptTerms">Conclusion</label>
-					<ComputedControl name="conclusion" type="text" component="input" compute={(values) => values.age > 30 ? 'too Old' : 'to Young'}/>
-				</div> */}
-
 				<hr/>
-
 				Form Dirty --- {`${dirty}`} <br/>
 				Form Valid - - {`${valid}`} <br/>
 				Submit Error  - - {`${JSON.stringify(submitError)}`} <br/>
