@@ -1,10 +1,14 @@
-import { observable } from 'mobx';
+import { makeObservable, observable } from 'mobx';
 import { Form } from './Form';
 import { IFormDefinition, IFormSchema } from './interfaces/Form';
 import { submitCallback } from './types';
 
 export class FormStore {
 	@observable public forms: Map<string, Form> = observable.map();
+
+	constructor() {
+		makeObservable(this);
+	}
 
 	public registerForm(name: string, submit: submitCallback, options: IFormDefinition) {
 		let form: Form;

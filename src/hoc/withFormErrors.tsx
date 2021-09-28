@@ -41,7 +41,7 @@ export function withFormErrors(formName: string): <P extends IReactiveMobxFormEr
 						<Component
 							submitError={this.form!.submitError}
 							errors={this.form!.errors}
-							{...omit(this.props, ['formStore'])}
+							{...omit(this.props, ['formStore']) as any}
 						/>
 				);
 			}

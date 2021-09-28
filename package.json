@@ -1,6 +1,6 @@
 {
   "name": "reactive-mobx-form",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "Reactive forms for React running on MobX",
   "main": "index.js",
   "types": "index.d.ts",
@@ -26,25 +26,25 @@
   },
   "homepage": "https://github.com/vict-shevchenko/reactive-mobx-form#readme",
   "dependencies": {
-    "validatorjs": "^3.15.1"
+    "validatorjs": "^3.22.1"
   },
   "peerDependencies": {
-    "mobx": "^4.0.0 || ^5.0.0",
-    "mobx-react": "^5.4.2",
-    "react": "^16.6.3"
+    "mobx": "^6.3.3",
+    "mobx-react": "^7.2.0",
+    "react": "^17.0.2"
   },
   "devDependencies": {
-    "@types/enzyme": "^3.1.15",
-    "@types/jest": "^23.3.9",
-    "@types/react": "^16.7.7",
-    "@types/react-dom": "^16.0.10",
-    "@types/validatorjs": "^3.7.1",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.7.0",
-    "jest": "^23.6.0",
-    "ts-jest": "^23.10.5",
-    "tslint": "^5.11.0",
-    "typescript": "^3.1.6"
+    "@types/enzyme": "^3.10.9",
+    "@types/jest": "^27.0.2",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "@types/validatorjs": "^3.15.0",
+    "enzyme": "^3.11.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
+    "jest": "^27.2.2",
+    "ts-jest": "^27.0.5",
+    "tslint": "^5.20.1",
+    "typescript": "^4.4.3"
   },
   "jest": {
     "verbose": true,

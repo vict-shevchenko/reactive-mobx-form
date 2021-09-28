@@ -9,6 +9,7 @@
         "allowSyntheticDefaultImports": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
+        "useDefineForClassFields": true,
         "sourceMap": true,
         "jsx": "react",
         "strictNullChecks": true,

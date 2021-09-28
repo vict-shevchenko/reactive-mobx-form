@@ -23,7 +23,7 @@ export function withForm<P extends IControlFormContext>(Component: React.Compone
 		public render() {
 			return (
 				<FormContext.Consumer>
-					{(form: Form) => <Component {...this.props} form={form} />}
+					{(form: Form) => <Component {...this.props as P} form={form} />}
 				</FormContext.Consumer>
 			);
 		}
@@ -37,7 +37,7 @@ export function withParentName<P extends IControlParentNameContext>(Component: R
 		public render() {
 			return (
 				<ParentNameContext.Consumer>
-					{(parentName: string)  => <Component {...this.props} parentName={parentName} />}
+					{(parentName: string)  => <Component {...this.props as P} parentName={parentName} />}
 				</ParentNameContext.Consumer>
 			);
 		}

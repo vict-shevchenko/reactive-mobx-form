@@ -22,7 +22,7 @@ export interface IControlWithFieldContext<F> {
     | React.ClassicComponentClass<P>; */
 
 // tslint:disable-next-line
-export function withField<P extends IControlWithFieldContext<formField>>(WrappedComponent: React.ComponentType<P>, fieldCreationFunction: (string, any) => formField) {
+export function withField<P extends IControlWithFieldContext<formField>>(WrappedComponent: React.ComponentType<P & IControlWithFieldContext<formField>>, fieldCreationFunction: (string, any) => formField) {
 	// tslint:disable-next-line:max-line-length
 	return class ControlWithField<PP> extends React.Component<Subtract<P, IControlWithFieldContext<formField>> & PP> {
 		public field: formField;
@@ -39,7 +39,7 @@ export function withField<P extends IControlWithFieldContext<formField>>(Wrapped
 		public render() {
 			return <WrappedComponent
 				field={this.field}
-				{...this.props}
+				{...this.props as any}
 			/>;
 		}
 	};
