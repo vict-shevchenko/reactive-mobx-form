@@ -1,4 +1,4 @@
-import { observable, action, computed, IObservableArray } from 'mobx';
+import { observable, action, computed, IObservableArray, makeObservable } from 'mobx';
 import { formField } from './types';
 import { objectPath, isNumeric } from './utils';
 
@@ -10,6 +10,7 @@ export class FieldArray {
 	@observable public errors: string[] = [];
 
 	constructor(name: string) {
+		makeObservable(this);
 		this.update(name);
 	}
 

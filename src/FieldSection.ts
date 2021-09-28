@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, makeObservable } from 'mobx';
 import { formField } from './types';
 import { objectPath } from './utils';
 
@@ -9,6 +9,7 @@ export class FieldSection {
 	@observable public subFields = new Map<string, formField>();
 
 	constructor(name: string) {
+		makeObservable(this);
 		this.update(name);
 	}
 

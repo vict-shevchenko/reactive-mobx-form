@@ -1,3 +1,7 @@
+# 0.14.2
+- Updated critical dependencies: React to version 17.0.2, mobx - 6.3.3, mobx-react - 7.2.0, and all the others 
+ in the project
+
 # 0.14.1
 - [Bug Fix] ComputedControl now reacts on properties change and runs compute function. Not only on values.
 

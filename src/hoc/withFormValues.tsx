@@ -41,7 +41,7 @@ export function withFormValues<P extends IReactiveMobxFormValuesProps>(formName:
 				return (
 						<Component
 							values={this.form!.values}
-							{...omit(this.props, ['formStore'])}
+							{...omit(this.props, ['formStore']) as any}
 						/>
 				);
 			}

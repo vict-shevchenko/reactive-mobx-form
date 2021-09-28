@@ -46,7 +46,7 @@ export interface IFormProps extends IFormExtendProps {
 }
 
 export interface IReactiveMobxFormProps<P = any> {
-	submit: (...rest: Array<unknown>) => Promise<P>;
+	submit: (...rest: unknown[]) => Promise<P>;
 	next: () => void;
 	previous: (steps: unknown) => void;
 	reset: () => void;
@@ -78,9 +78,7 @@ export function createForm<P extends IReactiveMobxFormProps>(formName: string, f
 		@observer
 		// tslint:disable-next-line:max-line-length
 		class FormUI extends React.Component<(Subtract<P, IReactiveMobxFormProps> & IFormProps)> {
-			/* 			public static defaultProps: any = {
-							schema: {}
-						}; */
+
 			public form: Form;
 
 			constructor(props: P & IFormProps) {
@@ -131,7 +129,7 @@ export function createForm<P extends IReactiveMobxFormProps>(formName: string, f
 							next={this.form.takeSnapshot}
 
 							destroy={this.destroyForm.bind(this, false)}
-							{...omit(this.props, ['schema', 'onSubmit', 'formStore'])}
+							{...omit(this.props, ['schema', 'onSubmit', 'formStore']) as any}
 						/>
 					</FormContext.Provider>
 				);

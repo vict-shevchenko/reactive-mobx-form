@@ -1,4 +1,4 @@
-import { observable, action, computed, reaction, IReactionDisposer } from 'mobx';
+import { observable, action, computed, reaction, IReactionDisposer, makeObservable } from 'mobx';
 import { Errors, Validator as IValidator } from 'validatorjs';
 import * as Validator from 'validatorjs';
 // tslint:disable-next-line:max-line-length
@@ -54,6 +54,7 @@ export class Form {
 	*/
 
 	constructor(submit: submitCallback, options: IFormDefinition) {
+		makeObservable(this);
 		// tslint:disable-next-line:no-console
 		this.externalSubmit = submit;
 
@@ -130,7 +131,7 @@ export class Form {
 		}
 	}
 
-	@action.bound public submit(...params: [FormEvent | MouseEvent, Array<unknown>]) {
+	@action.bound public submit(...params: [FormEvent | MouseEvent, unknown[]]) {
 		const maybeEvent = params[0];
 
 		// stupid assumption, but enzyme fails on check maybeEvent.nativeEvent instanceof Event

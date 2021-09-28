@@ -45,6 +45,7 @@ export class ControlArray extends React.Component<IControlArrayProps> {
 	public render() {
 		const propsToPass = omit(this.props, [...BaseControl.skipProp, ...ControlArray.skipProp]);
 
+		// @ts-ignore
 		const length = this.fieldsProp.length; // todo: why we need this to rerender?
 
 		return (

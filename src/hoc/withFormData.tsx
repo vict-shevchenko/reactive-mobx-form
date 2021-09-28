@@ -51,7 +51,7 @@ export function withFormData(formName: string): <P extends IReactiveMobxFormProp
 								previous={this.form.restoreSnapshot}
 								next={this.form.takeSnapshot}
 								destroy={this.destroyForm.bind(this)}
-								{...omit(this.props, ['schema', 'formStore'])}
+								{...omit(this.props, ['schema', 'formStore']) as any}
 							/>
 						</FormContext.Provider>
 					);

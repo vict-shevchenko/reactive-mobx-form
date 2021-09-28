@@ -1,4 +1,4 @@
-import { observable, action, computed, autorun, IReactionDisposer } from 'mobx';
+import { observable, action, computed, autorun, IReactionDisposer, makeObservable } from 'mobx';
 import { fieldValue, INormalizedFieldDefinition } from './interfaces/Form';
 import { Form } from './Form';
 
@@ -17,6 +17,7 @@ export class Field {
 	/* tslint:enable: typedef-whitespace */
 
 	constructor(name: string, fieldDefinition: INormalizedFieldDefinition) {
+		makeObservable(this);
 		this.update(name, fieldDefinition);
 	}
 
@@ -75,9 +76,9 @@ export class Field {
 
 	public subscribeToFormValidation(form: Form): IReactionDisposer {
 		return autorun(() => {
-			const errors: string[] = form.errors.get(this.name);
+			const errors: string[] = form.errors?.get(this.name);
 
-			if (this.errors.join() !== errors.join()) {
+			if (errors && this.errors.join() !== errors?.join()) {
 				this.errors = errors;
 			}
 		});
